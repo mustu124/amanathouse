@@ -439,11 +439,7 @@ function MobileSidebar({
                   whileHover={{ y: -3, backgroundColor: "#A23E2C", color: "#ffffff" }}
                   className="flex h-11 w-11 items-center justify-center rounded-full bg-white font-black shadow-sm focus:outline-none focus:ring-2 focus:ring-amanat-terracotta"
                 >
-                  {label === "Instagram" ? (
-                    <Image src="/instagram-icon.png" alt="" width={30} height={30} className="h-7 w-7 object-contain" />
-                  ) : (
-                    icon
-                  )}
+                  {label === "Instagram" ? <InstagramIcon /> : icon}
                 </motion.a>
               ))}
             </motion.div>
@@ -636,6 +632,16 @@ function SearchIcon() {
     <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none">
       <path d="M10.8 18.1a7.3 7.3 0 1 0 0-14.6 7.3 7.3 0 0 0 0 14.6Z" stroke="currentColor" strokeWidth="2" />
       <path d="m16.2 16.2 4.3 4.3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function InstagramIcon() {
+  return (
+    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="2" />
+      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="2" />
+      <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" />
     </svg>
   );
 }

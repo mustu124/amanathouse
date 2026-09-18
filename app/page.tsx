@@ -988,7 +988,7 @@ function InstagramStrip({ instagramUrl }: { instagramUrl?: string }) {
               whileHover={{ opacity: 1 }}
               transition={{ duration: 0.25 }}
             >
-              <Image src="/instagram-icon.png" alt="" width={42} height={42} className="h-10 w-10 invert" />
+              <InstagramIcon className="h-10 w-10 text-white" />
             </motion.div>
           </motion.a>
         ))}
@@ -1054,11 +1054,7 @@ function Footer({ settings }: { settings: PublicSettings | null }) {
                 whileTap={{ scale: 0.95 }}
                 className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-lg font-black text-amanat-brown shadow-sm"
               >
-                {label === "Instagram" ? (
-                  <Image src="/instagram-icon.png" alt="" width={30} height={30} className="h-7 w-7 object-contain" />
-                ) : (
-                  icon
-                )}
+                {label === "Instagram" ? <InstagramIcon className="h-6 w-6" /> : icon}
               </motion.a>
             ))}
           </motion.div>
@@ -1084,6 +1080,16 @@ function Footer({ settings }: { settings: PublicSettings | null }) {
         </motion.div>
       </motion.div>
     </motion.footer>
+  );
+}
+
+function InstagramIcon({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" className={className}>
+      <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="2" />
+      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="2" />
+      <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" />
+    </svg>
   );
 }
 
