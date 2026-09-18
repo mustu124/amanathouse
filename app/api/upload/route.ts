@@ -2,7 +2,7 @@ import { fail, ok } from "@/lib/api";
 import { assertAdmin } from "@/lib/admin-auth";
 import { getSupabaseAdmin, SUPABASE_BUCKET } from "@/lib/supabase";
 
-const allowedTypes = ["image/jpeg", "image/png", "image/webp", "video/mp4"];
+const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
 
 export async function POST(request: Request) {
   const unauthorized = await assertAdmin();
@@ -17,19 +17,18 @@ export async function POST(request: Request) {
     }
 
     if (!allowedTypes.includes(file.type)) {
-      return fail("Only jpg, png, webp, and mp4 files are supported.", 400);
+      return fail("Only jpg, png, and webp files are supported.", 400);
     }
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const resourceType = file.type.startsWith("video/") ? "video" : "image";
-    const extension = file.name.split(".").pop() || (resourceType === "video" ? "mp4" : "webp");
+    const extension = file.name.split(".").pop() || "webp";
     const safeName = file.name
       .replace(/\.[^/.]+$/, "")
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "");
-    const path = `${resourceType}s/${Date.now()}-${safeName}.${extension}`;
+    const path = `images/${Date.now()}-${safeName}.${extension}`;
     const supabase = getSupabaseAdmin();
     const { error } = await supabase.storage.from(SUPABASE_BUCKET).upload(path, buffer, {
       contentType: file.type,

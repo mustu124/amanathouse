@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useMemo, useReducer, useState } from "react";
 import type { StoreProduct } from "@/lib/product-data";
 
-const CART_STORAGE_KEY = "artisan-root-cart";
+const CART_STORAGE_KEY = "amanat-house-cart";
 
 export type CartProduct = Pick<StoreProduct, "_id" | "name" | "slug" | "price" | "images" | "stockCount"> & {
   category: string;
@@ -64,7 +64,7 @@ function normalizeCartProduct(product: CartProduct | LegacyCartInput): CartProdu
     _id: product.productId,
     name: product.name,
     slug: product.slug ?? product.productId,
-    category: product.category ?? "Macrame",
+    category: product.category ?? "Jewellery",
     price: product.price,
     images: product.imageUrl ? [{ url: product.imageUrl, alt: product.name }] : [],
     stockCount: Infinity

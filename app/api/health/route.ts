@@ -13,7 +13,7 @@ export async function GET() {
     const { error } = await supabase.from("products").select("id", { count: "exact", head: true });
     if (error) throw error;
 
-    return ok({ service: "Artisan Root API", backend: "supabase" }, "API is healthy.");
+    return ok({ service: "Amanat House API", backend: "supabase" }, "API is healthy.");
   } catch (error) {
     return fail(error instanceof Error ? error.message : "API health check failed.", 500);
   }

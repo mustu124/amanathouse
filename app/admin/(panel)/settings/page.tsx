@@ -32,7 +32,7 @@ export default function AdminSiteSettingsPage() {
   const [baseSettings, setBaseSettings] = useState<Record<string, unknown>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const storageKey = "artisan-root-site-settings-draft-v2";
+  const storageKey = "amanat-house-site-settings-draft-v2";
 
   useEffect(() => {
     adminFetch<{ settings: Record<string, unknown> & SiteSettings }>("/api/settings")
@@ -102,36 +102,36 @@ export default function AdminSiteSettingsPage() {
     <div className="grid gap-6">
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div>
-          <p className="text-sm font-black uppercase tracking-[0.18em] text-artisan-sage">Configuration</p>
-          <h1 className="font-heading text-4xl font-bold text-artisan-brown">Site Settings</h1>
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-amanat-sage">Configuration</p>
+          <h1 className="font-heading text-4xl font-bold text-amanat-brown">Site Settings</h1>
         </div>
-        <button disabled={isSaving || isLoading} onClick={save} className="rounded-full bg-artisan-terracotta px-6 py-3 text-sm font-black uppercase tracking-[0.14em] text-white disabled:opacity-60">
+        <button disabled={isSaving || isLoading} onClick={save} className="rounded-full bg-amanat-terracotta px-6 py-3 text-sm font-black uppercase tracking-[0.14em] text-white disabled:opacity-60">
           {isSaving ? "Saving..." : "Save Settings"}
         </button>
       </div>
 
       <AdminSection title="Contact and Social">
         {isLoading ? (
-          <div className="h-40 animate-pulse rounded-2xl bg-artisan-cream" />
+          <div className="h-40 animate-pulse rounded-2xl bg-amanat-cream" />
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
-            <label className="grid gap-2 text-sm font-bold text-artisan-brown">
+            <label className="grid gap-2 text-sm font-bold text-amanat-brown">
               WhatsApp number
               <input value={form.whatsappNumber ?? ""} onChange={(event) => update("whatsappNumber", event.target.value)} className="field-input" placeholder="919999999999" />
             </label>
-            <label className="grid gap-2 text-sm font-bold text-artisan-brown">
+            <label className="grid gap-2 text-sm font-bold text-amanat-brown">
               Store email
               <input type="email" value={form.storeEmail ?? ""} onChange={(event) => update("storeEmail", event.target.value)} className="field-input" />
             </label>
-            <label className="grid gap-2 text-sm font-bold text-artisan-brown">
+            <label className="grid gap-2 text-sm font-bold text-amanat-brown">
               Instagram URL
               <input value={form.socialLinks?.instagram ?? ""} onChange={(event) => updateSocial("instagram", event.target.value)} className="field-input" />
             </label>
-            <label className="grid gap-2 text-sm font-bold text-artisan-brown">
+            <label className="grid gap-2 text-sm font-bold text-amanat-brown">
               Facebook URL
               <input value={form.socialLinks?.facebook ?? ""} onChange={(event) => updateSocial("facebook", event.target.value)} className="field-input" />
             </label>
-            <label className="grid gap-2 text-sm font-bold text-artisan-brown md:col-span-2">
+            <label className="grid gap-2 text-sm font-bold text-amanat-brown md:col-span-2">
               Store address
               <textarea value={form.storeAddress ?? ""} onChange={(event) => update("storeAddress", event.target.value)} className="field-input min-h-28" />
             </label>
@@ -146,9 +146,9 @@ export default function AdminSiteSettingsPage() {
       </AdminSection>
 
       <AdminSection title="Footer">
-        <label className="grid gap-2 text-sm font-bold text-artisan-brown">
+        <label className="grid gap-2 text-sm font-bold text-amanat-brown">
           Footer copyright text
-          <input value={form.footerCopyright ?? ""} onChange={(event) => update("footerCopyright", event.target.value)} className="field-input" placeholder="(c) 2025 Artisan Root" />
+          <input value={form.footerCopyright ?? ""} onChange={(event) => update("footerCopyright", event.target.value)} className="field-input" placeholder="(c) 2025 Amanat House" />
         </label>
       </AdminSection>
     </div>

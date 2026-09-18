@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import type { GalleryItem } from "@/lib/gallery-data";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { getDisplayMediaUrl } from "@/lib/media";
 import { PRODUCT_CATEGORIES } from "@/lib/product-data";
 
@@ -75,17 +76,17 @@ export default function CollectionsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-artisan-cream pb-20">
-      <section className="relative flex min-h-[420px] items-center overflow-hidden bg-artisan-brown px-6 pt-24 text-white">
-        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(92,45,10,0.9),rgba(196,113,74,0.58)),url('https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=2200&q=85')] bg-cover bg-center" />
+    <main className="min-h-screen bg-amanat-cream pb-20">
+      <section className="relative flex min-h-[420px] items-center overflow-hidden bg-amanat-brown px-6 pt-24 text-white">
+        <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(42,33,28,0.95),rgba(162,62,44,0.75))]" />
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
           className="relative z-10 mx-auto w-full max-w-7xl"
         >
-          <p className="text-sm font-black uppercase tracking-[0.22em] text-artisan-sand">
-            Artisan Root Gallery
+          <p className="text-sm font-black uppercase tracking-[0.22em] text-amanat-sand">
+            Amanat House Gallery
           </p>
           <h1 className="mt-4 font-heading text-5xl font-bold md:text-7xl">Product Collections</h1>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-white/86">
@@ -98,7 +99,7 @@ export default function CollectionsPage() {
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="sticky top-20 z-20 -mx-4 overflow-x-auto border-y border-artisan-brown/10 bg-artisan-cream/90 px-4 py-4 backdrop-blur md:-mx-8 md:px-8"
+          className="sticky top-20 z-20 -mx-4 overflow-x-auto border-y border-amanat-brown/10 bg-amanat-cream/90 px-4 py-4 backdrop-blur md:-mx-8 md:px-8"
         >
           <div className="flex min-w-max gap-2">
             {filters.map((filter) => (
@@ -108,10 +109,10 @@ export default function CollectionsPage() {
                 onClick={() => setActiveFilter(filter)}
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.97 }}
-                className={`rounded-full px-5 py-2 text-sm font-black uppercase tracking-[0.12em] transition focus:outline-none focus:ring-2 focus:ring-artisan-terracotta ${
+                className={`rounded-full px-5 py-2 text-sm font-black uppercase tracking-[0.12em] transition focus:outline-none focus:ring-2 focus:ring-amanat-terracotta ${
                   activeFilter === filter
-                    ? "bg-artisan-terracotta text-white"
-                    : "bg-white text-artisan-brown shadow-sm"
+                    ? "bg-amanat-terracotta text-white"
+                    : "bg-white text-amanat-brown shadow-sm"
                 }`}
               >
                 {filter}
@@ -140,7 +141,7 @@ export default function CollectionsPage() {
               disabled={isLoadingMore}
               whileHover={{ y: -3 }}
               whileTap={{ scale: 0.98 }}
-              className="rounded-full bg-artisan-brown px-8 py-4 text-sm font-black uppercase tracking-[0.14em] text-white disabled:opacity-60"
+              className="rounded-full bg-amanat-brown px-8 py-4 text-sm font-black uppercase tracking-[0.14em] text-white disabled:opacity-60"
             >
               {isLoadingMore ? "Loading..." : "Load More"}
             </motion.button>
@@ -160,8 +161,8 @@ export default function CollectionsPage() {
 
 function GalleryTile({ item, onClick }: { item: GalleryItem; onClick: () => void }) {
   const heightSeed = item.order ?? 1;
-  const thumbnailSrc = item.type === "video" ? item.thumbnailUrl || "/logo.png" : item.thumbnailUrl || item.url;
-  const optimizedThumbnail = thumbnailSrc === "/logo.png" ? thumbnailSrc : optimizedMediaUrl(thumbnailSrc, 720);
+  const thumbnailSrc = item.thumbnailUrl || item.url;
+  const optimizedThumbnail = thumbnailSrc === "/placeholder-product.png" ? thumbnailSrc : optimizedMediaUrl(thumbnailSrc, 720);
   const productHref = item.productSlug ? `/shop/${encodeURIComponent(item.productSlug)}` : "";
 
   if (productHref) {
@@ -176,11 +177,11 @@ function GalleryTile({ item, onClick }: { item: GalleryItem; onClick: () => void
       >
         <Link
           href={productHref}
-          className="group relative block w-full overflow-hidden rounded-2xl bg-artisan-sand text-left shadow-[0_16px_40px_rgba(92,45,10,0.12)] focus:outline-none focus:ring-2 focus:ring-artisan-terracotta"
+          className="group relative block w-full overflow-hidden rounded-2xl bg-amanat-sand text-left shadow-[0_16px_40px_rgba(42,33,28,0.12)] focus:outline-none focus:ring-2 focus:ring-amanat-terracotta"
         >
           <Image
             src={optimizedThumbnail}
-            alt={item.caption || item.productName || "Artisan Root gallery media"}
+            alt={item.caption || item.productName || "Amanat House gallery media"}
             width={640}
             height={heightSeed % 3 === 0 ? 820 : heightSeed % 3 === 1 ? 520 : 700}
             sizes="(min-width: 1280px) 20vw, (min-width: 640px) 33vw, 50vw"
@@ -197,7 +198,7 @@ function GalleryTile({ item, onClick }: { item: GalleryItem; onClick: () => void
               whileHover={{ y: 0 }}
               className="translate-y-4 transition duration-300 group-hover:translate-y-0"
             >
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-artisan-sand">{item.category}</p>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-amanat-sand">{item.category}</p>
               <p className="mt-1 font-heading text-lg font-bold leading-tight text-white">{item.productName || item.caption}</p>
               <p className="mt-2 text-xs font-black uppercase tracking-[0.14em] text-white/85">View product</p>
             </motion.div>
@@ -216,11 +217,11 @@ function GalleryTile({ item, onClick }: { item: GalleryItem; onClick: () => void
       exit={{ opacity: 0, y: 16, scale: 0.96 }}
       transition={{ duration: 0.38, ease: "easeOut" }}
       onClick={onClick}
-      className="group relative mb-4 block w-full break-inside-avoid overflow-hidden rounded-2xl bg-artisan-sand text-left shadow-[0_16px_40px_rgba(92,45,10,0.12)] focus:outline-none focus:ring-2 focus:ring-artisan-terracotta"
+      className="group relative mb-4 block w-full break-inside-avoid overflow-hidden rounded-2xl bg-amanat-sand text-left shadow-[0_16px_40px_rgba(42,33,28,0.12)] focus:outline-none focus:ring-2 focus:ring-amanat-terracotta"
     >
       <Image
         src={optimizedThumbnail}
-        alt={item.caption || "Artisan Root gallery media"}
+        alt={item.caption || "Amanat House gallery media"}
         width={640}
         height={heightSeed % 3 === 0 ? 820 : heightSeed % 3 === 1 ? 520 : 700}
         sizes="(min-width: 1280px) 20vw, (min-width: 640px) 33vw, 50vw"
@@ -228,11 +229,6 @@ function GalleryTile({ item, onClick }: { item: GalleryItem; onClick: () => void
         quality={78}
         className="h-auto w-full object-cover transition duration-700 group-hover:scale-[1.04]"
       />
-      {item.type === "video" && (
-        <span className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-artisan-terracotta text-xl text-white shadow-soft">
-          ▶
-        </span>
-      )}
       <motion.div
         className="absolute inset-0 flex items-end bg-gradient-to-t from-black/76 via-black/20 to-transparent p-4 opacity-0 group-hover:opacity-100"
         transition={{ duration: 0.25 }}
@@ -242,7 +238,7 @@ function GalleryTile({ item, onClick }: { item: GalleryItem; onClick: () => void
           whileHover={{ y: 0 }}
           className="translate-y-4 transition duration-300 group-hover:translate-y-0"
         >
-          <p className="text-xs font-black uppercase tracking-[0.16em] text-artisan-sand">{item.category}</p>
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-amanat-sand">{item.category}</p>
           <p className="mt-1 font-heading text-lg font-bold leading-tight text-white">{item.caption}</p>
         </motion.div>
       </motion.div>
@@ -276,11 +272,15 @@ function Lightbox({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [activeIndex, items.length, onClose, onNavigate]);
 
+  const trapRef = useFocusTrap(activeIndex !== null);
+
   return (
     <AnimatePresence>
       {item && activeIndex !== null && (
         <motion.div
-          className="fixed inset-0 z-[120] flex flex-col items-center justify-center bg-black/95 p-4 text-white"
+          ref={trapRef}
+          tabIndex={-1}
+          className="fixed inset-0 z-[120] flex flex-col items-center justify-center bg-black/95 p-4 text-white focus:outline-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -320,25 +320,15 @@ function Lightbox({
             transition={{ duration: 0.35, ease: "easeOut" }}
             className="flex max-h-[90vh] max-w-6xl flex-col items-center"
           >
-            {item.type === "video" ? (
-              <iframe
-                src={item.url}
-                title={item.caption}
-                className="aspect-video w-[min(92vw,1100px)] rounded-2xl"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            ) : (
-              <Image
-                src={optimizedMediaUrl(item.url, 1600)}
-                alt={item.caption || "Artisan Root gallery item"}
-                width={1400}
-                height={1600}
-                sizes="92vw"
-                quality={84}
-                className="max-h-[84vh] max-w-[92vw] rounded-2xl object-contain"
-              />
-            )}
+            <Image
+              src={optimizedMediaUrl(item.url, 1600)}
+              alt={item.caption || "Amanat House gallery item"}
+              width={1400}
+              height={1600}
+              sizes="92vw"
+              quality={84}
+              className="max-h-[84vh] max-w-[92vw] rounded-2xl object-contain"
+            />
             <p className="mt-4 max-w-3xl text-center font-heading text-2xl font-bold">{item.caption}</p>
           </motion.div>
         </motion.div>
@@ -353,10 +343,10 @@ function CollectionsLoader() {
       {Array.from({ length: 20 }).map((_, index) => (
         <div
           key={index}
-          className="mb-4 break-inside-avoid rounded-2xl bg-artisan-sand"
+          className="mb-4 break-inside-avoid rounded-2xl bg-amanat-sand"
           style={{ height: `${index % 3 === 0 ? 280 : index % 3 === 1 ? 360 : 220}px` }}
         >
-          <div className="h-full w-full animate-pulse rounded-2xl bg-artisan-brown/10" />
+          <div className="h-full w-full animate-pulse rounded-2xl bg-amanat-brown/10" />
         </div>
       ))}
     </div>

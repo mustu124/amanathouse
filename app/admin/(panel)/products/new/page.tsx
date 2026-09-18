@@ -4,8 +4,8 @@ export default function NewProductPage() {
   return (
     <div className="grid gap-6">
       <div>
-        <p className="text-sm font-black uppercase tracking-[0.18em] text-artisan-sage">Catalog</p>
-        <h1 className="font-heading text-4xl font-bold text-artisan-brown">Add New Product</h1>
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-amanat-sage">Catalog</p>
+        <h1 className="font-heading text-4xl font-bold text-amanat-brown">Add New Product</h1>
       </div>
       <ProductForm />
     </div>

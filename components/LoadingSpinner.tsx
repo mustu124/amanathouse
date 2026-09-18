@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 export function LoadingSpinner({ label = "Loading" }: { label?: string }) {
   return (
-    <div className="flex items-center justify-center gap-3 text-artisan-brown" role="status" aria-live="polite">
+    <div className="flex items-center justify-center gap-3 text-amanat-brown" role="status" aria-live="polite">
       <svg aria-hidden="true" width="36" height="36" viewBox="0 0 48 48" className="shrink-0">
         {[12, 24, 36].map((cx, index) => (
           <motion.circle
@@ -13,7 +13,7 @@ export function LoadingSpinner({ label = "Loading" }: { label?: string }) {
             cy="24"
             r="8"
             fill="none"
-            stroke={index === 1 ? "#c4714a" : "#6b7c5c"}
+            stroke={index === 1 ? "#A23E2C" : "#7A6E66"}
             strokeWidth="3"
             strokeLinecap="round"
             initial={{ pathLength: 0.25, rotate: 0 }}

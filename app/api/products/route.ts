@@ -3,6 +3,7 @@ import { assertAdmin } from "@/lib/admin-auth";
 import { filterFallbackProducts, type StoreProduct } from "@/lib/product-data";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase";
 import { normalizeSupabaseProduct, productPayloadToSupabase } from "@/lib/supabase-mappers";
+import { formatZodError, productPayloadSchema } from "@/lib/validation";
 
 export const dynamic = "force-dynamic";
 
@@ -138,12 +139,12 @@ export async function POST(request: Request) {
   if (unauthorized) return unauthorized;
 
   try {
-    const payload = (await request.json()) as Record<string, unknown>;
-    const name = String(payload.name ?? "");
-
-    if (!name || !payload.category || !payload.price) {
-      return fail("Name, category, and price are required.", 400);
+    const rawPayload = (await request.json()) as Record<string, unknown>;
+    const parsed = productPayloadSchema.safeParse(rawPayload);
+    if (!parsed.success) {
+      return fail(formatZodError(parsed.error), 400);
     }
+    const payload = parsed.data;
 
     const supabase = getSupabaseAdmin();
     const productPayload = productPayloadToSupabase(payload);

@@ -24,7 +24,7 @@ type OrderPayload = {
 function buildOrderNumber() {
   const year = new Date().getFullYear();
   const suffix = Math.floor(100 + Math.random() * 900);
-  return `AR-${year}-${Date.now().toString().slice(-4)}${suffix}`;
+  return `AH-${year}-${Date.now().toString().slice(-4)}${suffix}`;
 }
 
 export async function GET(request: Request) {
@@ -97,6 +97,22 @@ export async function POST(request: Request) {
       .single();
 
     if (error) throw error;
+
+    // orders.items (jsonb) stays the source of truth for the admin UI and
+    // WhatsApp message text. order_items is a normalized side-table for
+    // reporting/joins — best-effort, never blocks the order itself.
+    const orderItemRows = payload.items.map((item) => ({
+      order_id: createdOrder.id,
+      product_id: item.productId && /^[0-9a-f-]{36}$/i.test(item.productId) ? item.productId : null,
+      product_name: item.name,
+      image_url: item.image ?? null,
+      price: Number(item.price ?? 0),
+      quantity: Number(item.quantity ?? 1),
+      selected_variant: item.selectedVariant ?? null
+    }));
+    const { error: itemsError } = await supabase.from("order_items").insert(orderItemRows);
+    if (itemsError) console.error("Failed to insert order_items:", itemsError.message);
+
     return ok({ order: normalizeSupabaseOrder(createdOrder) }, "Order created.", { status: 201 });
   } catch (error) {
     return fail(error instanceof Error ? error.message : "Failed to create order.");

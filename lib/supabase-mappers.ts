@@ -14,7 +14,6 @@ export function normalizeSupabaseProduct(row: AnyRecord): StoreProduct {
     price: Number(row.price ?? 0),
     originalPrice: row.originalPrice ?? row.original_price,
     images: row.images ?? [],
-    videoUrl: row.videoUrl ?? row.video_url,
     dimensions: row.dimensions,
     careInstructions: row.careInstructions ?? row.care_instructions,
     shippingInfo: row.shippingInfo ?? row.shipping_info,
@@ -27,7 +26,18 @@ export function normalizeSupabaseProduct(row: AnyRecord): StoreProduct {
     tags: row.tags ?? [],
     rating: row.rating ?? { average: 0, count: 0 },
     variants: row.variants ?? [],
-    createdAt: row.createdAt ?? row.created_at ?? new Date().toISOString()
+    createdAt: row.createdAt ?? row.created_at ?? new Date().toISOString(),
+    material: row.material,
+    plating: row.plating,
+    metalTone: row.metalTone ?? row.metal_tone,
+    size: row.size,
+    weightGrams: row.weightGrams ?? row.weight_grams,
+    isWaterproof: row.isWaterproof ?? row.is_waterproof,
+    isAntiTarnish: row.isAntiTarnish ?? row.is_anti_tarnish,
+    stackWith: row.stackWith ?? row.stack_with ?? [],
+    badges: row.badges ?? [],
+    sortOrder: row.sortOrder ?? row.sort_order ?? 0,
+    isPlaceholder: row.isPlaceholder ?? row.is_placeholder ?? false
   });
 }
 
@@ -43,7 +53,6 @@ export function productPayloadToSupabase(payload: AnyRecord) {
     price: Number(payload.price ?? 0),
     original_price: payload.originalPrice ? Number(payload.originalPrice) : null,
     images: payload.images ?? [],
-    video_url: payload.videoUrl ?? null,
     dimensions: payload.dimensions ?? "",
     care_instructions: payload.careInstructions ?? "",
     shipping_info: payload.shippingInfo ?? "",
@@ -56,6 +65,17 @@ export function productPayloadToSupabase(payload: AnyRecord) {
     tags: Array.isArray(payload.tags) ? payload.tags : [],
     rating: payload.rating ?? { average: 0, count: 0 },
     variants: Array.isArray(payload.variants) ? payload.variants : [],
+    material: payload.material ?? "316L Stainless Steel",
+    plating: payload.plating ?? "18K PVD Gold",
+    metal_tone: payload.metalTone ?? "gold",
+    size: payload.size ?? null,
+    weight_grams: payload.weightGrams !== undefined && payload.weightGrams !== null && payload.weightGrams !== "" ? Number(payload.weightGrams) : null,
+    is_waterproof: payload.isWaterproof === undefined ? true : Boolean(payload.isWaterproof),
+    is_anti_tarnish: payload.isAntiTarnish === undefined ? true : Boolean(payload.isAntiTarnish),
+    stack_with: Array.isArray(payload.stackWith) ? payload.stackWith : [],
+    badges: Array.isArray(payload.badges) ? payload.badges : [],
+    sort_order: Number(payload.sortOrder ?? 0),
+    is_placeholder: Boolean(payload.isPlaceholder),
     updated_at: new Date().toISOString()
   };
 }
@@ -123,14 +143,13 @@ export function normalizeSupabaseSettings(row: AnyRecord | null, defaults: AnyRe
   const rawStoreAddress = row.storeAddress ?? row.store_address ?? defaults.storeAddress;
   const storeAddress =
     typeof rawStoreAddress === "string" && /pyramid elite|sector 86|gurugram/i.test(rawStoreAddress)
-      ? "Gurgaon"
+      ? defaults.storeAddress
       : rawStoreAddress;
 
   return {
     ...defaults,
     heroSlides: row.heroSlides ?? row.hero_slides ?? defaults.heroSlides,
     mobileHeroSlides: row.mobileHeroSlides ?? row.mobile_hero_slides ?? defaults.mobileHeroSlides,
-    videoUrl: row.videoUrl ?? row.video_url ?? defaults.videoUrl,
     announcementText: row.announcementText ?? row.announcement_text ?? defaults.announcementText,
     whatsappNumber: row.whatsappNumber ?? row.whatsapp_number ?? defaults.whatsappNumber,
     socialLinks: row.socialLinks ?? row.social_links ?? defaults.socialLinks,
@@ -148,7 +167,6 @@ export function settingsPayloadToSupabase(payload: AnyRecord) {
   return {
     hero_slides: payload.heroSlides ?? [],
     mobile_hero_slides: payload.mobileHeroSlides ?? [],
-    video_url: payload.videoUrl ?? "",
     announcement_text: payload.announcementText ?? "",
     whatsapp_number: payload.whatsappNumber ?? "",
     social_links: payload.socialLinks ?? {},

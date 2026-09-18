@@ -1,8 +1,15 @@
 import { fail, ok } from "@/lib/api";
+import { assertAdmin } from "@/lib/admin-auth";
 import { getSupabaseAdmin } from "@/lib/supabase";
 import { normalizeSupabaseOrder } from "@/lib/supabase-mappers";
 
+// Admin-only: this returns full customer PII (name, phone, email, address,
+// pincode). Order numbers are sequential-ish and guessable, so this must
+// never be reachable without a verified admin session.
 export async function GET(_: Request, { params }: { params: { orderNumber: string } }) {
+  const unauthorized = await assertAdmin();
+  if (unauthorized) return unauthorized;
+
   try {
     const supabase = getSupabaseAdmin();
     const { data: order, error } = await supabase

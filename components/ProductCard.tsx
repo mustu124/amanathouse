@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import { fadeInUp } from "@/lib/animations";
+import { useEscapeKey } from "@/hooks/useEscapeKey";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { getDisplayMediaUrl } from "@/lib/media";
 import type { StoreProduct } from "@/lib/product-data";
 
@@ -30,19 +32,19 @@ export function ProductCard({ product, onQuickView, onMoreLikeThis }: ProductCar
     .reduce((total, item) => total + item.quantity, 0);
 
   useEffect(() => {
-    const stored = window.localStorage.getItem("artisan-root-wishlist");
+    const stored = window.localStorage.getItem("amanat-house-wishlist");
     const wishlist = stored ? (JSON.parse(stored) as string[]) : [];
     setIsWishlisted(wishlist.includes(product._id));
   }, [product._id]);
 
   const toggleWishlist = () => {
-    const stored = window.localStorage.getItem("artisan-root-wishlist");
+    const stored = window.localStorage.getItem("amanat-house-wishlist");
     const wishlist = stored ? (JSON.parse(stored) as string[]) : [];
     const nextWishlist = wishlist.includes(product._id)
       ? wishlist.filter((id) => id !== product._id)
       : [...wishlist, product._id];
 
-    window.localStorage.setItem("artisan-root-wishlist", JSON.stringify(nextWishlist));
+    window.localStorage.setItem("amanat-house-wishlist", JSON.stringify(nextWishlist));
     setIsWishlisted(nextWishlist.includes(product._id));
   };
 
@@ -62,13 +64,13 @@ export function ProductCard({ product, onQuickView, onMoreLikeThis }: ProductCar
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.2 }}
-      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-artisan-brown/10 bg-white shadow-[0_14px_34px_rgba(92,45,10,0.08)]"
+      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-amanat-brown/10 bg-white shadow-[0_14px_34px_rgba(42,33,28,0.08)]"
     >
-      <div className="relative aspect-[3/4] overflow-hidden bg-artisan-sand">
+      <div className="relative aspect-[3/4] overflow-hidden bg-amanat-sand">
         <Link href={productHref} aria-label={`View ${product.name}`}>
           <motion.div className="h-full w-full" whileHover={{ scale: 1.08 }} transition={{ duration: 0.55 }}>
             <Image
-              src={image?.url ? optimizedMediaUrl(image.url, 700) : "/logo.png"}
+              src={image?.url ? optimizedMediaUrl(image.url, 700) : "/placeholder-product.png"}
               alt={image?.alt ?? product.name}
               fill
               sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
@@ -79,11 +81,18 @@ export function ProductCard({ product, onQuickView, onMoreLikeThis }: ProductCar
           </motion.div>
         </Link>
 
-        {!product.inStock && (
-          <span className="absolute left-2 top-2 z-10 rounded-full bg-artisan-brown px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.08em] text-white sm:left-3 sm:top-3">
-            Out of Stock
-          </span>
-        )}
+        <div className="absolute left-2 top-2 z-10 flex flex-col items-start gap-1.5 sm:left-3 sm:top-3">
+          {product.badges?.[0] && (
+            <span className="rounded-[2px] border border-gold/40 bg-blush px-2.5 py-1 text-xs font-black uppercase tracking-[0.08em] text-ink">
+              {product.badges[0]}
+            </span>
+          )}
+          {!product.inStock && (
+            <span className="rounded-full bg-amanat-brown px-2.5 py-1 text-xs font-black uppercase tracking-[0.08em] text-white">
+              Out of Stock
+            </span>
+          )}
+        </div>
 
         <motion.button
           type="button"
@@ -93,7 +102,7 @@ export function ProductCard({ product, onQuickView, onMoreLikeThis }: ProductCar
           transition={{ type: "spring", stiffness: 420, damping: 18 }}
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.88 }}
-          className="absolute right-2 top-2 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/92 text-artisan-terracotta shadow-sm backdrop-blur focus:outline-none focus:ring-2 focus:ring-artisan-terracotta sm:right-3 sm:top-3 sm:h-10 sm:w-10"
+          className="absolute right-2 top-2 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/92 text-amanat-terracotta shadow-sm backdrop-blur focus:outline-none focus:ring-2 focus:ring-amanat-terracotta sm:right-3 sm:top-3 sm:h-10 sm:w-10"
         >
           <HeartIcon filled={isWishlisted} />
         </motion.button>
@@ -107,34 +116,33 @@ export function ProductCard({ product, onQuickView, onMoreLikeThis }: ProductCar
             type="button"
             onClick={handleAddToCart}
             disabled={!product.inStock || maxedOut}
-            animate={{ backgroundColor: isAdded ? "#1fa855" : "#c4714a" }}
             whileHover={product.inStock && !maxedOut ? { scale: 1.02 } : undefined}
             whileTap={product.inStock && !maxedOut ? { scale: 0.97 } : undefined}
-            className="w-full rounded-full bg-artisan-terracotta px-3 py-2.5 text-[10px] font-black uppercase leading-tight tracking-[0.1em] text-white shadow-[0_12px_30px_rgba(92,45,10,0.24)] focus:outline-none focus:ring-2 focus:ring-white disabled:cursor-not-allowed disabled:bg-stone-400 sm:px-4 sm:py-3 sm:text-xs sm:tracking-[0.14em]"
+            className="btn-primary w-full text-xs"
           >
-            {isAdded ? "✓ Added!" : !product.inStock ? "Out of Stock" : maxedOut ? "Max in Cart" : "Add to Cart"}
+            {isAdded ? "✓ Added" : !product.inStock ? "Out of Stock" : maxedOut ? "Max in Cart" : "Add to Cart"}
           </motion.button>
         </motion.div>
       </div>
 
       <div className="flex flex-1 flex-col p-3 sm:p-4">
-        <Link href={productHref} className="block focus:outline-none focus:ring-2 focus:ring-artisan-terracotta">
-          <h3 className="min-h-[2.35rem] font-heading text-[13px] font-bold leading-tight text-artisan-brown sm:text-[15px]">
+        <Link href={productHref} className="block focus:outline-none focus:ring-2 focus:ring-amanat-terracotta">
+          <h3 className="min-h-[2.35rem] font-heading text-[13px] font-bold leading-tight text-amanat-brown sm:text-[15px]">
             {product.name}
           </h3>
         </Link>
         <div className="mt-3 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex max-w-full flex-wrap gap-1.5">
-            <span className="inline-flex min-h-7 max-w-full items-center rounded-full bg-artisan-cream px-2.5 py-1 text-[8px] font-black uppercase leading-tight tracking-[0.08em] text-artisan-sage sm:min-h-0 sm:px-3 sm:text-[10px] sm:tracking-[0.1em]">
+            <span className="inline-flex min-h-7 max-w-full items-center rounded-full bg-amanat-cream px-2.5 py-1 text-xs font-black uppercase leading-tight tracking-[0.08em] text-amanat-sage sm:min-h-0 sm:px-3 sm:tracking-[0.1em]">
               {product.category}
             </span>
             {product.subcategory && (
-              <span className="inline-flex min-h-7 max-w-full items-center rounded-full border border-artisan-brown/10 bg-white px-2.5 py-1 text-[8px] font-black uppercase leading-tight tracking-[0.08em] text-artisan-terracotta sm:min-h-0 sm:px-3 sm:text-[10px] sm:tracking-[0.1em]">
+              <span className="inline-flex min-h-7 max-w-full items-center rounded-full border border-amanat-brown/10 bg-white px-2.5 py-1 text-xs font-black uppercase leading-tight tracking-[0.08em] text-amanat-terracotta sm:min-h-0 sm:px-3 sm:tracking-[0.1em]">
                 {product.subcategory}
               </span>
             )}
           </div>
-          <span className="font-black text-artisan-brown sm:text-base">{"\u20B9"}{product.price.toLocaleString("en-IN")}</span>
+          <span className="font-black text-amanat-brown sm:text-base">{"\u20B9"}{product.price.toLocaleString("en-IN")}</span>
         </div>
 
         <div className="mt-auto grid grid-cols-2 gap-2 pt-3 sm:pt-4">
@@ -149,7 +157,7 @@ export function ProductCard({ product, onQuickView, onMoreLikeThis }: ProductCar
           </IconAction>
         </div>
         {cartQuantity > 0 && (
-          <p className="mt-2 text-center text-[10px] font-black uppercase tracking-[0.12em] text-artisan-sage">
+          <p className="mt-2 text-center text-xs font-black uppercase tracking-[0.12em] text-amanat-sage">
             In cart: {cartQuantity}
           </p>
         )}
@@ -160,14 +168,14 @@ export function ProductCard({ product, onQuickView, onMoreLikeThis }: ProductCar
 
 export function ProductSkeleton() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-artisan-brown/10 bg-white">
-      <div className="aspect-[3/4] animate-pulse bg-artisan-sand" />
+    <div className="overflow-hidden rounded-2xl border border-amanat-brown/10 bg-white">
+      <div className="aspect-[3/4] animate-pulse bg-amanat-sand" />
       <div className="space-y-3 p-4">
-        <div className="h-4 w-3/4 animate-pulse rounded-full bg-artisan-sand" />
-        <div className="h-4 w-1/2 animate-pulse rounded-full bg-artisan-sand" />
+        <div className="h-4 w-3/4 animate-pulse rounded-full bg-amanat-sand" />
+        <div className="h-4 w-1/2 animate-pulse rounded-full bg-amanat-sand" />
         <div className="grid grid-cols-2 gap-2">
-          <div className="h-10 animate-pulse rounded-full bg-artisan-sand" />
-          <div className="h-10 animate-pulse rounded-full bg-artisan-sand" />
+          <div className="h-10 animate-pulse rounded-full bg-amanat-sand" />
+          <div className="h-10 animate-pulse rounded-full bg-amanat-sand" />
         </div>
       </div>
     </div>
@@ -181,6 +189,9 @@ export function QuickViewModal({
   product: StoreProduct | null;
   onClose: () => void;
 }) {
+  useEscapeKey(Boolean(product), onClose);
+  const trapRef = useFocusTrap(Boolean(product));
+
   return (
     <AnimatePresence>
       {product && (
@@ -195,16 +206,18 @@ export function QuickViewModal({
           onClick={onClose}
         >
           <motion.div
+            ref={trapRef}
+            tabIndex={-1}
             initial={{ opacity: 0, y: 28, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 18, scale: 0.96 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
             onClick={(event) => event.stopPropagation()}
-            className="grid max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-2xl bg-artisan-cream shadow-soft md:grid-cols-[0.95fr_1.05fr]"
+            className="grid max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-2xl bg-amanat-cream shadow-soft md:grid-cols-[0.95fr_1.05fr] focus:outline-none"
           >
-            <div className="relative aspect-[4/5] bg-artisan-sand md:aspect-auto">
+            <div className="relative aspect-[4/5] bg-amanat-sand md:aspect-auto">
               <Image
-                src={product.images[0]?.url ? optimizedMediaUrl(product.images[0].url, 1000) : "/logo.png"}
+                src={product.images[0]?.url ? optimizedMediaUrl(product.images[0].url, 1000) : "/placeholder-product.png"}
                 alt={product.images[0]?.alt ?? product.name}
                 fill
                 sizes="(min-width: 768px) 44vw, 92vw"
@@ -217,22 +230,19 @@ export function QuickViewModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="float-right rounded-full border border-artisan-brown/15 px-3 py-1 text-sm font-black text-artisan-brown focus:outline-none focus:ring-2 focus:ring-artisan-terracotta"
+                className="float-right rounded-full border border-amanat-brown/15 px-3 py-1 text-sm font-black text-amanat-brown focus:outline-none focus:ring-2 focus:ring-amanat-terracotta"
               >
                 Close
               </button>
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-artisan-sage">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-amanat-sage">
                 {product.subcategory ? `${product.category} / ${product.subcategory}` : product.category}
               </p>
-              <h2 className="mt-3 font-heading text-3xl font-bold text-artisan-brown">{product.name}</h2>
-              <p className="mt-3 text-2xl font-black text-artisan-terracotta">
+              <h2 className="mt-3 font-heading text-3xl font-bold text-amanat-brown">{product.name}</h2>
+              <p className="mt-3 text-2xl font-black text-amanat-terracotta">
                 {"\u20B9"}{product.price.toLocaleString("en-IN")}
               </p>
               <p className="mt-5 leading-7 text-stone-700">{product.description}</p>
-              <Link
-                href={`/shop/${product.slug}`}
-                className="mt-7 inline-flex rounded-full bg-artisan-brown px-6 py-3 text-sm font-black uppercase tracking-[0.14em] text-white focus:outline-none focus:ring-2 focus:ring-artisan-terracotta"
-              >
+              <Link href={`/shop/${product.slug}`} className="btn-primary mt-7">
                 View Details
               </Link>
             </div>
@@ -257,9 +267,9 @@ function IconAction({
       type="button"
       aria-label={label}
       onClick={onClick}
-      whileHover={{ y: -2, backgroundColor: "#f9f3ec" }}
+      whileHover={{ y: -2, backgroundColor: "#FAF5EC" }}
       whileTap={{ scale: 0.96 }}
-      className="flex h-9 items-center justify-center rounded-full border border-artisan-brown/12 text-artisan-brown focus:outline-none focus:ring-2 focus:ring-artisan-terracotta sm:h-10"
+      className="flex h-9 items-center justify-center rounded-full border border-amanat-brown/12 text-amanat-brown focus:outline-none focus:ring-2 focus:ring-amanat-terracotta sm:h-10"
     >
       {children}
     </motion.button>

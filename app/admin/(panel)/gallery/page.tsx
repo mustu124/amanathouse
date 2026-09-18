@@ -10,16 +10,9 @@ import { getDisplayMediaUrl } from "@/lib/media";
 import type { GalleryItem } from "@/lib/gallery-data";
 import { PRODUCT_CATEGORIES } from "@/lib/product-data";
 
-const galleryCategories = [
-  ...PRODUCT_CATEGORIES,
-  "Lifestyle",
-  "Wall Hangings",
-  "Runners",
-  "Pot Hangers",
-  "Dinner Mats",
-  "Coasters",
-  "Videos"
-].filter((category, index, categories) => categories.indexOf(category) === index);
+// Gallery items are generated from product images, so their category is
+// always one of PRODUCT_CATEGORIES — no other filter value would ever match.
+const galleryCategories = [...PRODUCT_CATEGORIES];
 
 export default function AdminGalleryPage() {
   const [items, setItems] = useState<GalleryItem[]>([]);
@@ -54,8 +47,8 @@ export default function AdminGalleryPage() {
   return (
     <div className="grid gap-6">
       <div>
-        <p className="text-sm font-black uppercase tracking-[0.18em] text-artisan-sage">Media</p>
-        <h1 className="font-heading text-4xl font-bold text-artisan-brown">Gallery</h1>
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-amanat-sage">Media</p>
+        <h1 className="font-heading text-4xl font-bold text-amanat-brown">Gallery</h1>
       </div>
 
       <AdminSection
@@ -73,13 +66,13 @@ export default function AdminGalleryPage() {
       >
         {isLoading ? (
           <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
-            {[1, 2, 3, 4, 5].map((item) => <div key={item} className="h-64 animate-pulse rounded-2xl bg-artisan-cream" />)}
+            {[1, 2, 3, 4, 5].map((item) => <div key={item} className="h-64 animate-pulse rounded-2xl bg-amanat-cream" />)}
           </div>
         ) : visibleItems.length === 0 ? (
-          <div className="rounded-2xl bg-artisan-cream p-8 text-center">
-            <p className="font-heading text-2xl font-bold text-artisan-brown">No product media found</p>
+          <div className="rounded-2xl bg-amanat-cream p-8 text-center">
+            <p className="font-heading text-2xl font-bold text-amanat-brown">No product media found</p>
             <p className="mt-2 text-sm text-stone-500">Add images to active products and they will appear here automatically.</p>
-            <Link href="/admin/products" className="mt-5 inline-flex rounded-full bg-artisan-terracotta px-5 py-3 text-sm font-black uppercase tracking-[0.14em] text-white">
+            <Link href="/admin/products" className="mt-5 inline-flex rounded-full bg-amanat-terracotta px-5 py-3 text-sm font-black uppercase tracking-[0.14em] text-white">
               Manage products
             </Link>
           </div>
@@ -99,20 +92,19 @@ function ProductGalleryItem({ item }: { item: GalleryItem }) {
   const editProductHref = item.productSlug ? `/admin/products/${encodeURIComponent(item.productSlug)}/edit` : "";
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-artisan-brown/10 bg-artisan-sand">
-      <div className="relative h-52 w-full overflow-hidden bg-artisan-cream">
+    <div className="relative overflow-hidden rounded-2xl border border-amanat-brown/10 bg-amanat-sand">
+      <div className="relative h-52 w-full overflow-hidden bg-amanat-cream">
         <Image src={getDisplayMediaUrl(imageSrc)} alt={item.caption || "Gallery item"} fill className="object-cover" />
-        {item.type === "video" && <span className="absolute left-2 top-2 rounded-full bg-artisan-brown px-2 py-1 text-xs font-black text-white">Video</span>}
       </div>
       <div className="grid gap-2 p-3">
-        <p className="font-bold text-artisan-brown">{item.productName || item.caption}</p>
-        <p className="text-xs font-bold uppercase tracking-[0.12em] text-artisan-sage">{item.category}</p>
+        <p className="font-bold text-amanat-brown">{item.productName || item.caption}</p>
+        <p className="text-xs font-bold uppercase tracking-[0.12em] text-amanat-sage">{item.category}</p>
         {item.productSlug ? (
           <div className="flex flex-wrap gap-2">
-            <Link href={editProductHref} className="rounded-full border border-artisan-brown/20 px-3 py-1 text-xs font-black text-artisan-brown">
+            <Link href={editProductHref} className="rounded-full border border-amanat-brown/20 px-3 py-1 text-xs font-black text-amanat-brown">
               Edit product
             </Link>
-            <Link href={productHref} className="rounded-full bg-artisan-terracotta px-3 py-1 text-xs font-black text-white">
+            <Link href={productHref} className="rounded-full bg-amanat-terracotta px-3 py-1 text-xs font-black text-white">
               View product
             </Link>
           </div>

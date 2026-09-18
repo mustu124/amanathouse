@@ -1,0 +1,21 @@
+{
+  "name": "Amanat House",
+  "short_name": "Amanat House",
+  "description": "Amanat House — timeless gold and bridal jewellery, made to be kept.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF5EC",
+  "theme_color": "#FAF5EC",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 
-export const SUPABASE_BUCKET = process.env.SUPABASE_STORAGE_BUCKET || "artisan-root";
+export const SUPABASE_BUCKET = process.env.SUPABASE_STORAGE_BUCKET || "amanat-house";
 
 export function isSupabaseConfigured() {
   return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);

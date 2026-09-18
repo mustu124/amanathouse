@@ -9,6 +9,8 @@ import { useCart, type CartItem } from "@/context/CartContext";
 import { buildWhatsAppMessage, type CustomerInfo } from "@/lib/whatsapp";
 import { slideInRight, staggerContainer } from "@/lib/animations";
 import { getDisplayMediaUrl } from "@/lib/media";
+import { useEscapeKey } from "@/hooks/useEscapeKey";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 type CheckoutFormState = CustomerInfo & {
   email: string;
@@ -40,9 +42,12 @@ export function CartSidebar() {
       window.setTimeout(() => setIsCheckoutOpen(true), 120);
     };
 
-    window.addEventListener("artisan-root:start-checkout", openCheckout);
-    return () => window.removeEventListener("artisan-root:start-checkout", openCheckout);
+    window.addEventListener("amanat-house:start-checkout", openCheckout);
+    return () => window.removeEventListener("amanat-house:start-checkout", openCheckout);
   }, []);
+
+  useEscapeKey(isCartOpen && !isCheckoutOpen, closeCart);
+  const cartTrapRef = useFocusTrap(isCartOpen && !isCheckoutOpen);
 
   return (
     <>
@@ -59,7 +64,9 @@ export function CartSidebar() {
               onClick={closeCart}
             />
             <motion.aside
-              className="fixed right-0 top-0 z-[90] flex h-dvh w-full flex-col bg-artisan-cream text-artisan-brown shadow-[-24px_0_70px_rgba(0,0,0,0.24)] sm:max-w-[420px]"
+              ref={cartTrapRef}
+              tabIndex={-1}
+              className="fixed right-0 top-0 z-[90] flex h-dvh w-full flex-col bg-amanat-cream text-amanat-brown shadow-[-24px_0_70px_rgba(0,0,0,0.24)] focus:outline-none sm:max-w-[420px]"
               variants={slideInRight}
               initial="hidden"
               animate="visible"
@@ -68,14 +75,14 @@ export function CartSidebar() {
               aria-modal="true"
               aria-label="Your Cart"
             >
-              <header className="flex items-center justify-between border-b border-artisan-brown/10 p-5">
+              <header className="flex items-center justify-between border-b border-amanat-brown/10 p-5">
                 <div className="flex items-center gap-3">
                   <h2 className="font-heading text-3xl font-bold">Your Cart</h2>
                   <motion.span
                     key={itemCount}
                     initial={{ scale: 0.8 }}
                     animate={{ scale: 1 }}
-                    className="rounded-full bg-artisan-terracotta px-3 py-1 text-xs font-black text-white"
+                    className="rounded-full bg-amanat-terracotta px-3 py-1 text-xs font-black text-white"
                   >
                     {itemCount}
                   </motion.span>
@@ -84,7 +91,7 @@ export function CartSidebar() {
                   type="button"
                   onClick={closeCart}
                   aria-label="Close cart"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-artisan-brown/15 font-black focus:outline-none focus:ring-2 focus:ring-artisan-terracotta"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-amanat-brown/15 font-black focus:outline-none focus:ring-2 focus:ring-amanat-terracotta"
                 >
                   ×
                 </button>
@@ -126,13 +133,13 @@ export function CartSidebar() {
                           >
                             {item.product.name}
                           </Link>
-                          <p className="mt-1 text-xs font-bold uppercase tracking-[0.08em] text-artisan-sage">
+                          <p className="mt-1 text-xs font-bold uppercase tracking-[0.08em] text-amanat-sage">
                             {item.product.category}
                           </p>
                           {item.selectedVariant && (
                             <p className="mt-1 text-xs font-bold text-stone-500">Size: {item.selectedVariant}</p>
                           )}
-                          <p className="mt-2 font-black text-artisan-terracotta">
+                          <p className="mt-2 font-black text-amanat-terracotta">
                             ₹{(item.product.price * item.quantity).toLocaleString("en-IN")}
                           </p>
                         </div>
@@ -143,11 +150,11 @@ export function CartSidebar() {
                             onClick={() => removeItem(item.product._id, item.selectedVariant)}
                             whileHover={{ scale: 1.08, color: "#b91c1c" }}
                             whileTap={{ scale: 0.9 }}
-                            className="text-artisan-terracotta"
+                            className="text-amanat-terracotta"
                           >
                             <TrashIcon />
                           </motion.button>
-                          <div className="flex items-center rounded-full border border-artisan-brown/15">
+                          <div className="flex items-center rounded-full border border-amanat-brown/15">
                             <button
                               type="button"
                               aria-label={`Decrease ${item.product.name} quantity`}
@@ -172,7 +179,7 @@ export function CartSidebar() {
                             </button>
                           </div>
                           {item.quantity >= item.product.stockCount && (
-                            <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-artisan-terracotta">
+                            <p className="text-xs font-bold uppercase tracking-[0.08em] text-amanat-terracotta">
                               Max stock reached
                             </p>
                           )}
@@ -183,19 +190,19 @@ export function CartSidebar() {
                 )}
               </div>
 
-              <footer className="sticky bottom-0 border-t border-artisan-brown/10 bg-artisan-cream p-5">
+              <footer className="sticky bottom-0 border-t border-amanat-brown/10 bg-amanat-cream p-5">
                 <div className="flex items-center justify-between font-black">
                   <span>Subtotal</span>
                   <span>₹{totalPrice.toLocaleString("en-IN")}</span>
                 </div>
-                <p className="mt-2 text-sm font-bold text-artisan-sage">Shipping calculated at checkout</p>
+                <p className="mt-2 text-sm font-bold text-amanat-sage">Shipping calculated at checkout</p>
                 <motion.button
                   type="button"
                   disabled={items.length === 0}
                   onClick={() => setIsCheckoutOpen(true)}
                   whileHover={{ y: items.length ? -2 : 0 }}
                   whileTap={{ scale: items.length ? 0.98 : 1 }}
-                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-[#1fa855] px-6 py-4 text-sm font-black uppercase tracking-[0.12em] text-white disabled:cursor-not-allowed disabled:opacity-50"
+                  className="btn-primary mt-4 w-full disabled:cursor-not-allowed"
                 >
                   <WhatsAppIcon />
                   Place Order via WhatsApp
@@ -230,12 +237,8 @@ function EmptyCart({ onClose }: { onClose: () => void }) {
         🧺
       </motion.div>
       <h3 className="mt-6 font-heading text-3xl font-bold">Your cart is empty</h3>
-      <p className="mt-2 max-w-xs text-stone-600">Add a handcrafted piece and it will wait here for checkout.</p>
-      <Link
-        href="/shop"
-        onClick={onClose}
-        className="mt-6 rounded-full bg-artisan-brown px-6 py-3 text-sm font-black uppercase tracking-[0.14em] text-white"
-      >
+      <p className="mt-2 max-w-xs text-stone-600">Add a piece and it will wait here for checkout.</p>
+      <Link href="/shop" onClick={onClose} className="btn-primary mt-6">
         Start Shopping
       </Link>
     </div>
@@ -267,6 +270,9 @@ function CheckoutModal({
     setErrors({});
     onClose();
   };
+
+  useEscapeKey(isOpen, closeModal);
+  const checkoutTrapRef = useFocusTrap(isOpen);
 
   const validate = () => {
     const nextErrors: Record<string, string> = {};
@@ -354,10 +360,12 @@ function CheckoutModal({
           aria-label="Checkout details"
         >
           <motion.div
+            ref={checkoutTrapRef}
+            tabIndex={-1}
             initial={{ opacity: 0, y: 28, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 18, scale: 0.96 }}
-            className="mx-auto mt-10 max-w-2xl rounded-2xl bg-artisan-cream p-6 text-artisan-brown shadow-soft md:p-8"
+            className="mx-auto mt-10 max-w-2xl rounded-2xl bg-amanat-cream p-6 text-amanat-brown shadow-soft focus:outline-none md:p-8"
           >
             {isConfirmed ? (
               <ConfirmationScreen orderNumber={orderNumber} onClose={closeModal} />
@@ -365,13 +373,13 @@ function CheckoutModal({
               <>
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-xs font-black uppercase tracking-[0.16em] text-artisan-sage">Almost there</p>
+                    <p className="text-xs font-black uppercase tracking-[0.16em] text-amanat-sage">Almost there</p>
                     <h2 className="mt-2 font-heading text-3xl font-bold">Delivery Details</h2>
                   </div>
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="rounded-full border border-artisan-brown/15 px-3 py-1 font-black"
+                    className="rounded-full border border-amanat-brown/15 px-3 py-1 font-black"
                   >
                     ×
                   </button>
@@ -426,11 +434,7 @@ function CheckoutModal({
                     </div>
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="rounded-full bg-[#1fa855] px-6 py-4 text-sm font-black uppercase tracking-[0.14em] text-white disabled:opacity-60"
-                  >
+                  <button type="submit" disabled={isSubmitting} className="btn-primary disabled:opacity-60">
                     {isSubmitting ? "Creating Order..." : "Send Order on WhatsApp"}
                   </button>
                 </form>
@@ -472,15 +476,11 @@ function ConfirmationScreen({ orderNumber, onClose }: { orderNumber: string; onC
         ✓
       </motion.div>
       <h2 className="mt-6 font-heading text-4xl font-bold">Order Sent</h2>
-      <p className="mt-3 text-lg font-black text-artisan-terracotta">{orderNumber}</p>
+      <p className="mt-3 text-lg font-black text-amanat-terracotta">{orderNumber}</p>
       <p className="mx-auto mt-4 max-w-md leading-7 text-stone-700">
         Your order has been sent to WhatsApp. We&apos;ll confirm within 24 hours.
       </p>
-      <button
-        type="button"
-        onClick={onClose}
-        className="mt-7 rounded-full bg-artisan-brown px-6 py-3 text-sm font-black uppercase tracking-[0.14em] text-white"
-      >
+      <button type="button" onClick={onClose} className="btn-primary mt-7">
         Done
       </button>
     </div>

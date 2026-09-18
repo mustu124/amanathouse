@@ -20,5 +20,5 @@ export function getSupabaseStoragePath(src?: string | null) {
 
 export function getDisplayMediaUrl(src?: string | null) {
   const path = getSupabaseStoragePath(src);
-  return path ? `/api/media?path=${encodeURIComponent(path)}` : src || "/logo.png";
+  return path ? `/api/media?path=${encodeURIComponent(path)}` : src || "/placeholder-product.png";
 }

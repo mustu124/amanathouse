@@ -6,16 +6,16 @@ const { createClient } = require("@supabase/supabase-js");
 loadEnvConfig(process.cwd());
 
 const PRODUCT_CATEGORIES = [
-  "Handbag",
-  "Wall hanging with mirror",
-  "Wall hanging without mirror",
-  "Runner",
-  "Pot hanger",
-  "Key Chains",
-  "Dinner Mat",
-  "Coaster",
-  "Pocket Organiser",
-  "Lamp Shade"
+  "Rings",
+  "Necklaces",
+  "Earrings",
+  "Bracelets",
+  "Bangles",
+  "Anklets",
+  "Pendants",
+  "Mangalsutra",
+  "Nose Pins",
+  "Jewellery Sets"
 ];
 
 const mimeTypes = {
@@ -45,13 +45,13 @@ function slugify(value) {
 function titleFromFile(fileName, index) {
   const cleaned = fileName
     .replace(/\.[^/.]+$/, "")
-    .replace(/whatsapp image \d{4}-\d{2}-\d{2} at/gi, "Artisan Root")
+    .replace(/whatsapp image \d{4}-\d{2}-\d{2} at/gi, "Amanat House")
     .replace(/\(\d+\)/g, "")
     .replace(/[-_]+/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 
-  if (!cleaned || cleaned.length < 4) return `Artisan Root Handmade Piece ${String(index + 1).padStart(2, "0")}`;
+  if (!cleaned || cleaned.length < 4) return `Amanat House Jewellery Piece ${String(index + 1).padStart(2, "0")}`;
   return cleaned.replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
@@ -63,10 +63,10 @@ async function main() {
     throw new Error(`Missing required env vars: ${missing.join(", ")}`);
   }
 
-  const bucket = process.env.SUPABASE_STORAGE_BUCKET || "artisan-root";
+  const bucket = process.env.SUPABASE_STORAGE_BUCKET || "amanat-house";
   const sourceDir =
     process.argv[2] ||
-    path.join(process.cwd(), "Artisan Root Product Photos for Website");
+    path.join(process.cwd(), "Amanat House Jewellery Photos for Website");
 
   if (!fs.existsSync(sourceDir)) {
     throw new Error(`Product photos folder not found: ${sourceDir}`);
@@ -92,7 +92,7 @@ async function main() {
     const localPath = path.join(sourceDir, fileName);
     const ext = path.extname(fileName).toLowerCase();
     const name = titleFromFile(fileName, index);
-    const slug = slugify(name || `artisan-root-piece-${index + 1}`);
+    const slug = slugify(name || `amanat-house-piece-${index + 1}`);
     const category = PRODUCT_CATEGORIES[index % PRODUCT_CATEGORIES.length];
     const price = 799 + (index % 8) * 250;
     const storagePath = `products/${slug}${ext}`;
@@ -123,12 +123,12 @@ async function main() {
       slug,
       category,
       subcategory: "",
-      description: "A handmade Artisan Root piece crafted with warm texture, natural materials, and quiet boho detail.",
+      description: "A handcrafted Amanat House jewellery piece made with quality materials and lasting finish.",
       price,
       original_price: price + 400,
       images: [image],
-      dimensions: "Custom handmade dimensions. Contact us for exact sizing.",
-      care_instructions: "Spot clean gently and keep away from prolonged moisture.",
+      dimensions: "Custom sizing available. Contact us for exact measurements.",
+      care_instructions: "Avoid contact with perfume, water, and lotions. Store in a dry, lined pouch.",
       shipping_info: "All over India shipping is available.",
       is_featured: index < 8,
       featured: index < 8,
@@ -136,7 +136,7 @@ async function main() {
       stock_count: 10,
       inventory: 10,
       active: true,
-      tags: ["artisan-root", "handmade", "macrame", category],
+      tags: ["amanat-house", "jewellery", "handcrafted", category],
       rating: { average: 4.8, count: 12 },
       variants: []
     };
@@ -173,14 +173,14 @@ async function main() {
   const heroSlides = importedImages.slice(0, 5).map(({ image, name }) => ({
     image: image.url,
     title: name,
-    subtitle: "Premium macrame and craft pieces for slow, soulful spaces.",
+    subtitle: "Handcrafted gold and bridal jewellery for life's most cherished moments.",
     ctaText: "Shop Now",
     ctaLink: "/shop"
   }));
   const mobileHeroSlides = importedImages.slice(0, 10).map(({ image, name }) => ({
     image: image.url,
     title: name,
-    subtitle: "Handmade warmth for modern homes.",
+    subtitle: "Timeless jewellery, made to treasure.",
     ctaText: "Shop Now",
     ctaLink: "/shop"
   }));
@@ -190,14 +190,14 @@ async function main() {
       hero_slides: heroSlides,
       mobile_hero_slides: mobileHeroSlides,
       announcement_text:
-        "Free shipping on orders above ₹999 · Handcrafted with love · 100% natural cotton rope · New arrivals every week",
-      whatsapp_number: process.env.NEXT_PUBLIC_OWNER_WHATSAPP || "",
+        "Free shipping on orders over ₹999 · Certified hallmark jewellery · Handcrafted with love · New arrivals every week",
+      whatsapp_number: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "",
       social_links: { instagram: "", facebook: "" },
-      about_text: "Artisan Root creates handmade macrame and craft pieces for warm creative homes.",
-      meta_title: "Artisan Root | Cultivating Creative Spaces",
+      about_text: "Amanat House creates timeless gold and bridal jewellery for life's most cherished moments.",
+      meta_title: "Amanat House | Timeless Jewellery, Made to Treasure",
       meta_description:
-        "Shop macrame decor, handmade wall hangings, plant hangers, and handcraft pieces from Artisan Root.",
-      footer_copyright: "© 2025 Artisan Root"
+        "Shop fine gold, bridal, and everyday jewellery from Amanat House.",
+      footer_copyright: "© 2025 Amanat House"
     };
 
     const { data: existingSettings, error: settingsLookupError } = await supabase

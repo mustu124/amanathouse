@@ -1,5 +1,8 @@
 import { fail, ok } from "@/lib/api";
 import { assertAdmin } from "@/lib/admin-auth";
+import { env } from "@/lib/env";
+import { CATEGORY_DETAILS, slugifyCategoryName } from "@/lib/product-data";
+import { HOME_HERO_SLIDES, MARQUEE_TICKER_TEXT } from "@/lib/content/home";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase";
 import { normalizeSupabaseSettings, settingsPayloadToSupabase } from "@/lib/supabase-mappers";
 
@@ -12,110 +15,43 @@ const noStoreHeaders = {
 };
 
 const defaultSettings = {
-  heroSlides: [
-    {
-      image: "/logo.png",
-      title: "Handmade warmth for modern homes",
-      subtitle: "Premium macrame and craft pieces for slow, soulful spaces.",
-      ctaText: "Shop Now",
-      ctaLink: "/shop"
-    }
-  ],
-  mobileHeroSlides: [
-    {
-      image: "/logo.png",
-      title: "Handmade warmth for modern homes",
-      subtitle: "Premium macrame and craft pieces for slow, soulful spaces.",
-      ctaText: "Shop Now",
-      ctaLink: "/shop"
-    }
-  ],
-  videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-  announcementText:
-    "Free shipping on orders above \u20B9999 · Handcrafted with love · 100% natural cotton rope · New arrivals every week",
-  whatsappNumber: process.env.NEXT_PUBLIC_OWNER_WHATSAPP ?? "91XXXXXXXXXX",
+  heroSlides: HOME_HERO_SLIDES.map((slide) => ({
+    image: slide.image,
+    title: slide.headline,
+    subtitle: slide.subtitle,
+    ctaText: slide.ctaText,
+    ctaLink: slide.ctaLink
+  })),
+  mobileHeroSlides: HOME_HERO_SLIDES.map((slide) => ({
+    image: slide.image,
+    title: slide.headline,
+    subtitle: slide.subtitle,
+    ctaText: slide.ctaText,
+    ctaLink: slide.ctaLink
+  })),
+  announcementText: MARQUEE_TICKER_TEXT,
+  whatsappNumber: env.whatsappNumber,
   socialLinks: {
-    instagram: "https://www.instagram.com/",
+    instagram: env.instagramUrl,
     facebook: "https://www.facebook.com/"
   },
-  aboutText: "Artisan Root creates handmade macrame and craft pieces for warm creative homes.",
-  metaTitle: "Artisan Root | Cultivating Creative Spaces",
-  metaDescription: "Shop macrame decor, handmade wall hangings, plant hangers, and handcraft pieces from Artisan Root.",
-  storeEmail: "hello@artisanroot.in",
-  storeAddress: "Gurgaon",
-  footerCopyright: "\u00A9 2025 Artisan Root",
-  categories: [
-    {
-      name: "Handbag",
-      icon: "Bag",
-      description: "Hand-knotted bags and everyday carry pieces.",
-      subcategories: ["Shoulder bags", "Totes", "Mini bags"],
-      visible: true
-    },
-    {
-      name: "Wall hanging with mirror",
-      icon: "Mirror",
-      description: "Mirror-led wall statements.",
-      subcategories: ["Round mirror", "Sunburst", "Entryway"],
-      visible: true
-    },
-    {
-      name: "Wall hanging without mirror",
-      icon: "Wall",
-      description: "Soft textile wall art.",
-      subcategories: ["Large wall art", "Mini wall art", "Boho panels"],
-      visible: true
-    },
-    {
-      name: "Runner",
-      icon: "Run",
-      description: "Table and console runners.",
-      subcategories: ["Table runner", "Console runner"],
-      visible: true
-    },
-    {
-      name: "Pot hanger",
-      icon: "Plant",
-      description: "Macrame holders for plants.",
-      subcategories: ["Single pot", "Double pot", "Balcony"],
-      visible: true
-    },
-    {
-      name: "Key Chains",
-      icon: "Key",
-      description: "Small gifting accessories.",
-      subcategories: ["Mini knots", "Name tags", "Bag charms"],
-      visible: true
-    },
-    {
-      name: "Dinner Mat",
-      icon: "Mat",
-      description: "Dining table mats.",
-      subcategories: ["Pair", "Set of four", "Round mats"],
-      visible: true
-    },
-    {
-      name: "Coaster",
-      icon: "Cup",
-      description: "Handmade coaster sets.",
-      subcategories: ["Set of four", "Round coasters", "Fringe coasters"],
-      visible: true
-    },
-    {
-      name: "Pocket Organiser",
-      icon: "Pocket",
-      description: "Wall storage and organisers.",
-      subcategories: ["Two pocket", "Three pocket", "Entryway"],
-      visible: true
-    },
-    {
-      name: "Lamp Shade",
-      icon: "Lamp",
-      description: "Warm woven lighting accents.",
-      subcategories: ["Pendant shade", "Table shade"],
-      visible: true
-    }
-  ]
+  aboutText:
+    "Amanat House makes minimal, modern jewellery in 316L stainless steel with 18K PVD gold plating, anti-tarnish and waterproof, made for daily wear. Established 2019.",
+  metaTitle: "Amanat House | Minimal. Modern. Made to be your Amanat.",
+  metaDescription:
+    "Shop everyday jewellery from Amanat House: rings, chains, studs, and more in anti-tarnish, waterproof 18K gold-plated steel.",
+  storeEmail: env.storeEmail,
+  storeAddress: env.storeAddress,
+  footerCopyright: "\u00A9 2025 Amanat House",
+  categories: CATEGORY_DETAILS.map((category) => ({
+    name: category.name,
+    slug: category.slug,
+    icon: category.icon,
+    description: category.description,
+    image: category.image,
+    subcategories: [] as string[],
+    visible: true
+  }))
 };
 
 function withDefaultCategorySubcategories(settings: typeof defaultSettings) {
@@ -127,8 +63,10 @@ function withDefaultCategorySubcategories(settings: typeof defaultSettings) {
       const fallback = defaultCategoryMap.get(category.name);
       return {
         ...category,
+        slug: category.slug || fallback?.slug || "",
         icon: category.icon || fallback?.icon || "",
         description: category.description || fallback?.description || "",
+        image: category.image || fallback?.image || "",
         subcategories: category.subcategories?.length ? category.subcategories : fallback?.subcategories ?? [],
         visible: category.visible ?? true
       };
@@ -219,12 +157,52 @@ export async function PUT(request: Request) {
         )
       : [];
 
+    // Rename in the categories table first — products.category has an
+    // ON UPDATE CASCADE foreign key to categories.name, so this alone
+    // propagates the rename to every product. The loop below is then a
+    // harmless no-op safety net for rows the cascade already caught.
+    for (const rename of categoryRenames) {
+      const { error: categoryRenameError } = await supabase
+        .from("categories")
+        .update({ name: rename.to.trim(), updated_at: new Date().toISOString() })
+        .eq("name", rename.from.trim());
+      if (categoryRenameError) throw categoryRenameError;
+    }
+
     for (const rename of categoryRenames) {
       const { error: renameError } = await supabase
         .from("products")
         .update({ category: rename.to.trim(), updated_at: new Date().toISOString() })
         .eq("category", rename.from.trim());
       if (renameError) throw renameError;
+    }
+
+    // Keep the categories table (the FK target for products.category) in
+    // sync with whatever was just saved to settings.categories, so a
+    // brand-new category is insertable as a product's category immediately.
+    const categoriesToSync = Array.isArray(payload.categories) ? payload.categories : [];
+    if (categoriesToSync.length > 0) {
+      const categoryRows = categoriesToSync
+        .filter((category: unknown): category is { name: string } =>
+          typeof category === "object" && category !== null && typeof (category as { name?: unknown }).name === "string" && Boolean((category as { name: string }).name.trim())
+        )
+        .map((category: Record<string, unknown>, index: number) => ({
+          name: String(category.name).trim(),
+          slug: typeof category.slug === "string" && category.slug ? category.slug : slugifyCategoryName(String(category.name)),
+          icon: typeof category.icon === "string" ? category.icon : "",
+          description: typeof category.description === "string" ? category.description : "",
+          subcategories: Array.isArray(category.subcategories) ? category.subcategories : [],
+          visible: category.visible !== false,
+          sort_order: index,
+          updated_at: new Date().toISOString()
+        }));
+
+      if (categoryRows.length > 0) {
+        const { error: categorySyncError } = await supabase
+          .from("categories")
+          .upsert(categoryRows, { onConflict: "name" });
+        if (categorySyncError) throw categorySyncError;
+      }
     }
 
     return ok(

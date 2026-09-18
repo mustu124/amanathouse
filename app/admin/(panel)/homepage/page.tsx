@@ -24,16 +24,15 @@ type SettingsPayload = {
   heroSlides: HeroSlide[];
   mobileHeroSlides?: HeroSlide[];
   announcementText?: string;
-  videoUrl?: string;
   metaTitle?: string;
   metaDescription?: string;
 };
 
 const blankSlide = (index = 1): HeroSlideDraft => ({
   id: crypto.randomUUID(),
-  image: "https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=1600&q=85",
+  image: "/logo.png",
   title: `Homepage slide ${index}`,
-  subtitle: "Premium macrame and craft pieces for slow, soulful spaces.",
+  subtitle: "Everyday jewellery in 18K gold-plated steel — anti-tarnish, waterproof, made to be kept.",
   ctaText: "Shop Now",
   ctaLink: "/shop"
 });
@@ -44,13 +43,12 @@ export default function AdminHomepagePage() {
     Array.from({ length: 10 }, (_, index) => blankSlide(index + 1))
   );
   const [announcementText, setAnnouncementText] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [uploadingId, setUploadingId] = useState("");
-  const storageKey = "artisan-root-homepage-draft-v2";
+  const storageKey = "amanat-house-homepage-draft-v2";
   const sensors = useSensors(useSensor(PointerSensor));
 
   useEffect(() => {
@@ -65,7 +63,6 @@ export default function AdminHomepagePage() {
           })
         );
         setAnnouncementText(settings.announcementText ?? "");
-        setVideoUrl(settings.videoUrl ?? "");
         setMetaTitle(settings.metaTitle ?? "");
         setMetaDescription(settings.metaDescription ?? "");
 
@@ -80,7 +77,6 @@ export default function AdminHomepagePage() {
             })
           );
           setAnnouncementText(parsed.announcementText ?? "");
-          setVideoUrl(parsed.videoUrl ?? "");
           setMetaTitle(parsed.metaTitle ?? "");
           setMetaDescription(parsed.metaDescription ?? "");
           toast("Unsaved homepage draft restored.");
@@ -95,11 +91,10 @@ export default function AdminHomepagePage() {
       heroSlides: slides.map(({ id: _id, ...slide }) => slide),
       mobileHeroSlides: mobileSlides.map(({ id: _id, ...slide }) => slide),
       announcementText,
-      videoUrl,
       metaTitle,
       metaDescription
     }),
-    [announcementText, metaDescription, metaTitle, mobileSlides, slides, videoUrl]
+    [announcementText, metaDescription, metaTitle, mobileSlides, slides]
   );
 
   useEffect(() => {
@@ -181,17 +176,17 @@ export default function AdminHomepagePage() {
     <div className="grid gap-6">
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div>
-          <p className="text-sm font-black uppercase tracking-[0.18em] text-artisan-sage">Storefront</p>
-          <h1 className="font-heading text-4xl font-bold text-artisan-brown">Homepage Settings</h1>
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-amanat-sage">Storefront</p>
+          <h1 className="font-heading text-4xl font-bold text-amanat-brown">Homepage Settings</h1>
         </div>
-        <button disabled={isSaving || isLoading} onClick={save} className="rounded-full bg-artisan-terracotta px-6 py-3 text-sm font-black uppercase tracking-[0.14em] text-white disabled:opacity-60">
+        <button disabled={isSaving || isLoading} onClick={save} className="rounded-full bg-amanat-terracotta px-6 py-3 text-sm font-black uppercase tracking-[0.14em] text-white disabled:opacity-60">
           {isSaving ? "Saving..." : "Save Homepage"}
         </button>
       </div>
 
       <AdminSection title="Hero Slides" description="Drag slides to reorder them. The first slide appears first on the homepage.">
         {isLoading ? (
-          <div className="h-48 animate-pulse rounded-2xl bg-artisan-cream" />
+          <div className="h-48 animate-pulse rounded-2xl bg-amanat-cream" />
         ) : (
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
             <SortableContext items={slides.map((slide) => slide.id)} strategy={verticalListSortingStrategy}>
@@ -211,7 +206,7 @@ export default function AdminHomepagePage() {
             </SortableContext>
           </DndContext>
         )}
-        <button type="button" onClick={() => setSlides((current) => [...current, blankSlide()])} className="mt-4 rounded-full border border-artisan-brown px-5 py-2 text-sm font-black text-artisan-brown">
+        <button type="button" onClick={() => setSlides((current) => [...current, blankSlide()])} className="mt-4 rounded-full border border-amanat-brown px-5 py-2 text-sm font-black text-amanat-brown">
           Add Slide
         </button>
       </AdminSection>
@@ -236,26 +231,20 @@ export default function AdminHomepagePage() {
         </div>
       </AdminSection>
 
-      <AdminSection title="Announcement and Video">
-        <div className="grid gap-4 md:grid-cols-2">
-          <label className="grid gap-2 text-sm font-bold text-artisan-brown">
-            Announcement ticker text
-            <textarea value={announcementText} onChange={(event) => setAnnouncementText(event.target.value)} className="field-input min-h-28" />
-          </label>
-          <label className="grid gap-2 text-sm font-bold text-artisan-brown">
-            How-to YouTube video URL
-            <input value={videoUrl} onChange={(event) => setVideoUrl(event.target.value)} className="field-input" placeholder="Paste a YouTube link, e.g. https://youtu.be/..." />
-          </label>
-        </div>
+      <AdminSection title="Announcement">
+        <label className="grid gap-2 text-sm font-bold text-amanat-brown">
+          Announcement ticker text
+          <textarea value={announcementText} onChange={(event) => setAnnouncementText(event.target.value)} className="field-input min-h-28" />
+        </label>
       </AdminSection>
 
       <AdminSection title="Homepage SEO">
         <div className="grid gap-4 md:grid-cols-2">
-          <label className="grid gap-2 text-sm font-bold text-artisan-brown">
+          <label className="grid gap-2 text-sm font-bold text-amanat-brown">
             Meta title
             <input value={metaTitle} onChange={(event) => setMetaTitle(event.target.value)} className="field-input" />
           </label>
-          <label className="grid gap-2 text-sm font-bold text-artisan-brown md:col-span-2">
+          <label className="grid gap-2 text-sm font-bold text-amanat-brown md:col-span-2">
             Meta description
             <textarea value={metaDescription} onChange={(event) => setMetaDescription(event.target.value)} className="field-input min-h-28" />
           </label>
@@ -289,10 +278,10 @@ function SortableSlide({
   }, [previewUrl]);
 
   return (
-    <div ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition }} className="grid gap-4 rounded-2xl border border-artisan-brown/10 bg-artisan-cream p-4 md:grid-cols-[180px_1fr]">
-      <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-artisan-sand">
+    <div ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition }} className="grid gap-4 rounded-2xl border border-amanat-brown/10 bg-amanat-cream p-4 md:grid-cols-[180px_1fr]">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-amanat-sand">
         {previewFailed ? (
-          <div className="flex h-full w-full items-center justify-center px-4 text-center text-xs font-black uppercase tracking-[0.12em] text-artisan-brown/60">
+          <div className="flex h-full w-full items-center justify-center px-4 text-center text-xs font-black uppercase tracking-[0.12em] text-amanat-brown/60">
             Preview loading
           </div>
         ) : (
@@ -305,14 +294,14 @@ function SortableSlide({
             onError={() => setPreviewFailed(true)}
           />
         )}
-        <span className="absolute left-2 top-2 rounded-full bg-artisan-brown px-2 py-1 text-xs font-black text-white">#{index + 1}</span>
+        <span className="absolute left-2 top-2 rounded-full bg-amanat-brown px-2 py-1 text-xs font-black text-white">#{index + 1}</span>
       </div>
       <div className="grid gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <button type="button" {...attributes} {...listeners} className="rounded-full border border-artisan-brown/20 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-artisan-brown">
+          <button type="button" {...attributes} {...listeners} className="rounded-full border border-amanat-brown/20 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-amanat-brown">
             Drag
           </button>
-          <label className="rounded-full bg-white px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-artisan-brown">
+          <label className="rounded-full bg-white px-3 py-2 text-xs font-black uppercase tracking-[0.12em] text-amanat-brown">
             {uploading ? "Uploading..." : "Upload Image"}
             <input type="file" accept="image/*" onChange={(event) => onUpload(slide.id, event.target.files?.[0])} className="hidden" />
           </label>

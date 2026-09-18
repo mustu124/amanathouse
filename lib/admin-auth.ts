@@ -33,6 +33,19 @@ export async function getAdminUser() {
   const { data, error } = await supabase.auth.getUser(token);
 
   if (error || !data.user) return null;
+
+  // A valid Supabase Auth session alone isn't enough — it must also be an
+  // explicit admin_users row. Without this check, any authenticated
+  // Supabase Auth user (not just ones intended as admins) could call every
+  // admin write route.
+  const { data: adminRow, error: adminError } = await supabase
+    .from("admin_users")
+    .select("id")
+    .eq("id", data.user.id)
+    .maybeSingle();
+
+  if (adminError || !adminRow) return null;
+
   return data.user;
 }
 

@@ -1,4 +1,5 @@
 import type { CartItem } from "@/context/CartContext";
+import { env } from "@/lib/env";
 
 export type CustomerInfo = {
   name: string;
@@ -8,24 +9,28 @@ export type CustomerInfo = {
   pincode: string;
 };
 
+const STORE_NAME = "Amanat House";
+
+// The one WhatsApp link builder every entry point in the app should call —
+// normalises the number (digits only, no + or spaces) and URL-encodes the
+// message. Pass no `phone` for a generic "share to anyone" wa.me link.
+export function whatsappLink(message: string, phone?: string) {
+  const normalizedPhone = phone ? phone.replace(/\D/g, "") : "";
+  return `https://wa.me/${normalizedPhone}?text=${encodeURIComponent(message)}`;
+}
+
 export function buildWhatsAppMessage(cartItems: CartItem[], customerInfo: CustomerInfo) {
-  const ownerPhone = process.env.NEXT_PUBLIC_OWNER_WHATSAPP ?? "910000000000";
-  const appUrl = typeof window !== "undefined" ? window.location.origin : "";
   const total = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const orderLines = cartItems
     .map((item, index) => {
-      const productUrl = appUrl ? `${appUrl}/shop/${item.product.slug}` : `/shop/${item.product.slug}`;
-      const imageUrl = item.product.images[0]?.url;
       const variant = item.selectedVariant ? ` (${item.selectedVariant})` : "";
+      const lineTotal = item.product.price * item.quantity;
 
-      return `${index + 1}. ${item.product.name}${variant} x${item.quantity} — ₹${(
-        item.product.price * item.quantity
-      ).toLocaleString("en-IN")}
-   🔗 ${productUrl}${imageUrl ? `\n   Image: ${imageUrl}` : ""}`;
+      return `${index + 1}. ${item.product.name}${variant} x${item.quantity} — ₹${lineTotal.toLocaleString("en-IN")}`;
     })
     .join("\n");
 
-  const message = `Hello! I'd like to place an order 🛍️
+  const message = `*${STORE_NAME} — New Order*
 
 *Order Details:*
 ${orderLines}
@@ -34,9 +39,9 @@ ${orderLines}
 
 *Customer Details:*
 Name: ${customerInfo.name}
+Pincode: ${customerInfo.pincode}
 Phone: ${customerInfo.phone}
-Address: ${customerInfo.address}
-Pincode: ${customerInfo.pincode}${customerInfo.email ? `\nEmail: ${customerInfo.email}` : ""}`;
+Address: ${customerInfo.address}${customerInfo.email ? `\nEmail: ${customerInfo.email}` : ""}`;
 
-  return `https://wa.me/${ownerPhone.replace(/\D/g, "")}?text=${encodeURIComponent(message)}`;
+  return whatsappLink(message, env.whatsappNumber);
 }

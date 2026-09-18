@@ -5,6 +5,9 @@ const adminApiPatterns = [
   { pattern: /^\/api\/products(?:\/.*)?$/, methods: ["POST", "PUT", "DELETE"] },
   { pattern: /^\/api\/gallery(?:\/.*)?$/, methods: ["POST", "PUT", "DELETE"] },
   { pattern: /^\/api\/orders$/, methods: ["GET"] },
+  // Order lookup exposes full customer PII (name, phone, email, address) —
+  // admin-only, distinct from the /status sub-route matched separately below.
+  { pattern: /^\/api\/orders\/[^/]+$/, methods: ["GET"] },
   { pattern: /^\/api\/orders\/[^/]+\/status$/, methods: ["PUT"] },
   { pattern: /^\/api\/upload$/, methods: ["POST"] },
   { pattern: /^\/api\/settings$/, methods: ["PUT"] }

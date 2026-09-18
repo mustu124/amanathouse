@@ -3,6 +3,7 @@ import { assertAdmin } from "@/lib/admin-auth";
 import { fallbackProducts, normalizeProduct } from "@/lib/product-data";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase";
 import { normalizeSupabaseProduct, productPayloadToSupabase } from "@/lib/supabase-mappers";
+import { formatZodError, productPayloadSchema } from "@/lib/validation";
 
 export const dynamic = "force-dynamic";
 
@@ -86,12 +87,28 @@ export async function PUT(request: Request, { params }: { params: { slug: string
     if (lookupError) throw lookupError;
     if (!existing) return fail("Product not found.", 404);
 
+    const merged = { ...normalizeSupabaseProduct(existing), ...payload };
+    const parsed = productPayloadSchema.safeParse(merged);
+    if (!parsed.success) {
+      return fail(formatZodError(parsed.error), 400);
+    }
+
+    if (parsed.data.slug && parsed.data.slug !== existing.slug) {
+      const { data: collision, error: collisionError } = await supabase
+        .from("products")
+        .select("id")
+        .eq("slug", parsed.data.slug)
+        .neq("id", existing.id)
+        .maybeSingle();
+      if (collisionError) throw collisionError;
+      if (collision) {
+        return fail(`The slug "${parsed.data.slug}" is already used by another product — choose a different one.`, 409);
+      }
+    }
+
     const { data: product, error } = await supabase
       .from("products")
-      .update(productPayloadToSupabase({
-        ...normalizeSupabaseProduct(existing),
-        ...payload
-      }))
+      .update(productPayloadToSupabase(parsed.data))
       .eq("id", existing.id)
       .select("*")
       .single();

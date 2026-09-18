@@ -22,15 +22,15 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const sidebar = <Sidebar pathname={pathname} onNavigate={() => setIsOpen(false)} />;
 
   return (
-    <div className="min-h-screen bg-artisan-cream text-artisan-brown">
+    <div className="min-h-screen bg-amanat-cream text-amanat-brown">
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="fixed left-4 top-4 z-[70] rounded-full bg-artisan-brown px-4 py-2 text-sm font-black text-white shadow-soft lg:hidden"
+        className="fixed left-4 top-4 z-[70] rounded-full bg-amanat-brown px-4 py-2 text-sm font-black text-white shadow-soft lg:hidden"
       >
         Menu
       </button>
-      <aside className="fixed inset-y-0 left-0 z-50 hidden w-60 border-r border-artisan-brown/10 bg-white lg:block">
+      <aside className="fixed inset-y-0 left-0 z-50 hidden w-60 border-r border-amanat-brown/10 bg-white lg:block">
         {sidebar}
       </aside>
       <AnimatePresence>
@@ -71,8 +71,8 @@ function Sidebar({ pathname, onNavigate }: { pathname: string; onNavigate: () =>
   return (
     <div className="flex h-full flex-col p-5">
       <Link href="/admin" onClick={onNavigate} className="flex items-center gap-3">
-        <Image src="/logo.png" alt="Artisan Root" width={56} height={56} quality={95} className="rounded-xl object-contain" />
-        <span className="font-heading text-xl font-bold">Artisan Root</span>
+        <Image src="/logo.png" alt="Amanat House" width={56} height={56} quality={95} className="rounded-xl object-contain" />
+        <span className="font-heading text-xl font-bold">Amanat House</span>
       </Link>
       <nav className="mt-8 grid gap-2">
         {links.map(([label, href]) => {
@@ -83,7 +83,7 @@ function Sidebar({ pathname, onNavigate }: { pathname: string; onNavigate: () =>
               href={href}
               onClick={onNavigate}
               className={`rounded-xl px-4 py-3 text-sm font-black transition ${
-                active ? "bg-artisan-terracotta text-white" : "text-artisan-brown hover:bg-artisan-cream"
+                active ? "bg-amanat-terracotta text-white" : "text-amanat-brown hover:bg-amanat-cream"
               }`}
             >
               {label}
@@ -94,7 +94,7 @@ function Sidebar({ pathname, onNavigate }: { pathname: string; onNavigate: () =>
       <button
         type="button"
         onClick={logout}
-        className="mt-auto rounded-xl border border-artisan-brown/15 px-4 py-3 text-left text-sm font-black text-artisan-brown hover:border-artisan-terracotta"
+        className="mt-auto rounded-xl border border-amanat-brown/15 px-4 py-3 text-left text-sm font-black text-amanat-brown hover:border-amanat-terracotta"
       >
         Logout
       </button>

@@ -21,7 +21,7 @@ export default function EditProductPage({ params }: { params: { slug: string } }
   if (error) {
     return (
       <div className="rounded-2xl bg-white p-6 shadow-sm">
-        <h1 className="font-heading text-3xl font-bold text-artisan-brown">Unable to load product</h1>
+        <h1 className="font-heading text-3xl font-bold text-amanat-brown">Unable to load product</h1>
         <p className="mt-2 text-sm font-bold text-red-700">{error}</p>
       </div>
     );
@@ -32,8 +32,8 @@ export default function EditProductPage({ params }: { params: { slug: string } }
   return (
     <div className="grid gap-6">
       <div>
-        <p className="text-sm font-black uppercase tracking-[0.18em] text-artisan-sage">Catalog</p>
-        <h1 className="font-heading text-4xl font-bold text-artisan-brown">Edit Product</h1>
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-amanat-sage">Catalog</p>
+        <h1 className="font-heading text-4xl font-bold text-amanat-brown">Edit Product</h1>
       </div>
       <ProductForm product={product} />
     </div>

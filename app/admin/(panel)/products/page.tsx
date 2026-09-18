@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
@@ -43,28 +44,30 @@ export default function AdminProductsPage() {
   const productIdentifier = (product: StoreProduct) => product.slug || product._id;
   const productApiPath = (product: StoreProduct) => `/api/products/${encodeURIComponent(productIdentifier(product))}`;
 
-  const removeProduct = async (product: StoreProduct) => {
+  // The API soft-deletes (sets active: false) rather than erasing the row —
+  // this keeps past orders referencing this product intact. "Archive" reflects
+  // that honestly instead of claiming the product is gone when it still shows
+  // up (correctly, as a Draft) the moment the list reloads.
+  const archiveProduct = async (product: StoreProduct) => {
     try {
       await adminFetch(productApiPath(product), { method: "DELETE" });
       setSelected((current) => current.filter((id) => id !== productIdentifier(product)));
-      setProducts((current) => current.filter((item) => item._id !== product._id));
-      toast.success("Product deleted");
+      toast.success("Product archived — it's hidden from the storefront but kept as a draft.");
       load();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Delete failed");
+      toast.error(error instanceof Error ? error.message : "Archive failed");
     }
   };
 
-  const bulkDelete = async () => {
+  const bulkArchive = async () => {
     try {
       const selectedProducts = products.filter((product) => selected.includes(productIdentifier(product)));
       await Promise.all(selectedProducts.map((product) => adminFetch(productApiPath(product), { method: "DELETE" })));
       setSelected([]);
-      setProducts((current) => current.filter((product) => !selected.includes(productIdentifier(product))));
-      toast.success("Selected products deleted");
+      toast.success("Selected products archived");
       load();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Bulk delete failed");
+      toast.error(error instanceof Error ? error.message : "Bulk archive failed");
     }
   };
 
@@ -85,18 +88,18 @@ export default function AdminProductsPage() {
     <div className="grid gap-6">
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div>
-          <p className="text-sm font-black uppercase tracking-[0.18em] text-artisan-sage">Catalog</p>
+          <p className="text-sm font-black uppercase tracking-[0.18em] text-amanat-sage">Catalog</p>
           <h1 className="font-heading text-4xl font-bold">Products</h1>
         </div>
-        <Link href="/admin/products/new" className="rounded-full bg-artisan-terracotta px-5 py-3 text-sm font-black uppercase tracking-[0.14em] text-white">Add New Product</Link>
+        <Link href="/admin/products/new" className="rounded-full bg-amanat-terracotta px-5 py-3 text-sm font-black uppercase tracking-[0.14em] text-white">Add New Product</Link>
       </div>
 
       <AdminSection
         title="Product Manager"
         action={
           selected.length > 0 && (
-            <ConfirmButton message="Delete selected products?" onConfirm={bulkDelete} className="rounded-full bg-red-700 px-4 py-2 text-sm font-black text-white">
-              Delete Selected
+            <ConfirmButton message="Archive selected products? They'll be hidden from the storefront but kept as drafts." onConfirm={bulkArchive} className="rounded-full bg-red-700 px-4 py-2 text-sm font-black text-white">
+              Archive Selected
             </ConfirmButton>
           )
         }
@@ -109,7 +112,7 @@ export default function AdminProductsPage() {
           </select>
         </div>
         <div className="grid gap-3">
-          <div className="hidden rounded-xl bg-artisan-cream px-4 py-3 text-[11px] font-black uppercase tracking-[0.14em] text-artisan-sage xl:grid xl:grid-cols-[minmax(280px,1.7fr)_minmax(150px,1fr)_100px_70px_100px_100px_130px] xl:gap-4">
+          <div className="hidden rounded-xl bg-amanat-cream px-4 py-3 text-xs font-black uppercase tracking-[0.14em] text-amanat-sage xl:grid xl:grid-cols-[minmax(280px,1.7fr)_minmax(150px,1fr)_100px_70px_100px_100px_130px] xl:gap-4">
             <span>Product</span>
             <span>Category</span>
             <span>Price</span>
@@ -122,7 +125,7 @@ export default function AdminProductsPage() {
           {visibleProducts.map((product) => (
             <article
               key={product._id}
-              className="grid gap-4 rounded-2xl border border-artisan-brown/10 bg-white p-4 shadow-sm xl:grid-cols-[minmax(280px,1.7fr)_minmax(150px,1fr)_100px_70px_100px_100px_130px] xl:items-center xl:gap-4"
+              className="grid gap-4 rounded-2xl border border-amanat-brown/10 bg-white p-4 shadow-sm xl:grid-cols-[minmax(280px,1.7fr)_minmax(150px,1fr)_100px_70px_100px_100px_130px] xl:items-center xl:gap-4"
             >
               <div className="flex min-w-0 items-center gap-3">
                 <input
@@ -138,25 +141,27 @@ export default function AdminProductsPage() {
                   }
                   className="h-4 w-4 shrink-0"
                 />
-                <img
+                <Image
                   src={getDisplayMediaUrl(product.images[0]?.url)}
                   alt={product.name}
-                  className="h-16 w-16 shrink-0 rounded-xl bg-artisan-sand object-cover"
+                  width={64}
+                  height={64}
+                  className="h-16 w-16 shrink-0 rounded-xl bg-amanat-sand object-cover"
                   loading="lazy"
                 />
                 <div className="min-w-0">
-                  <p className="break-words text-base font-black leading-snug text-artisan-brown">{product.name}</p>
+                  <p className="break-words text-base font-black leading-snug text-amanat-brown">{product.name}</p>
                   <p className="mt-1 text-xs font-bold text-stone-500 xl:hidden">{product.category}</p>
                 </div>
               </div>
 
-              <div className="hidden text-sm font-bold text-artisan-brown xl:block">{product.category}</div>
-              <div className="text-sm font-black text-artisan-brown">
-                <span className="mr-2 text-xs uppercase tracking-[0.12em] text-artisan-sage xl:hidden">Price</span>
+              <div className="hidden text-sm font-bold text-amanat-brown xl:block">{product.category}</div>
+              <div className="text-sm font-black text-amanat-brown">
+                <span className="mr-2 text-xs uppercase tracking-[0.12em] text-amanat-sage xl:hidden">Price</span>
                 {formatCurrency(product.price)}
               </div>
-              <div className="text-sm font-bold text-artisan-brown">
-                <span className="mr-2 text-xs uppercase tracking-[0.12em] text-artisan-sage xl:hidden">Stock</span>
+              <div className="text-sm font-bold text-amanat-brown">
+                <span className="mr-2 text-xs uppercase tracking-[0.12em] text-amanat-sage xl:hidden">Stock</span>
                 {product.stockCount}
               </div>
               <span className={`w-fit rounded-full px-3 py-1.5 text-xs font-black uppercase tracking-[0.1em] ${product.active === false ? "bg-amber-100 text-amber-800" : "bg-emerald-100 text-emerald-800"}`}>
@@ -165,19 +170,19 @@ export default function AdminProductsPage() {
               <button
                 type="button"
                 onClick={() => toggleFeatured(product)}
-                className="w-fit rounded-full bg-artisan-cream px-3 py-1.5 text-xs font-black uppercase tracking-[0.12em] text-artisan-terracotta"
+                className="w-fit rounded-full bg-amanat-cream px-3 py-1.5 text-xs font-black uppercase tracking-[0.12em] text-amanat-terracotta"
               >
                 {product.isFeatured ? "Yes" : "No"}
               </button>
               <div className="flex flex-wrap items-center gap-3">
-                <Link href={`/admin/products/${encodeURIComponent(productIdentifier(product))}/edit`} className="font-black text-artisan-terracotta">Edit</Link>
-                <ConfirmButton message="Delete this product?" onConfirm={() => removeProduct(product)} className="font-black text-red-700">Delete</ConfirmButton>
+                <Link href={`/admin/products/${encodeURIComponent(productIdentifier(product))}/edit`} className="font-black text-amanat-terracotta">Edit</Link>
+                <ConfirmButton message="Archive this product? It will be hidden from the storefront but kept as a draft (e.g. past orders keep referencing it)." onConfirm={() => archiveProduct(product)} className="font-black text-red-700">Archive</ConfirmButton>
               </div>
             </article>
           ))}
 
           {!visibleProducts.length && (
-            <div className="rounded-2xl bg-artisan-cream p-8 text-center font-bold text-artisan-brown">
+            <div className="rounded-2xl bg-amanat-cream p-8 text-center font-bold text-amanat-brown">
               No products match the current filters.
             </div>
           )}

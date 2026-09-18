@@ -1,7 +1,7 @@
 import { fail } from "@/lib/api";
 import { getSupabaseAdmin, SUPABASE_BUCKET } from "@/lib/supabase";
 
-const allowedPrefixes = ["products/", "gallery/", "uploads/", "homepage/", "images/", "videos/"];
+const allowedPrefixes = ["products/", "gallery/", "uploads/", "homepage/", "images/"];
 
 export async function GET(request: Request) {
   try {
@@ -34,6 +34,5 @@ function contentTypeForPath(path: string) {
   const lower = path.toLowerCase();
   if (lower.endsWith(".png")) return "image/png";
   if (lower.endsWith(".webp")) return "image/webp";
-  if (lower.endsWith(".mp4")) return "video/mp4";
   return "image/jpeg";
 }

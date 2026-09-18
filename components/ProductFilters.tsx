@@ -1,10 +1,11 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { PRODUCT_CATEGORIES } from "@/lib/product-data";
+import { CATEGORY_DETAILS } from "@/lib/product-data";
 
 export type CategoryFilterOption = {
   name: string;
+  slug?: string;
   subcategories?: string[];
   visible?: boolean;
 };
@@ -52,7 +53,7 @@ export function ProductFilters({ filters, onChange, categories, isMobileOpen, on
               onClick={onClose}
             />
             <motion.aside
-              className="fixed inset-x-0 bottom-0 z-[90] max-h-[86vh] overflow-y-auto rounded-t-[2rem] bg-artisan-cream p-6 shadow-[0_-24px_60px_rgba(0,0,0,0.22)] xl:hidden"
+              className="fixed inset-x-0 bottom-0 z-[90] max-h-[86vh] overflow-y-auto rounded-t-[2rem] bg-amanat-cream p-6 shadow-[0_-24px_60px_rgba(0,0,0,0.22)] xl:hidden"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
@@ -80,7 +81,7 @@ function FilterContent({
 }) {
   const visibleCategories = (categories?.length
     ? categories.filter((category) => category.visible !== false)
-    : PRODUCT_CATEGORIES.map((name) => ({ name, subcategories: [] }))
+    : CATEGORY_DETAILS.map((category) => ({ name: category.name, slug: category.slug, subcategories: [] }))
   );
   const selectedCategoryNames = filters.categories.length
     ? filters.categories
@@ -122,15 +123,15 @@ function FilterContent({
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl border border-artisan-brown/10 bg-white p-5 shadow-sm"
+      className="rounded-2xl border border-amanat-brown/10 bg-white p-5 shadow-sm"
     >
       <div className="flex items-center justify-between">
-        <h2 className="font-heading text-2xl font-bold text-artisan-brown">Filters</h2>
+        <h2 className="font-heading text-2xl font-bold text-amanat-brown">Filters</h2>
         {onClose && (
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full border border-artisan-brown/15 px-3 py-1 text-sm font-black text-artisan-brown focus:outline-none focus:ring-2 focus:ring-artisan-terracotta"
+            className="rounded-full border border-amanat-brown/15 px-3 py-1 text-sm font-black text-amanat-brown focus:outline-none focus:ring-2 focus:ring-amanat-terracotta"
           >
             Close
           </button>
@@ -138,15 +139,15 @@ function FilterContent({
       </div>
 
       <div className="mt-6">
-        <p className="text-xs font-black uppercase tracking-[0.16em] text-artisan-sage">Category</p>
+        <p className="text-xs font-black uppercase tracking-[0.16em] text-amanat-sage">Category</p>
         <div className="mt-3 grid gap-2">
           {visibleCategories.map((category) => (
-            <label key={category.name} className="flex cursor-pointer items-center gap-3 text-sm font-bold text-artisan-brown">
+            <label key={category.name} className="flex cursor-pointer items-center gap-3 text-sm font-bold text-amanat-brown">
               <input
                 type="checkbox"
                 checked={filters.categories.includes(category.name)}
                 onChange={() => toggleCategory(category.name)}
-                className="h-4 w-4 accent-artisan-terracotta"
+                className="h-4 w-4 accent-amanat-terracotta"
               />
               {category.name}
             </label>
@@ -156,20 +157,20 @@ function FilterContent({
 
       {availableSubcategories.length > 0 && (
         <div className="mt-7">
-          <p className="text-xs font-black uppercase tracking-[0.16em] text-artisan-sage">Subcategory</p>
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-amanat-sage">Subcategory</p>
           <div className="mt-3 grid gap-2">
             {availableSubcategories.map(({ category, subcategory }) => (
-              <label key={`${category}-${subcategory}`} className="flex cursor-pointer items-start gap-3 text-sm font-bold text-artisan-brown">
+              <label key={`${category}-${subcategory}`} className="flex cursor-pointer items-start gap-3 text-sm font-bold text-amanat-brown">
                 <input
                   type="checkbox"
                   checked={filters.subcategories.includes(subcategory)}
                   onChange={() => toggleSubcategory(subcategory)}
-                  className="mt-0.5 h-4 w-4 accent-artisan-terracotta"
+                  className="mt-0.5 h-4 w-4 accent-amanat-terracotta"
                 />
                 <span>
                   {subcategory}
                   {!filters.categories.length && (
-                    <span className="mt-0.5 block text-[10px] font-black uppercase tracking-[0.12em] text-artisan-sage">
+                    <span className="mt-0.5 block text-xs font-black uppercase tracking-[0.12em] text-amanat-sage">
                       {category}
                     </span>
                   )}
@@ -181,7 +182,7 @@ function FilterContent({
       )}
 
       <div className="mt-7">
-        <label htmlFor="max-price" className="text-xs font-black uppercase tracking-[0.16em] text-artisan-sage">
+        <label htmlFor="max-price" className="text-xs font-black uppercase tracking-[0.16em] text-amanat-sage">
           Price up to {"\u20B9"}{filters.maxPrice.toLocaleString("en-IN")}
         </label>
         <input
@@ -192,19 +193,19 @@ function FilterContent({
           step="100"
           value={filters.maxPrice}
           onChange={(event) => onChange({ ...filters, maxPrice: Number(event.target.value) })}
-          className="mt-4 w-full accent-artisan-terracotta"
+          className="mt-4 w-full accent-amanat-terracotta"
         />
       </div>
 
       <div className="mt-7">
-        <label htmlFor="sort-products" className="text-xs font-black uppercase tracking-[0.16em] text-artisan-sage">
+        <label htmlFor="sort-products" className="text-xs font-black uppercase tracking-[0.16em] text-amanat-sage">
           Sort by
         </label>
         <select
           id="sort-products"
           value={filters.sort}
           onChange={(event) => onChange({ ...filters, sort: event.target.value })}
-          className="mt-3 w-full rounded-xl border border-artisan-brown/12 bg-artisan-cream px-4 py-3 font-bold text-artisan-brown focus:outline-none focus:ring-2 focus:ring-artisan-terracotta"
+          className="mt-3 w-full rounded-xl border border-amanat-brown/12 bg-amanat-cream px-4 py-3 font-bold text-amanat-brown focus:outline-none focus:ring-2 focus:ring-amanat-terracotta"
         >
           {sortOptions.map((option) => (
             <option key={option.value} value={option.value}>
@@ -217,7 +218,7 @@ function FilterContent({
       <button
         type="button"
         onClick={() => onChange({ categories: [], subcategories: [], maxPrice: 3500, sort: "newest" })}
-        className="mt-7 w-full rounded-full border border-artisan-brown/20 px-4 py-3 text-sm font-black uppercase tracking-[0.14em] text-artisan-brown transition hover:border-artisan-terracotta hover:text-artisan-terracotta focus:outline-none focus:ring-2 focus:ring-artisan-terracotta"
+        className="btn-secondary mt-7 w-full"
       >
         Reset Filters
       </button>

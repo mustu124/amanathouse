@@ -41,21 +41,21 @@ function AdminLoginForm() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-artisan-cream px-4 py-24">
+    <main className="flex min-h-screen items-center justify-center bg-amanat-cream px-4 py-24">
       <motion.form
         onSubmit={submit}
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md rounded-2xl bg-white p-8 shadow-soft"
       >
-        <p className="text-sm font-black uppercase tracking-[0.18em] text-artisan-sage">Artisan Root</p>
-        <h1 className="mt-3 font-heading text-4xl font-bold text-artisan-brown">Admin Login</h1>
+        <p className="text-sm font-black uppercase tracking-[0.18em] text-amanat-sage">Amanat House</p>
+        <h1 className="mt-3 font-heading text-4xl font-bold text-amanat-brown">Admin Login</h1>
         <div className="mt-8 grid gap-4">
-          <label className="grid gap-2 text-sm font-bold text-artisan-brown">
+          <label className="grid gap-2 text-sm font-bold text-amanat-brown">
             Email
             <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} className="field-input" required />
           </label>
-          <label className="grid gap-2 text-sm font-bold text-artisan-brown">
+          <label className="grid gap-2 text-sm font-bold text-amanat-brown">
             Password
             <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} className="field-input" required />
           </label>
@@ -64,7 +64,7 @@ function AdminLoginForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="mt-6 w-full rounded-full bg-artisan-brown px-6 py-3 text-sm font-black uppercase tracking-[0.14em] text-white disabled:opacity-60"
+          className="mt-6 w-full rounded-full bg-amanat-brown px-6 py-3 text-sm font-black uppercase tracking-[0.14em] text-white disabled:opacity-60"
         >
           {isSubmitting ? "Signing in..." : "Sign In"}
         </button>
