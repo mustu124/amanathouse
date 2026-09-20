@@ -5,7 +5,7 @@ import { HAMPER_CATEGORY } from "@/lib/hampers";
 import { useCart } from "@/context/CartContext";
 import { useDebounce } from "@/hooks/useDebounce";
 import { slideInRight } from "@/lib/animations";
-import { env } from "@/lib/env";
+import { useSiteContact } from "@/lib/use-site-contact";
 import { getDisplayMediaUrl } from "@/lib/media";
 import { CATEGORY_DETAILS, slugifyCategoryName } from "@/lib/product-data";
 import { whatsappLink } from "@/lib/whatsapp";
@@ -312,6 +312,7 @@ function MobileSidebar({
   onSearch: () => void;
   categories: NavCategory[];
 }) {
+  const contact = useSiteContact();
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   useEscapeKey(isOpen, onClose);
   const trapRef = useFocusTrap(isOpen);
@@ -437,8 +438,8 @@ function MobileSidebar({
 
             <motion.div variants={mobileItemVariants} className="mt-auto flex items-center gap-3 pt-8">
               {[
-                ["Instagram", env.instagramUrl, "◎"],
-                ["WhatsApp", whatsappLink("Hi Amanat House! I have a question about your jewellery.", env.whatsappNumber), "☎"]
+                ["Instagram", contact.instagramUrl, "◎"],
+                ["WhatsApp", whatsappLink("Hi Amanat House! I have a question about your jewellery.", contact.whatsappNumber), "☎"]
               ].map(([label, href, icon]) => (
                 <motion.a
                   key={label}

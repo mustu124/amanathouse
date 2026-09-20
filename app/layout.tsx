@@ -3,6 +3,7 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 import { Navbar } from "@/components/Navbar";
 import { env, STORE_ADDRESS_TODO } from "@/lib/env";
+import { getServerContact } from "@/lib/server-contact";
 import { bodySans, displaySerif, priceSerif } from "@/lib/fonts";
 
 export const metadata: Metadata = {
@@ -65,12 +66,16 @@ export const viewport: Viewport = {
   themeColor: "#FAF5EC"
 };
 
-export default function RootLayout({
+// Structured data reads the admin's saved contact settings; refresh at most every minute.
+export const revalidate = 60;
+
+export default async function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const contact = await getServerContact();
 
   // TODO-confirm: addressLocality is a placeholder until the client confirms
   // a real city — see NEXT_PUBLIC_STORE_ADDRESS in docs/ENV_SETUP.md.
@@ -80,16 +85,16 @@ export default function RootLayout({
     name: "Amanat House",
     url: env.siteUrl,
     logo: `${env.siteUrl}/logo.png`,
-    sameAs: [env.instagramUrl],
-    ...(env.storeAddress !== STORE_ADDRESS_TODO
-      ? { address: { "@type": "PostalAddress", addressLocality: env.storeAddress, addressCountry: "IN" } }
+    sameAs: [contact.instagramUrl],
+    ...(contact.address !== STORE_ADDRESS_TODO
+      ? { address: { "@type": "PostalAddress", addressLocality: contact.address, addressCountry: "IN" } }
       : { address: { "@type": "PostalAddress", addressCountry: "IN" } }),
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
-      telephone: `+${env.whatsappNumber}`,
-      email: env.storeEmail,
-      url: `https://wa.me/${env.whatsappNumber}`,
+      telephone: `+${contact.whatsappNumber}`,
+      email: contact.email,
+      url: `https://wa.me/${contact.whatsappNumber}`,
       areaServed: "IN"
     }
   };

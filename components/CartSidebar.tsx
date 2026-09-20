@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { hamperSelectionOf, useCart, type CartItem } from "@/context/CartContext";
 import toast from "react-hot-toast";
 import { formatMoney } from "@/lib/pricing/hamper";
+import { useSiteContact } from "@/lib/use-site-contact";
 import { buildWhatsAppMessage, type CustomerInfo } from "@/lib/whatsapp";
 import { slideInRight, staggerContainer } from "@/lib/animations";
 import { getDisplayMediaUrl } from "@/lib/media";
@@ -410,6 +411,7 @@ function CheckoutModal({
   onClose: () => void;
   onComplete: () => void;
 }) {
+  const { whatsappNumber } = useSiteContact();
   const [form, setForm] = useState<CheckoutFormState>(initialForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -454,7 +456,7 @@ function CheckoutModal({
       address: form.address.trim(),
       pincode: form.pincode.trim()
     };
-    const whatsappUrl = buildWhatsAppMessage(items, customerInfo);
+    const whatsappUrl = buildWhatsAppMessage(items, customerInfo, whatsappNumber);
 
     try {
       const response = await fetch("/api/orders", {

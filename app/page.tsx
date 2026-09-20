@@ -13,7 +13,8 @@ import {
   HOME_TESTIMONIALS,
   MARQUEE_TICKER_TEXT
 } from "@/lib/content/home";
-import { env, STORE_ADDRESS_TODO } from "@/lib/env";
+import { STORE_ADDRESS_TODO } from "@/lib/env";
+import { useSiteContact } from "@/lib/use-site-contact";
 import { HAMPER_CATEGORY } from "@/lib/hampers";
 import { getDisplayMediaUrl } from "@/lib/media";
 import { CATEGORY_DETAILS, slugifyCategoryName } from "@/lib/product-data";
@@ -1087,10 +1088,11 @@ function WhyChooseUs() {
 }
 
 function Footer({ settings }: { settings: PublicSettings | null }) {
-  const whatsappNumber = settings?.whatsappNumber || env.whatsappNumber;
-  const instagramUrl = settings?.socialLinks?.instagram || env.instagramUrl;
-  const address = settings?.storeAddress || env.storeAddress;
-  const email = settings?.storeEmail || env.storeEmail;
+  const contact = useSiteContact();
+  const whatsappNumber = contact.whatsappNumber;
+  const instagramUrl = contact.instagramUrl;
+  const address = contact.address;
+  const email = contact.email;
   const phone = `+${whatsappNumber.replace(/\D/g, "")}`;
   const footerWhatsAppLink = whatsappLink("Hi Amanat House! I have a question about your jewellery.", whatsappNumber);
   const socials = [

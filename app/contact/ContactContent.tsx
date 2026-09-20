@@ -4,12 +4,11 @@ import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 import { BUSINESS_HOURS_TEXT, CONTACT_FAQ, RETURNS_POLICY_TEXT, SHIPPING_POLICY_TEXT } from "@/lib/content/policies";
-import { env } from "@/lib/env";
+import { useSiteContact } from "@/lib/use-site-contact";
 import { whatsappLink } from "@/lib/whatsapp";
 
 export function ContactContent() {
-  const whatsappNumber = env.whatsappNumber;
-  const storeEmail = env.storeEmail;
+  const { whatsappNumber, email: storeEmail, address: storeAddress } = useSiteContact();
   const [form, setForm] = useState({ name: "", phone: "", message: "" });
   const [openFaq, setOpenFaq] = useState(CONTACT_FAQ[0]?.question ?? "");
 
@@ -70,7 +69,7 @@ export function ContactContent() {
               Email: {storeEmail}
             </a>
             {/* TODO-confirm: real city/address — see NEXT_PUBLIC_STORE_ADDRESS in docs/ENV_SETUP.md */}
-            <p className="rounded-xl bg-white/10 p-4">Address: {env.storeAddress}</p>
+            <p className="rounded-xl bg-white/10 p-4">Address: {storeAddress}</p>
             <p className="rounded-xl bg-white/10 p-4">Hours: {BUSINESS_HOURS_TEXT}</p>
           </div>
         </motion.div>

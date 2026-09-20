@@ -1,13 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { env } from "@/lib/env";
+import { useSiteContact } from "@/lib/use-site-contact";
 import { whatsappLink } from "@/lib/whatsapp";
 
 export function WhatsAppBubble() {
+  const { whatsappNumber } = useSiteContact();
+
   return (
     <motion.a
-      href={whatsappLink("Hi Amanat House! I have a question about your jewellery.", env.whatsappNumber)}
+      href={whatsappLink("Hi Amanat House! I have a question about your jewellery.", whatsappNumber)}
       target="_blank"
       rel="noreferrer"
       aria-label="Chat with Amanat House on WhatsApp"

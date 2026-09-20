@@ -53,7 +53,7 @@ function describeLine(item: CartItem, index: number, compact: boolean) {
 // cut off, so a large cart drops per-item prices from hamper contents.
 const MAX_LINK_LENGTH = 3800;
 
-export function buildWhatsAppMessage(cartItems: CartItem[], customerInfo: CustomerInfo) {
+export function buildWhatsAppMessage(cartItems: CartItem[], customerInfo: CustomerInfo, whatsappNumber: string = env.whatsappNumber) {
   const total = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
   const compose = (compact: boolean) => `*${STORE_NAME} — New Order*
@@ -70,6 +70,6 @@ Phone: ${customerInfo.phone}
 Address: ${customerInfo.address}${customerInfo.email ? `
 Email: ${customerInfo.email}` : ""}`;
 
-  const full = whatsappLink(compose(false), env.whatsappNumber);
-  return full.length <= MAX_LINK_LENGTH ? full : whatsappLink(compose(true), env.whatsappNumber);
+  const full = whatsappLink(compose(false), whatsappNumber);
+  return full.length <= MAX_LINK_LENGTH ? full : whatsappLink(compose(true), whatsappNumber);
 }

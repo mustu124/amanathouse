@@ -10,7 +10,7 @@ import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { useEscapeKey } from "@/hooks/useEscapeKey";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { RETURNS_POLICY_TEXT, SHIPPING_POLICY_TEXT } from "@/lib/content/policies";
-import { env } from "@/lib/env";
+import { useSiteContact } from "@/lib/use-site-contact";
 import { getDisplayMediaUrl } from "@/lib/media";
 import {
   DEFAULT_CARE_INSTRUCTIONS,
@@ -59,6 +59,7 @@ function optimizedMediaUrl(src: string, width = 1100) {
 }
 
 export function ProductDetailContent({ params }: { params: { slug: string } }) {
+  const siteContact = useSiteContact();
   const [product, setProduct] = useState<StoreProduct | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<StoreProduct[]>([]);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -494,7 +495,7 @@ export function ProductDetailContent({ params }: { params: { slug: string } }) {
             <ShareLink href={whatsappLink(`Check out ${product.name} from Amanat House: ${typeof window !== "undefined" ? window.location.href : ""}`)}>
               WhatsApp
             </ShareLink>
-            <ShareLink href={env.instagramUrl}>Instagram</ShareLink>
+            <ShareLink href={siteContact.instagramUrl}>Instagram</ShareLink>
             <button
               type="button"
               onClick={() => navigator.clipboard?.writeText(window.location.href)}
