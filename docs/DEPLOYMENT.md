@@ -38,6 +38,7 @@ project (billing, backups, access control) from day one.
    under the **client's** Supabase organization/account.
 2. Run [`supabase/migrations/0001_init.sql`](../supabase/migrations/0001_init.sql)
    then [`supabase/migrations/0002_is_placeholder.sql`](../supabase/migrations/0002_is_placeholder.sql)
+   then [`supabase/migrations/0003_hampers.sql`](../supabase/migrations/0003_hampers.sql)
    in the SQL Editor, in that order (both idempotent).
 3. Create the storage bucket — see [supabase/README.md](../supabase/README.md)
    step 5 (`amanat-house` bucket, public, 10MB limit, `image/jpeg` /

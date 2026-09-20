@@ -3,6 +3,9 @@ import { ADMIN_SESSION_COOKIE } from "@/lib/admin-auth-constants";
 
 const adminApiPatterns = [
   { pattern: /^\/api\/products(?:\/.*)?$/, methods: ["POST", "PUT", "DELETE"] },
+  { pattern: /^\/api\/hampers$/, methods: ["POST"] },
+  // /api/hampers/price is a public POST (cart re-validation), so it is excluded.
+  { pattern: /^\/api\/hampers\/(?!price$)[^/]+$/, methods: ["PUT", "DELETE"] },
   { pattern: /^\/api\/gallery(?:\/.*)?$/, methods: ["POST", "PUT", "DELETE"] },
   { pattern: /^\/api\/orders$/, methods: ["GET"] },
   // Order lookup exposes full customer PII (name, phone, email, address) —

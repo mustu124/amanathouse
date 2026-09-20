@@ -24,7 +24,9 @@ supabase login
 supabase link --project-ref your-project-ref
 supabase db push
 ```
-(`db push` applies every file under `supabase/migrations/` in order — currently just `0001_init.sql`.)
+(`db push` applies every file under `supabase/migrations/` in order: `0001_init.sql`, `0002_is_placeholder.sql`, `0003_hampers.sql`.)
+
+**Hampers:** run [`0003_hampers.sql`](migrations/0003_hampers.sql) too. It adds the `hampers` and `hamper_products` tables (with CHECK constraints and public-read-active RLS) and the `item_type` / `hamper_id` / `hamper_contents` columns on `order_items`. Then `npm run seed:hampers` loads two placeholder hampers.
 
 Future schema changes should be added as new files (`0002_*.sql`, `0003_*.sql`, ...) rather than editing `0001_init.sql` in place, so the migration history stays truthful.
 

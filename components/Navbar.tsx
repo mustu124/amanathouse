@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { HAMPER_CATEGORY } from "@/lib/hampers";
 import { useCart } from "@/context/CartContext";
 import { useDebounce } from "@/hooks/useDebounce";
 import { slideInRight } from "@/lib/animations";
@@ -31,14 +32,21 @@ type NavCategory = {
   name: string;
   slug?: string;
   icon?: string;
+  href?: string;
   visible?: boolean;
 };
 
-const fallbackCategories: NavCategory[] = CATEGORY_DETAILS.map((category) => ({
-  name: category.name,
-  slug: category.slug,
-  icon: category.icon
-}));
+const hamperNavItem: NavCategory = { name: HAMPER_CATEGORY.name, slug: HAMPER_CATEGORY.slug, icon: HAMPER_CATEGORY.icon, href: HAMPER_CATEGORY.href };
+
+// Hampers is not a product category: it always trails the list and links to /hampers.
+const fallbackCategories: NavCategory[] = [
+  ...CATEGORY_DETAILS.map((category) => ({
+    name: category.name,
+    slug: category.slug,
+    icon: category.icon
+  })),
+  hamperNavItem
+];
 
 const sidebarVariants = {
   closed: slideInRight.hidden,
@@ -79,7 +87,7 @@ export function Navbar() {
         const nextCategories = payload.data?.settings?.categories?.filter(
           (category) => category.name && category.visible !== false
         );
-        if (isMounted && nextCategories?.length) setCategories(nextCategories);
+        if (isMounted && nextCategories?.length) setCategories([...nextCategories, hamperNavItem]);
       })
       .catch(() => {
         if (isMounted) setCategories(fallbackCategories);
@@ -142,7 +150,7 @@ export function Navbar() {
                           {categories.map((category) => (
                             <motion.a
                               key={category.name}
-                              href={`/shop?category=${category.slug || slugifyCategoryName(category.name)}`}
+                              href={category.href ?? `/shop?category=${category.slug || slugifyCategoryName(category.name)}`}
                               variants={{
                                 hidden: { opacity: 0, y: 10 },
                                 show: { opacity: 1, y: 0 }
@@ -385,7 +393,7 @@ function MobileSidebar({
                             {categories.map((category) => (
                               <motion.a
                                 key={category.name}
-                                href={`/shop?category=${category.slug || slugifyCategoryName(category.name)}`}
+                                href={category.href ?? `/shop?category=${category.slug || slugifyCategoryName(category.name)}`}
                                 onClick={onClose}
                                 variants={{
                                   hidden: { opacity: 0, x: 12 },

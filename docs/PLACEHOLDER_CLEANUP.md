@@ -34,3 +34,13 @@ delete from public.products where is_placeholder = true;
 | Naming | `<product-slug>-1.webp`, `-2.webp`, ... (first image is the primary) |
 
 Images can also be uploaded per product in `/admin/products/<slug>/edit`.
+
+## Placeholder hampers
+
+`npm run seed:hampers` creates two hampers flagged `is_placeholder = true` (with ivory placeholder heroes from `client-assets/hampers/`). Remove them once real hampers exist:
+
+```sql
+delete from public.hampers where is_placeholder = true;
+```
+
+Hamper hero photo spec: **4:5 portrait, 1200 x 1500px, WebP/JPG/PNG under 300KB-10MB**, ivory or neutral background - upload in `/admin/hampers/<slug>/edit`.

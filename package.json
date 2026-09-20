@@ -12,7 +12,9 @@
     "start": "next start",
     "lint": "next lint",
     "seed:categories": "tsx scripts/seed-categories.ts",
-    "import:catalogue": "tsx scripts/import-catalogue.ts"
+    "import:catalogue": "tsx scripts/import-catalogue.ts",
+    "seed:hampers": "tsx scripts/seed-hampers.ts",
+    "test:hampers": "tsx scripts/test-hamper-pricing.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

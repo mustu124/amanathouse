@@ -14,6 +14,7 @@ import {
   MARQUEE_TICKER_TEXT
 } from "@/lib/content/home";
 import { env } from "@/lib/env";
+import { HAMPER_CATEGORY } from "@/lib/hampers";
 import { getDisplayMediaUrl } from "@/lib/media";
 import { RETURNS_POLICY_TEXT, SHIPPING_POLICY_TEXT } from "@/lib/content/policies";
 import { CATEGORY_DETAILS, slugifyCategoryName } from "@/lib/product-data";
@@ -24,6 +25,7 @@ type CategoryTile = {
   slug: string;
   icon: string;
   image?: string;
+  href?: string;
 };
 
 type Product = {
@@ -255,7 +257,11 @@ export default function HomePage() {
         image: category.image
       }));
 
-    return nextCategories?.length ? nextCategories : categories;
+    // Hampers is not an admin-managed product category: it always closes the grid and links to /hampers.
+    return [
+      ...(nextCategories?.length ? nextCategories : categories),
+      { name: HAMPER_CATEGORY.name, slug: HAMPER_CATEGORY.slug, icon: HAMPER_CATEGORY.icon, href: HAMPER_CATEGORY.href }
+    ];
   }, [settings]);
 
   return (
@@ -502,7 +508,7 @@ function CategoriesSection({ categories }: { categories: CategoryTile[] }) {
     let isMounted = true;
 
     Promise.all(
-      categories.map(async ({ name }) => {
+      categories.filter((category) => !category.href).map(async ({ name }) => {
         const response = await fetch(`/api/products?category=${encodeURIComponent(name)}&limit=1&sort=newest`, {
           cache: "no-store"
         });
@@ -510,8 +516,22 @@ function CategoriesSection({ categories }: { categories: CategoryTile[] }) {
         return [name, payload.data?.products?.[0]?.images?.[0]?.url ?? ""] as const;
       })
     )
-      .then((categoryEntries) => {
-        const nextImages = Object.fromEntries(categoryEntries.filter(([, imageUrl]) => Boolean(imageUrl)));
+      .then(async (categoryEntries) => {
+        const nextImages: Record<string, string> = Object.fromEntries(
+          categoryEntries.filter(([, imageUrl]) => Boolean(imageUrl))
+        );
+
+        // The Hampers tile shows the first live hamper's showcase photo when there is one.
+        if (categories.some((category) => category.href)) {
+          try {
+            const hamperResponse = await fetch("/api/hampers", { cache: "no-store" });
+            const hamperPayload = (await hamperResponse.json()) as { data?: { hampers?: Array<{ heroImageUrl?: string }> } };
+            const heroUrl = hamperPayload.data?.hampers?.find((hamper) => hamper.heroImageUrl)?.heroImageUrl;
+            if (heroUrl) nextImages[HAMPER_CATEGORY.name] = heroUrl;
+          } catch {
+            // Falls back to the static Hampers tile image.
+          }
+        }
 
         if (isMounted) setCategoryImages(nextImages);
       })
@@ -555,8 +575,8 @@ function CategoriesSection({ categories }: { categories: CategoryTile[] }) {
       </motion.div>
 
       <motion.div
-        className="category-grid mx-auto mt-10 grid w-full max-w-[96rem] place-items-start gap-x-4 gap-y-8 sm:mt-12 sm:gap-x-6 sm:gap-y-10"
-        style={{ "--category-columns": Math.min(Math.max(categories.length, 1), 10) } as CSSProperties}
+        className="category-grid mx-auto mt-10 w-full max-w-[96rem] gap-y-8 sm:mt-12 sm:gap-y-10"
+        style={{ "--category-columns": Math.min(Math.max(categories.length, 1), 6) } as CSSProperties}
         variants={sectionReveal}
       >
         {categories.map((category, index) => (
@@ -564,6 +584,7 @@ function CategoriesSection({ categories }: { categories: CategoryTile[] }) {
             key={category.name}
             name={category.name}
             slug={category.slug}
+            href={category.href}
             icon={category.icon}
             imageUrl={category.image || categoryImages[category.name]}
             index={index}
@@ -577,12 +598,14 @@ function CategoriesSection({ categories }: { categories: CategoryTile[] }) {
 function CategoryCircle({
   name,
   slug,
+  href,
   icon,
   imageUrl,
   index
 }: {
   name: string;
   slug: string;
+  href?: string;
   icon: string;
   imageUrl?: string;
   index: number;
@@ -593,7 +616,7 @@ function CategoryCircle({
 
   return (
     <motion.a
-      href={`/shop?category=${slug}`}
+      href={href ?? `/shop?category=${slug}`}
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: Math.min(index * 0.06, 0.42), duration: 0.45, ease: "easeOut" }}
@@ -605,7 +628,7 @@ function CategoryCircle({
       whileTap={{ scale: 0.97 }}
       className="group flex w-full min-w-0 flex-col items-center gap-3 text-center"
     >
-      <span className="relative flex h-[clamp(120px,36vw,150px)] w-[clamp(120px,36vw,150px)] items-center justify-center rounded-full bg-white shadow-soft transition-shadow duration-200 group-hover:shadow-[0_18px_45px_rgba(162,62,44,0.34)] sm:h-[120px] sm:w-[120px] lg:h-[150px] lg:w-[150px] xl:h-[200px] xl:w-[200px]">
+      <span className="relative flex h-[clamp(120px,36vw,150px)] w-[clamp(120px,36vw,150px)] items-center justify-center rounded-full bg-white shadow-soft transition-shadow duration-200 group-hover:shadow-[0_18px_45px_rgba(162,62,44,0.34)] sm:h-[120px] sm:w-[120px] lg:h-[150px] lg:w-[150px] xl:h-[180px] xl:w-[180px] 2xl:h-[200px] 2xl:w-[200px]">
         <motion.span
           className="absolute inset-[-3px] rounded-full border-2 border-dashed border-amanat-terracotta sm:inset-[-6px]"
           animate={{ rotate: isHovered ? 360 : 0 }}

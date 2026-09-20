@@ -5,10 +5,12 @@ import toast from "react-hot-toast";
 import { AdminSection } from "@/components/admin/AdminCards";
 import { adminFetch, formatCurrency, formatDate } from "@/lib/admin-client";
 import { whatsappLink } from "@/lib/whatsapp";
+import { formatMoney } from "@/lib/pricing/hamper";
+import type { HamperSnapshot } from "@/lib/hampers";
 
 type Order = {
   orderNumber: string;
-  items: Array<{ name: string; price: number; quantity: number; image?: string }>;
+  items: Array<{ name: string; price: number; quantity: number; image?: string; itemType?: string; hamperContents?: HamperSnapshot }>;
   customerName: string;
   customerPhone: string;
   customerEmail?: string;
@@ -117,7 +119,38 @@ export default function AdminOrdersPage() {
           <div className="grid gap-5 md:grid-cols-2">
             <div>
               <h3 className="font-heading text-xl font-bold">Items</h3>
-              {selectedOrder.items.map((item) => <p key={item.name} className="mt-2">{item.name} x{item.quantity} — {formatCurrency(item.price * item.quantity)}</p>)}
+              {selectedOrder.items.map((item, index) =>
+                item.hamperContents ? (
+                  <div key={`${item.name}-${index}`} className="mt-3 rounded-xl border border-amanat-brown/10 bg-amanat-cream p-3 text-sm">
+                    <p className="font-black">Hamper: {item.name} x{item.quantity} — {formatMoney(item.price * item.quantity)}</p>
+                    <ul className="mt-2 grid gap-1">
+                      {item.hamperContents.items.map((line) => (
+                        <li key={`${line.productId}-${line.variant ?? ""}`} className="flex justify-between gap-3 pl-3">
+                          <span>
+                            {line.name}
+                            {line.variant ? ` (${line.variant})` : ""}
+                            {line.size ? ` · ${line.size}` : ""} x{line.quantity}
+                          </span>
+                          <span>{formatMoney(line.unitPrice * line.quantity)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <dl className="mt-2 grid gap-1 border-t border-amanat-brown/10 pt-2">
+                      <div className="flex justify-between"><dt>Items subtotal</dt><dd>{formatMoney(item.hamperContents.itemsSubtotal)}</dd></div>
+                      {item.hamperContents.discountAmount > 0 && (
+                        <div className="flex justify-between">
+                          <dt>{item.hamperContents.pricingMode === "percentage" ? `Discount (${item.hamperContents.discountPercentApplied}%)` : "Hamper saving"}</dt>
+                          <dd>−{formatMoney(item.hamperContents.discountAmount)}</dd>
+                        </div>
+                      )}
+                      <div className="flex justify-between"><dt>Packaging</dt><dd>{formatMoney(item.hamperContents.packagingFee)}</dd></div>
+                      <div className="flex justify-between font-black"><dt>Hamper total (each)</dt><dd>{formatMoney(item.hamperContents.hamperTotal)}</dd></div>
+                    </dl>
+                  </div>
+                ) : (
+                  <p key={`${item.name}-${index}`} className="mt-2">{item.name} x{item.quantity} — {formatCurrency(item.price * item.quantity)}</p>
+                )
+              )}
             </div>
             <div>
               <h3 className="font-heading text-xl font-bold">Customer</h3>

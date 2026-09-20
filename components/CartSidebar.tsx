@@ -5,7 +5,9 @@ import confetti from "canvas-confetti";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { useCart, type CartItem } from "@/context/CartContext";
+import { hamperSelectionOf, useCart, type CartItem } from "@/context/CartContext";
+import toast from "react-hot-toast";
+import { formatMoney } from "@/lib/pricing/hamper";
 import { buildWhatsAppMessage, type CustomerInfo } from "@/lib/whatsapp";
 import { slideInRight, staggerContainer } from "@/lib/animations";
 import { getDisplayMediaUrl } from "@/lib/media";
@@ -33,7 +35,9 @@ export function CartSidebar() {
     totalPrice,
     updateQuantity,
     removeItem,
-    clearCart
+    clearCart,
+    confirmHamperPrice,
+    hasBlockingHamperNotice
   } = useCart();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
 
@@ -107,7 +111,16 @@ export function CartSidebar() {
                     animate="show"
                     variants={{ hidden: staggerContainer.hidden, show: { transition: { staggerChildren: 0.06 } } }}
                   >
-                    {items.map((item) => (
+                    {items.map((item) => item.hamper ? (
+                      <HamperCartLine
+                        key={item.product._id}
+                        item={item}
+                        onNavigate={closeCart}
+                        onQuantity={(quantity) => updateQuantity(item.product._id, quantity)}
+                        onRemove={() => removeItem(item.product._id)}
+                        onConfirmPrice={() => confirmHamperPrice(item.product._id)}
+                      />
+                    ) : (
                       <motion.article
                         key={`${item.product._id}-${item.selectedVariant ?? "default"}`}
                         variants={{
@@ -196,11 +209,16 @@ export function CartSidebar() {
                   <span>₹{totalPrice.toLocaleString("en-IN")}</span>
                 </div>
                 <p className="mt-2 text-sm font-bold text-amanat-sage">Shipping calculated at checkout</p>
+                {hasBlockingHamperNotice && (
+                  <p role="alert" className="mt-2 text-sm font-bold text-amanat-terracotta">
+                    Review the highlighted hamper above before checking out.
+                  </p>
+                )}
                 <motion.button
                   type="button"
-                  disabled={items.length === 0}
+                  disabled={items.length === 0 || hasBlockingHamperNotice}
                   onClick={() => setIsCheckoutOpen(true)}
-                  whileHover={{ y: items.length ? -2 : 0 }}
+                  whileHover={{ y: items.length && !hasBlockingHamperNotice ? -2 : 0 }}
                   whileTap={{ scale: items.length ? 0.98 : 1 }}
                   className="btn-primary mt-4 w-full disabled:cursor-not-allowed"
                 >
@@ -223,6 +241,140 @@ export function CartSidebar() {
         }}
       />
     </>
+  );
+}
+
+function HamperCartLine({
+  item,
+  onNavigate,
+  onQuantity,
+  onRemove,
+  onConfirmPrice
+}: {
+  item: CartItem;
+  onNavigate: () => void;
+  onQuantity: (quantity: number) => void;
+  onRemove: () => void;
+  onConfirmPrice: () => void;
+}) {
+  const hamper = item.hamper;
+  const [isOpen, setIsOpen] = useState(false);
+  if (!hamper) return null;
+
+  const unitCount = hamper.items.reduce((sum, line) => sum + line.quantity, 0);
+  const worth = hamper.itemsSubtotal + hamper.packagingFee;
+  const hasSaving = worth > hamper.total;
+  const editHref = `/hampers/${hamper.slug}?edit=${encodeURIComponent(item.product._id)}`;
+
+  return (
+    <motion.article
+      variants={{ hidden: { opacity: 0, x: 24 }, show: { opacity: 1, x: 0 } }}
+      className={`rounded-2xl bg-white p-3 shadow-sm ${hamper.notice ? "ring-2 ring-amanat-terracotta" : ""}`}
+    >
+      <div className="grid grid-cols-[60px_1fr_auto] gap-3">
+        <Link href={`/hampers/${hamper.slug}`} onClick={onNavigate}>
+          <Image
+            src={getDisplayMediaUrl(hamper.heroImageUrl)}
+            alt={hamper.name}
+            width={60}
+            height={60}
+            className="h-[60px] w-[60px] rounded-xl bg-amanat-sand object-cover"
+          />
+        </Link>
+        <div className="min-w-0">
+          <p className="font-heading text-base font-bold leading-tight">{hamper.name}</p>
+          <p className="mt-1 text-xs font-bold uppercase tracking-[0.08em] text-amanat-sage">
+            Hamper · {unitCount} item{unitCount === 1 ? "" : "s"}
+          </p>
+          <p className="mt-2 font-black text-amanat-terracotta">
+            {formatMoney(hamper.total * item.quantity)}
+            {hasSaving && (
+              <span className="ml-2 text-xs font-bold text-stone-400 line-through">
+                {formatMoney(worth * item.quantity)}
+              </span>
+            )}
+          </p>
+        </div>
+        <div className="flex flex-col items-end justify-between gap-3">
+          <button type="button" aria-label={`Remove ${hamper.name}`} onClick={onRemove} className="text-amanat-terracotta">
+            <TrashIcon />
+          </button>
+          <div className="flex items-center rounded-full border border-amanat-brown/15">
+            <button type="button" aria-label={`Decrease ${hamper.name} quantity`} onClick={() => onQuantity(item.quantity - 1)} className="h-8 w-8 font-black">
+              -
+            </button>
+            <span className="w-7 text-center text-sm font-black">{item.quantity}</span>
+            <button
+              type="button"
+              aria-label={`Increase ${hamper.name} quantity`}
+              disabled={item.quantity >= item.product.stockCount}
+              onClick={() => onQuantity(item.quantity + 1)}
+              className="h-8 w-8 font-black disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              +
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-3 flex items-center justify-between text-xs font-bold">
+        <button type="button" aria-expanded={isOpen} onClick={() => setIsOpen((open) => !open)} className="uppercase tracking-[0.1em] text-amanat-sage underline underline-offset-4">
+          {isOpen ? "Hide contents" : "View contents"}
+        </button>
+        <Link href={editHref} onClick={onNavigate} className="uppercase tracking-[0.1em] text-amanat-terracotta underline underline-offset-4">
+          Edit hamper
+        </Link>
+      </div>
+
+      {isOpen && (
+        <ul className="mt-3 grid gap-1.5 border-t border-amanat-brown/10 pt-3 text-sm">
+          {hamper.items.map((line) => (
+            <li key={`${line.productId}-${line.variant ?? ""}`} className="flex justify-between gap-3">
+              <span>
+                {line.name}
+                {line.variant ? ` (${line.variant})` : ""} × {line.quantity}
+              </span>
+              <span className="shrink-0 text-stone-500">{formatMoney(line.unitPrice * line.quantity)}</span>
+            </li>
+          ))}
+          <li className="mt-1 flex justify-between border-t border-amanat-brown/10 pt-2 text-xs text-stone-500">
+            <span>Items subtotal</span>
+            <span>{formatMoney(hamper.itemsSubtotal)}</span>
+          </li>
+          {hamper.discountAmount > 0 && (
+            <li className="flex justify-between text-xs text-amanat-sage">
+              <span>Hamper saving</span>
+              <span>−{formatMoney(hamper.discountAmount)}</span>
+            </li>
+          )}
+          {hamper.packagingFee > 0 && (
+            <li className="flex justify-between text-xs text-stone-500">
+              <span>Packaging</span>
+              <span>{formatMoney(hamper.packagingFee)}</span>
+            </li>
+          )}
+        </ul>
+      )}
+
+      {hamper.notice && (
+        <div role="alert" className="mt-3 rounded-xl bg-amanat-terracotta/10 p-3 text-sm font-bold text-amanat-terracotta">
+          <p>{hamper.notice}</p>
+          <div className="mt-2 flex flex-wrap gap-3 text-xs uppercase tracking-[0.1em]">
+            {hamper.freshTotal !== undefined && (
+              <button type="button" onClick={onConfirmPrice} className="underline underline-offset-4">
+                Accept new price
+              </button>
+            )}
+            <Link href={editHref} onClick={onNavigate} className="underline underline-offset-4">
+              Edit hamper
+            </Link>
+            <button type="button" onClick={onRemove} className="underline underline-offset-4">
+              Remove
+            </button>
+          </div>
+        </div>
+      )}
+    </motion.article>
   );
 }
 
@@ -310,12 +462,15 @@ function CheckoutModal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items: items.map((item) => ({
-            productId: item.product._id,
+            productId: item.hamper ? item.hamper.hamperId : item.product._id,
             name: item.product.name,
             image: item.product.images[0]?.url,
             price: item.product.price,
             quantity: item.quantity,
-            selectedVariant: item.selectedVariant
+            selectedVariant: item.selectedVariant,
+            ...(item.hamper
+              ? { itemType: "hamper", hamperSlug: item.hamper.slug, hamperItems: hamperSelectionOf(item) }
+              : {})
           })),
           customerName: customerInfo.name,
           customerPhone: customerInfo.phone,
@@ -327,9 +482,15 @@ function CheckoutModal({
         })
       });
       const data = (await response.json()) as {
+        message?: string;
         data?: { order?: { orderNumber?: string } };
         order?: { orderNumber?: string };
       };
+      if (response.status >= 400 && response.status < 500) {
+        // The server re-prices every order; a 4xx means it disagreed with the cart.
+        toast.error(data.message ?? "We could not verify your order. Please review your cart.");
+        return;
+      }
       setOrderNumber(
         data.data?.order?.orderNumber ??
           data.order?.orderNumber ??

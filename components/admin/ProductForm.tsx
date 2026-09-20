@@ -20,28 +20,8 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { METAL_TONES, PRODUCT_BADGES, PRODUCT_CATEGORIES, slugifyProductName, type StoreProduct } from "@/lib/product-data";
-import { adminFetch, uploadWithProgress } from "@/lib/admin-client";
+import { adminFetch, uploadWithProgress, validateImageFile } from "@/lib/admin-client";
 import { getDisplayMediaUrl } from "@/lib/media";
-
-const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
-const MIN_IMAGE_DIMENSION = 400;
-const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
-
-function readImageDimensions(file: File): Promise<{ width: number; height: number }> {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file);
-    const image = new window.Image();
-    image.onload = () => {
-      URL.revokeObjectURL(url);
-      resolve({ width: image.naturalWidth, height: image.naturalHeight });
-    };
-    image.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error("Could not read image dimensions."));
-    };
-    image.src = url;
-  });
-}
 
 type ProductDraft = Partial<Omit<StoreProduct, "category">> & {
   category?: string;
@@ -147,23 +127,9 @@ export function ProductForm({ product }: { product?: StoreProduct }) {
     if (!files?.length) return;
 
     for (const file of Array.from(files)) {
-      if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-        toast.error(`${file.name}: only JPG, PNG, or WebP images are supported.`);
-        continue;
-      }
-      if (file.size > MAX_UPLOAD_BYTES) {
-        toast.error(`${file.name}: file is over 10MB.`);
-        continue;
-      }
-
-      try {
-        const { width, height } = await readImageDimensions(file);
-        if (width < MIN_IMAGE_DIMENSION || height < MIN_IMAGE_DIMENSION) {
-          toast.error(`${file.name}: image is too small (${width}x${height}px) — use at least ${MIN_IMAGE_DIMENSION}x${MIN_IMAGE_DIMENSION}px.`);
-          continue;
-        }
-      } catch {
-        toast.error(`${file.name}: couldn't read this image — try a different file.`);
+      const problem = await validateImageFile(file);
+      if (problem) {
+        toast.error(problem);
         continue;
       }
 

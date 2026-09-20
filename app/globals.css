@@ -169,30 +169,39 @@ select {
   cursor: not-allowed;
 }
 
-/* Column counts (2 on mobile, 5 from sm up) keep the 5-item
-   category grid tidy — the odd last mobile tile is centred below. */
+/* Centred, wrapping tile row: any count (up to 11+) lays out cleanly and a
+   short last row stays centred instead of hugging the left edge.
+   Columns per row: 2 (phone) / 4 (tablet) / 5 (laptop) / up to 6 (desktop). */
 .category-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  --cols: 2;
+  --gap: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: var(--gap);
 }
 
-/* An odd last tile would sit alone on the left at 2 columns — centre it. */
-@media (max-width: 639px) {
-  .category-grid > :last-child:nth-child(odd) {
-    grid-column: 1 / -1;
-    justify-self: center;
-    width: calc(50% - 0.5rem);
-  }
+.category-grid > * {
+  flex: 0 0 calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols));
+  min-width: 0;
 }
 
 @media (min-width: 640px) {
   .category-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    --cols: 4;
+    --gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .category-grid {
+    --cols: 5;
   }
 }
 
 @media (min-width: 1280px) {
   .category-grid {
-    grid-template-columns: repeat(var(--category-columns), minmax(0, 1fr));
+    --cols: var(--category-columns);
   }
 }
 

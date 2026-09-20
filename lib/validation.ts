@@ -50,3 +50,32 @@ export function formatZodError(error: z.ZodError) {
   const first = error.issues[0];
   return first ? `${first.path.join(".") || "value"}: ${first.message}` : "Invalid product data.";
 }
+
+export const hamperPayloadSchema = z.object({
+  name: z.string().trim().min(1, "Name is required."),
+  slug: z.string().trim().optional(),
+  shortDescription: z.string().optional(),
+  longDescription: z.string().optional(),
+  heroImageUrl: z.string().optional(),
+  galleryImageUrls: z.array(z.string()).optional(),
+  pricingMode: z.enum(["percentage", "fixed"]),
+  discountPercent: z.coerce.number().min(0).max(90).optional().nullable(),
+  fixedPrice: z.coerce.number().positive().optional().nullable(),
+  packagingFee: z.coerce.number().nonnegative("Packaging fee cannot be negative.").optional(),
+  minItems: z.coerce.number().int().min(1, "Minimum items must be at least 1."),
+  maxItems: z.coerce.number().int().optional().nullable(),
+  isActive: z.boolean().optional(),
+  isPlaceholder: z.boolean().optional(),
+  sortOrder: z.coerce.number().int().optional(),
+  products: z
+    .array(
+      z.object({
+        productId: z.string().min(1),
+        isRequired: z.boolean().optional(),
+        sortOrder: z.coerce.number().int().optional()
+      })
+    )
+    .default([])
+});
+
+export type HamperPayload = z.infer<typeof hamperPayloadSchema>;

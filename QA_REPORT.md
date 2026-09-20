@@ -349,3 +349,15 @@ Open items for the client / you:
 4. "Free shipping above ₹999" (ticker) is not in the client's document; the `new50` welcome offer is shown but applied manually (no discount-code engine).
 5. The photos are one image per product, so PDP galleries have a single image.
 6. Client wording changes are listed in `scripts/data/necklaces.json` (`clientDescription` vs `description`).
+
+## Hampers (Prompt 20) — verification status
+
+Verified offline (`npm run test:hampers`, `npm run build`, `npm run lint`, HTTP smoke tests):
+- Pricing engine: percentage (12% / 15% worked examples hand-checked), fixed price constant across cheapest/priciest baskets, packaging after discount, single rounding, savings never negative, min/max/required/out-of-stock/inactive validation.
+- Config validation: 95% discount, fixed price 0, max < min, 1 eligible with min 3 all rejected with readable messages (client + API share `validateHamperConfig`; DB CHECK constraints mirror them in `0003_hampers.sql`).
+- Server re-pricing: `priceHamperSelection` matches the client engine; a tampered total is rejected. Live: an order for a real product claiming ₹1 is refused with HTTP 409.
+- WhatsApp: 2 hampers + 3 products produces one valid wa.me link (~1.4k chars, not truncated).
+- Routes: `/hampers` 200 (empty state), unknown hamper 404, sitemap lists `/hampers`, admin hamper writes are 401 without a session.
+
+Blocked until migration `0003_hampers.sql` is run in the Supabase SQL Editor (DDL cannot be applied from code): creating hampers in admin, live builder, cart persistence with real hampers, order snapshot rows, DB-level constraint rejection, out-of-stock notice against real data, and the real test order.
+Not verifiable here: responsive rendering at 375/768/1440 (no browser automation) — layouts were checked by reading the CSS only.

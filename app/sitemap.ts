@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { CATEGORY_DETAILS } from "@/lib/product-data";
 import { env } from "@/lib/env";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase";
+import { listHampers } from "@/lib/server-hampers";
 
 // Without both of these, this route's data can freeze at whatever was in the
 // database the first time it was ever built/rendered (Next.js's fetch cache
@@ -34,6 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = [
     { url: `${siteUrl}/`, lastModified: now, changeFrequency: "daily", priority: 1 },
     { url: `${siteUrl}/shop`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
+    { url: `${siteUrl}/hampers`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${siteUrl}/collections`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
     { url: `${siteUrl}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.4 },
     { url: `${siteUrl}/contact`, lastModified: now, changeFrequency: "monthly", priority: 0.4 }
@@ -54,5 +56,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7
   }));
 
-  return [...staticPages, ...categoryPages, ...productPages];
+  const hamperPages: MetadataRoute.Sitemap = (await listHampers()).map((hamper) => ({
+    url: `${siteUrl}/hampers/${hamper.slug}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.7
+  }));
+
+  return [...staticPages, ...categoryPages, ...productPages, ...hamperPages];
 }

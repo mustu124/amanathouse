@@ -9,6 +9,7 @@ import { useState } from "react";
 const links = [
   ["Dashboard", "/admin"],
   ["Products", "/admin/products"],
+  ["Hampers", "/admin/hampers"],
   ["Orders", "/admin/orders"],
   ["Gallery", "/admin/gallery"],
   ["Homepage Settings", "/admin/homepage"],

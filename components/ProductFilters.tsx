@@ -152,6 +152,9 @@ function FilterContent({
               {category.name}
             </label>
           ))}
+          <a href="/hampers" className="mt-1 text-sm font-bold text-amanat-terracotta underline underline-offset-4">
+            Gift Hampers →
+          </a>
         </div>
       </div>
 

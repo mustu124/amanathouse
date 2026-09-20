@@ -87,6 +87,36 @@ it back.
 5. Click **Save Categories** when you're done. Nothing changes on the live
    website until you click Save.
 
+## Gift hampers (build-your-own)
+
+A hamper is a gift set that the **customer builds themselves**. You decide which pieces they can choose from and how the price works; they pick the pieces and watch the price update.
+
+### Creating a hamper
+1. Go to **Hampers** in the left menu and press **Add New Hamper**.
+2. **Details** - give it a name (for example "The Everyday Edit"), a short line for the hampers page and a longer description for the hamper's own page. The web address is made from the name; you can change it.
+3. **Images** - upload one hero photo: the single showcase picture of the hamper look. Use a portrait 4:5 photo, at least 1200 x 1500 px, JPG/PNG/WebP under 10MB (an ivory or neutral background works best). Extra gallery photos are optional.
+4. **Pricing** - choose one:
+   - **Percentage off** - the customer pays the total of the pieces they pick minus your discount (0 to 90 percent). More pieces means a bigger saving.
+   - **Fixed price** - the customer pays one flat price no matter which pieces they choose (the shop shows what the pieces are "worth").
+   - **Packaging fee** - optional; added after any discount. Leave it at 0 for free packaging.
+5. **Rules** - the minimum number of pieces, and the maximum (leave blank for no limit).
+6. **Eligible products** - search or filter, then tick the products customers may choose from. In the "Selected" list you can reorder them and tick **Required** on a piece you want locked into every hamper (it is pre-added and cannot be removed). You need at least as many eligible products as the minimum.
+7. **Live price preview** - as you change the numbers, the preview shows a worked example, for example: *customer picks 3 items worth Rs 1,797 -> discount 15% (-Rs 269.55) -> + Rs 0 packaging -> pays Rs 1,527.45, saves Rs 269.55.* Tick different pieces to test other baskets.
+8. Tick **Active** and press **Create hamper**. If something is wrong (for example a discount above 90 percent), the page tells you in plain words and does not save.
+
+### What the customer sees
+- On the homepage a **Hampers** circle sits after the other categories; it opens the **Hampers** page, and each hamper has its own page.
+- At the top is your hero photo with the offer ("Save 15% when you build your own" or "Build yours for Rs 1,499").
+- Below it they add pieces from your list. The summary (on the right on a computer, along the bottom on a phone) shows their pieces, the discount, the total and how much they save, and tells them how many more pieces they need. **Add hamper to cart** stays greyed out, with the reason, until the rules are met.
+- In the cart the hamper is **one line** that expands to show its contents. They can change the quantity, remove it, or press **Edit hamper** to rebuild it.
+- If a piece in a hamper later goes out of stock or its price changes, the cart shows a notice on that line and the customer has to confirm or edit it before checking out. Prices are never changed silently.
+- The order message on WhatsApp lists the hamper, every piece inside it, and the subtotal, discount and hamper total.
+
+### Editing, hiding and deleting
+- Use the **Active / Hidden** button in the Hampers list to show or hide a hamper instantly, and the **Order** box to change where it appears.
+- **Delete** removes a hamper nobody has ordered. If the hamper is in past orders it is **archived instead** (hidden from the shop) so your order history stays complete - the system tells you when this happens.
+- Changing a piece's price later never changes old orders: each order keeps a frozen copy of what was in the hamper and what it cost.
+
 ## Reading an order
 
 1. Click **Orders** in the left menu.
