@@ -126,12 +126,12 @@ export function ContactContent() {
         className="mx-auto mt-8 grid max-w-7xl gap-4 px-5 sm:px-8 md:grid-cols-2"
       >
         {/* TODO-confirm: exact returns/shipping terms with the client — see lib/content/policies.ts */}
-        <motion.article variants={fadeInUp} className="rounded-2xl border border-amanat-brown/10 bg-white p-6 shadow-sm">
+        <motion.article id="returns" variants={fadeInUp} className="scroll-mt-28 rounded-2xl border border-amanat-brown/10 bg-white p-6 shadow-sm">
           <p className="text-xs font-black uppercase tracking-[0.16em] text-amanat-sage">Returns</p>
           <h2 className="mt-3 font-heading text-3xl font-bold text-amanat-brown">Refund &amp; cancellation policy</h2>
           <p className="mt-3 leading-7 text-stone-700">{RETURNS_POLICY_TEXT}</p>
         </motion.article>
-        <motion.article variants={fadeInUp} className="rounded-2xl border border-amanat-brown/10 bg-white p-6 shadow-sm">
+        <motion.article id="shipping" variants={fadeInUp} className="scroll-mt-28 rounded-2xl border border-amanat-brown/10 bg-white p-6 shadow-sm">
           <p className="text-xs font-black uppercase tracking-[0.16em] text-amanat-sage">Shipping</p>
           <h2 className="mt-3 font-heading text-3xl font-bold text-amanat-brown">Delivery availability</h2>
           <p className="mt-3 leading-7 text-stone-700">{SHIPPING_POLICY_TEXT}</p>

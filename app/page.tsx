@@ -16,12 +16,6 @@ import {
 import { env, STORE_ADDRESS_TODO } from "@/lib/env";
 import { HAMPER_CATEGORY } from "@/lib/hampers";
 import { getDisplayMediaUrl } from "@/lib/media";
-import {
-  RETURNS_POLICY_INTRO,
-  RETURNS_POLICY_POINTS,
-  SHIPPING_POLICY_INTRO,
-  SHIPPING_POLICY_POINTS
-} from "@/lib/content/policies";
 import { CATEGORY_DETAILS, slugifyCategoryName } from "@/lib/product-data";
 import { whatsappLink } from "@/lib/whatsapp";
 
@@ -1093,11 +1087,11 @@ function WhyChooseUs() {
 }
 
 function Footer({ settings }: { settings: PublicSettings | null }) {
-  const whatsappNumber = settings?.whatsappNumber ?? env.whatsappNumber;
+  const whatsappNumber = settings?.whatsappNumber || env.whatsappNumber;
   const instagramUrl = settings?.socialLinks?.instagram || env.instagramUrl;
-  const address = settings?.storeAddress ?? env.storeAddress;
-  const email = settings?.storeEmail ?? env.storeEmail;
-  const phone = `+${whatsappNumber}`;
+  const address = settings?.storeAddress || env.storeAddress;
+  const email = settings?.storeEmail || env.storeEmail;
+  const phone = `+${whatsappNumber.replace(/\D/g, "")}`;
   const footerWhatsAppLink = whatsappLink("Hi Amanat House! I have a question about your jewellery.", whatsappNumber);
   const socials = [
     { label: "Instagram", href: instagramUrl, icon: <InstagramIcon className="h-5 w-5" /> },
@@ -1148,14 +1142,8 @@ function Footer({ settings }: { settings: PublicSettings | null }) {
 
         <motion.div variants={itemReveal}>
           <FooterAccordion title="Policies">
-            <div>
-              <p className="font-semibold text-ivory">Returns</p>
-              <PolicyList intro={RETURNS_POLICY_INTRO} points={RETURNS_POLICY_POINTS} />
-            </div>
-            <div>
-              <p className="font-semibold text-ivory">Shipping</p>
-              <PolicyList intro={SHIPPING_POLICY_INTRO} points={SHIPPING_POLICY_POINTS} />
-            </div>
+            <a href="/contact#returns" className="hover:text-gold">Returns &amp; Exchange</a>
+            <a href="/shipping" className="hover:text-gold">Shipping Policy</a>
           </FooterAccordion>
         </motion.div>
       </motion.div>
@@ -1176,19 +1164,6 @@ function Footer({ settings }: { settings: PublicSettings | null }) {
         </div>
       </motion.div>
     </motion.footer>
-  );
-}
-
-function PolicyList({ intro, points }: { intro: string; points: string[] }) {
-  return (
-    <div className="mt-1 text-ivory/70">
-      <p>{intro}</p>
-      <ul className="mt-2 grid list-disc gap-1.5 pl-5">
-        {points.map((point) => (
-          <li key={point}>{point}</li>
-        ))}
-      </ul>
-    </div>
   );
 }
 
