@@ -361,3 +361,13 @@ Verified offline (`npm run test:hampers`, `npm run build`, `npm run lint`, HTTP 
 
 Blocked until migration `0003_hampers.sql` is run in the Supabase SQL Editor (DDL cannot be applied from code): creating hampers in admin, live builder, cart persistence with real hampers, order snapshot rows, DB-level constraint rejection, out-of-stock notice against real data, and the real test order.
 Not verifiable here: responsive rendering at 375/768/1440 (no browser automation) — layouts were checked by reading the CSS only.
+
+### Hampers — live results after migration 0003 (`npm run verify:hampers`)
+- a) 12% hamper, min 2 / max 5, 6 eligible, 1 required: basket of 3 items worth ₹1,597 -> discount ₹191.64 -> pays ₹1,405.36 (hand-checked: 1597 x 0.12 = 191.64).
+- b) Fixed ₹1,499 hamper: two cheapest items -> pays ₹1,499 (no saving line); five priciest -> pays ₹1,499 (worth ₹6,695, saves ₹5,196).
+- c) 95% discount, fixed price 0, max < min, 1 eligible with min 3 are all rejected with readable messages by the API; the database itself also rejects the first three plus min 0 (`hampers_percentage_valid`, `hampers_fixed_valid`, `hampers_max_items_valid`, `hampers_min_items_valid`).
+- f) A contained product set out of stock -> pricing reports "... is out of stock." (drives the cart notice); product restored afterwards.
+- g) Hamper order with client total ₹100 -> HTTP 409, nothing stored.
+- h) Real order (1 hamper + 1 product) -> HTTP 201; orders.total_amount ₹2,104.36 (= 1,405.36 + 699); order_items has a `hamper` row with the frozen 3-item snapshot and a `product` row. Test order and test hamper rows were deleted afterwards.
+- Seeded placeholder hampers: The Everyday Edit (15%, min 3, 8 eligible) and The Gifting Box (₹1,499, min 2 max 4, 6 eligible, 1 required); `/hampers` pages return 200 and the sitemap lists them.
+Still not machine-verifiable here: browser rendering at 375/768/1440 and cart UI interactions (no browser automation).
