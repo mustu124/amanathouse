@@ -11,9 +11,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "supabase:import": "node scripts/import-product-assets.cjs",
     "seed:categories": "tsx scripts/seed-categories.ts",
-    "seed:products": "tsx scripts/seed-placeholder-products.ts"
+    "import:catalogue": "tsx scripts/import-catalogue.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

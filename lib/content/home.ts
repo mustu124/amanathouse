@@ -4,6 +4,7 @@
 
 export type ContentHeroSlide = {
   image: string;
+  mobileImage?: string;
   headline: string;
   subtitle?: string;
   ctaText: string;
@@ -12,7 +13,8 @@ export type ContentHeroSlide = {
 
 export const HOME_HERO_SLIDES: ContentHeroSlide[] = [
   {
-    image: "/logo.png",
+    image: "/hero/hero-1.webp",
+    mobileImage: "/hero/hero-1-mobile.webp",
     headline: "Made to be kept.",
     subtitle:
       "Everyday jewellery in 18K gold-plated steel — anti-tarnish, waterproof, yours for the long run.",
@@ -20,23 +22,25 @@ export const HOME_HERO_SLIDES: ContentHeroSlide[] = [
     ctaLink: "/shop"
   },
   {
-    image: "/logo.png",
+    image: "/hero/hero-2.webp",
+    mobileImage: "/hero/hero-2-mobile.webp",
     headline: "Wear it every day.",
     subtitle: "316L stainless steel with 18K PVD gold plating, built for daily wear — not just special occasions.",
     ctaText: "Shop Now",
     ctaLink: "/shop"
   },
   {
-    image: "/logo.png",
+    image: "/hero/hero-3.webp",
+    mobileImage: "/hero/hero-3-mobile.webp",
     headline: "Stack your story.",
-    subtitle: "Mix rings, chains, and studs into a look that's entirely yours. Minimal. Modern. Made to be your Amanat.",
+    subtitle: "Mix pearls, charms, and chains into a look that's entirely yours. Minimal. Modern. Made to be your Amanat.",
     ctaText: "Shop Now",
     ctaLink: "/shop"
   }
 ];
 
 export const MARQUEE_TICKER_TEXT =
-  "Free shipping on orders above ₹999 · Anti-tarnish & waterproof · 18K PVD gold plating · New drops every month";
+  "Free shipping on orders above ₹999 · Welcome offer: 5% off with code new50 · Anti-tarnish & waterproof · 18K PVD gold plating · 6-month warranty · New drops every month";
 
 export type EverydayStackTip = {
   title: string;
@@ -62,7 +66,7 @@ export const EVERYDAY_STACK_TIPS: EverydayStackTip[] = [
   }
 ];
 
-export const EVERYDAY_STACK_IMAGE = "/placeholder-product.png";
+export const EVERYDAY_STACK_IMAGE = "/brand/stack.webp";
 
 export type HomeTestimonial = {
   quote: string;
@@ -70,27 +74,9 @@ export type HomeTestimonial = {
   city: string;
 };
 
-// Placeholder testimonials — replace with real, verified customer reviews before launch.
-export const HOME_TESTIMONIALS: HomeTestimonial[] = [
-  {
-    quote:
-      "I wear my rings every day, including in the shower, and they still look brand new months later. No tarnishing at all.",
-    name: "Ananya R.",
-    city: "Bengaluru"
-  },
-  {
-    quote:
-      "Bought the chain and stud set as a gift for my sister — the packaging felt premium and she hasn't taken them off since.",
-    name: "Priya M.",
-    city: "Mumbai"
-  },
-  {
-    quote:
-      "Finally jewellery that survives my daily routine — gym, swimming, everything — and still holds its shine.",
-    name: "Karan S.",
-    city: "Delhi"
-  }
-];
+// No customer reviews have been supplied yet, so this stays empty and the
+// homepage hides the testimonials section. Add real, verified reviews here.
+export const HOME_TESTIMONIALS: HomeTestimonial[] = [];
 
 export function getInstagramHandleLabel(instagramUrl?: string) {
   if (!instagramUrl) return "Follow us on Instagram";

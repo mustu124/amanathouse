@@ -49,8 +49,8 @@ const METAL_TONE_SWATCHES: Record<MetalTone, string> = {
   "rose-gold": "#D9A79C"
 };
 
-const RING_CATEGORIES = ["Rings", "Stackable Ring Sets"];
-const CHAIN_CATEGORIES = ["Necklaces", "Chains"];
+const RING_CATEGORIES = ["Rings"];
+const CHAIN_CATEGORIES = ["Necklaces"];
 
 const TRUST_STRIP_ITEMS = ["Anti-Tarnish", "Waterproof", "18K PVD Gold", "Hypoallergenic", "Ships All Over India"];
 
@@ -135,7 +135,7 @@ export function ProductDetailContent({ params }: { params: { slug: string } }) {
 
   const galleryItems = useMemo(() => {
     if (!product) return [];
-    const images = product.images.length > 0 ? product.images : [{ url: "/placeholder-product.png", alt: product.name }];
+    const images = product.images.length > 0 ? product.images : [{ url: "/logo-mark.png", alt: product.name }];
     return images.map((image) => ({ url: image.url, alt: image.alt }));
   }, [product]);
 
@@ -215,7 +215,7 @@ export function ProductDetailContent({ params }: { params: { slug: string } }) {
                 transition={{ duration: 0.38 }}
               >
                 <Image
-                  src={currentItem?.url ? optimizedMediaUrl(currentItem.url, 1300) : "/placeholder-product.png"}
+                  src={currentItem?.url ? optimizedMediaUrl(currentItem.url, 1300) : "/logo-mark.png"}
                   alt={currentItem?.alt ?? product.name}
                   fill
                   priority
@@ -332,7 +332,7 @@ export function ProductDetailContent({ params }: { params: { slug: string } }) {
           <div className="mt-6">
             <p className="text-xs font-black uppercase tracking-[0.16em] text-amanat-sage">Metal Tone</p>
             <div className="mt-3 flex flex-wrap gap-2">
-              {METAL_TONES.map((tone) => (
+              {(product.metalTone ? [product.metalTone] : METAL_TONES).map((tone) => (
                 <button
                   key={tone}
                   type="button"
@@ -676,7 +676,7 @@ function RingSizeGuideModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
   return (
     <GuideModalShell isOpen={isOpen} onClose={onClose} title="Ring Size Guide">
       <p className="mt-3 text-sm leading-6 text-stone-600">
-        Placeholder measurements — to be verified against physical ring sizers before publishing. Wrap a strip of paper
+        Standard reference measurements. Wrap a strip of paper
         around your finger, mark where it overlaps, and measure the length against the circumference column below.
       </p>
       <div className="mt-4 overflow-x-auto">
@@ -717,7 +717,7 @@ function ChainLengthGuideModal({ isOpen, onClose }: { isOpen: boolean; onClose: 
   return (
     <GuideModalShell isOpen={isOpen} onClose={onClose} title="Chain Length Guide">
       <p className="mt-3 text-sm leading-6 text-stone-600">
-        Placeholder reference lengths — to be verified before publishing. Measure an existing necklace you like the fit
+        Standard reference lengths. Measure an existing necklace you like the fit
         of, end to end, and compare it against the lengths below.
       </p>
       <div className="mt-4 overflow-x-auto">

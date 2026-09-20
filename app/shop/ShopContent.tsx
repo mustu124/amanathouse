@@ -42,8 +42,8 @@ function ShopContentInner() {
   const pathname = usePathname();
   const initialCategoryParam = searchParams.get("category");
   const initialSubcategory = searchParams.get("subcategory");
-  // Accept either the slug (canonical, e.g. "stackable-ring-sets") or the
-  // old space-encoded category name (e.g. "Stackable Ring Sets") — the sync
+  // Accept either the slug (canonical, e.g. "rings") or the
+  // old space-encoded category name (e.g. "Rings") — the sync
   // effect below rewrites the URL to the slug form either way.
   const resolvedInitialCategory = useMemo(() => {
     if (!initialCategoryParam) return null;

@@ -13,45 +13,9 @@ export type GalleryItem = {
   productName?: string;
 };
 
-const placeholderImage = "/placeholder-product.png";
-
-const categories = [
-  "Necklaces",
-  "Rings",
-  "Studs",
-  "Bracelets",
-  "Anklets",
-  "Chains",
-  "Hoops & Danglers",
-  "Pendants & Charms",
-  "Stackable Ring Sets",
-  "Gift Sets"
-];
-
-export const fallbackGalleryItems: GalleryItem[] = Array.from({ length: 30 }).map((_, index) => {
-  const imageIndex = index % categories.length;
-
-  return {
-    _id: `gallery-${index + 1}`,
-    url: placeholderImage,
-    type: "image",
-    thumbnailUrl: placeholderImage,
-    caption: [
-      "Layered gold necklaces styled for everyday wear",
-      "Minimal gold band rings, stacked and styled",
-      "Everyday studs finished in 18K PVD gold",
-      "Chain bracelets layered for daily wear",
-      "Delicate anklets for a finishing touch",
-      "Solid gold-toned chains worn alone",
-      "Hoops and danglers that move with you",
-      "Pendants and charms worn close",
-      "Stackable ring sets mixed and matched",
-      "Gift sets boxed and ready to give"
-    ][imageIndex],
-    category: categories[imageIndex],
-    order: index + 1
-  };
-});
+// Only used when Supabase is not configured; the live gallery is built from
+// real product images.
+export const fallbackGalleryItems: GalleryItem[] = [];
 
 export function filterGalleryItems(category?: string | null) {
   if (!category || category === "All") return fallbackGalleryItems;

@@ -313,3 +313,39 @@ so those ratios stand unchanged.
    Prompt 9) still hasn't been run — the products table is empty right now
    (by design, cleaned up after this sweep's temporary test data). That's a
    standing item from Prompts 9/10, not something new this sweep found.
+
+---
+
+# Re-run after the real catalogue import (2026-09-20)
+
+Scope: 5 categories, 20 real necklaces imported. Rings, Earrings, Bracelets and
+Anklets are empty on purpose until the client sends them.
+
+| Check | Result |
+|---|---|
+| Live product count vs document | **PASS** — document lists 20 necklaces, 20 active in Supabase; re-running the import keeps it at 20 (idempotent on slug) |
+| Every product has an image and a price | **PASS** — checked through `/api/products` |
+| Every category has at least one product | **FAIL (expected)** — only Necklaces; the other 4 show the designed empty state until their documents arrive |
+| Placeholder text / `/placeholder-product.png` | **PASS** — file, seed script and all references removed; fake testimonials removed (section hidden until real reviews exist) |
+| Product pages load | **PASS** — all 20 return 200; metadata, canonical and Product JSON-LD (INR, availability) verified on one |
+| Routes / sitemap / robots | **PASS** — sitemap lists 20 products + 5 categories, no admin |
+| Brand-leak grep | **PASS** — only the client's own "unboxing video" return wording remains (a customer recording, not a site video) |
+| `href="#"`, text under 12px, raw `<img>` | **PASS** — 0 / 0 / 0 |
+| `npm run lint`, `npm run build` | **PASS** — clean |
+| 375px / 1440px rendering | **NOT VERIFIED** — no browser available; layout checked by CSS only |
+
+Fixed in this pass:
+- Product photos used `/api/media` in OG tags and JSON-LD, but `/api` is disallowed in robots.txt — they now use the direct storage URL.
+- PDP metal-tone picker offered Silver / Rose Gold on gold-only pieces; it now shows only the product's own tone.
+- Ring/chain size guides said "placeholder measurements"; reworded as standard reference charts.
+- `manifest.json` still said "gold and bridal jewellery".
+- `scripts/import-product-assets.cjs` (old importer with stale copy that would overwrite live settings) removed.
+- Live homepage settings had reverted to the old ticker text and empty hero slides; re-synced from `lib/content/home.ts`.
+
+Open items for the client / you:
+1. Isla Charm, Sana Pearl and Sana Pearl Chain all use the same photo (the client's own PDF shows the same necklace for all three). Confirm, or send separate photos.
+2. "Sana pearl" appears twice in the document (899 and 799); the second is named **Sana Pearl Chain** — confirm the name.
+3. Stock is a stand-in (10 each); no weights, lengths or compare-at prices were given.
+4. "Free shipping above ₹999" (ticker) is not in the client's document; the `new50` welcome offer is shown but applied manually (no discount-code engine).
+5. The photos are one image per product, so PDP galleries have a single image.
+6. Client wording changes are listed in `scripts/data/necklaces.json` (`clientDescription` vs `description`).

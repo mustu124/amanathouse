@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { ProductDetailContent } from "./ProductDetailContent";
 import { getCategoryByName } from "@/lib/product-data";
 import { getProductBySlugForMetadata } from "@/lib/server-products";
-import { getDisplayMediaUrl } from "@/lib/media";
 import { env } from "@/lib/env";
 
 function toAbsoluteUrl(path: string) {
@@ -19,7 +18,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const priceLabel = `₹${product.price.toLocaleString("en-IN")}`;
   const availabilityLabel = product.inStock ? "In Stock" : "Out of Stock";
   const description = `${priceLabel} — ${availabilityLabel}. ${product.description || `${product.name} from Amanat House.`}`.slice(0, 300);
-  const imageUrl = product.images[0]?.url ? getDisplayMediaUrl(product.images[0].url) : "/og-image.png";
+  // Raw storage URL, not the /api/media proxy: /api is disallowed in robots.txt.
+  const imageUrl = product.images[0]?.url ?? "/og-image.png";
 
   return {
     title: product.name,
@@ -54,7 +54,7 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
           "@type": "Product",
           name: product.name,
           description: product.description || `${product.name} from Amanat House.`,
-          image: product.images.map((image) => toAbsoluteUrl(getDisplayMediaUrl(image.url))),
+          image: product.images.map((image) => toAbsoluteUrl(image.url)),
           sku: product._id,
           brand: { "@type": "Brand", name: "Amanat House" },
           offers: {

@@ -94,10 +94,13 @@ NEXT_PUBLIC_STORE_EMAIL=hello@amanathouse.com
 NEXT_PUBLIC_INSTAGRAM_URL=https://www.instagram.com/amanathouse
 ```
 
-## 7. (Optional) Bulk-import product photos
+## 7. Import the catalogue
+
+Process the client's photos and load the products (idempotent — safe to re-run):
 
 ```bash
-npm run supabase:import
+python scripts/process-catalogue-images.py
+npm run import:catalogue
 ```
 
-By default the importer reads from a local folder named `Amanat House Jewellery Photos for Website` (pass a different path as an argument). This is a one-off convenience script, unrelated to the migration above.
+See [docs/PLACEHOLDER_CLEANUP.md](../docs/PLACEHOLDER_CLEANUP.md).

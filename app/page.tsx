@@ -85,6 +85,7 @@ type PublicSettings = {
 
 type HeroSlide = {
   image: string;
+  mobileImage?: string;
   headline: string;
   subtitle?: string;
   cta: string;
@@ -93,6 +94,7 @@ type HeroSlide = {
 
 const heroSlides: HeroSlide[] = HOME_HERO_SLIDES.map((slide) => ({
   image: slide.image,
+  mobileImage: slide.mobileImage,
   headline: slide.headline,
   subtitle: slide.subtitle,
   cta: slide.ctaText,
@@ -108,8 +110,7 @@ const categories: CategoryTile[] = CATEGORY_DETAILS.map((category) => ({
   icon: category.icon
 }));
 
-// Placeholder testimonials — sourced from lib/content/home.ts; replace with
-// real, verified customer reviews before launch.
+// Sourced from lib/content/home.ts — the section is hidden while it is empty.
 const testimonials = HOME_TESTIMONIALS;
 
 const sectionReveal = { hidden: staggerContainer.hidden, show: staggerContainer.visible };
@@ -301,8 +302,9 @@ function HeroSlider({ slides }: { slides: HeroSlide[] }) {
   };
 
   const isPlaceholderHero = slides[activeIndex].image === "/logo.png";
-  const currentHeroSrc = optimizedMediaUrl(slides[activeIndex].image, isMobileHero ? 760 : 1500);
-  const nextHeroSrc = optimizedMediaUrl(slides[(activeIndex + 1) % slides.length].image, isMobileHero ? 760 : 1500);
+  const heroImageFor = (slide: HeroSlide) => (isMobileHero && slide.mobileImage) || slide.image;
+  const currentHeroSrc = optimizedMediaUrl(heroImageFor(slides[activeIndex]), isMobileHero ? 760 : 1500);
+  const nextHeroSrc = optimizedMediaUrl(heroImageFor(slides[(activeIndex + 1) % slides.length]), isMobileHero ? 760 : 1500);
 
   useEffect(() => {
     const nextImage = new window.Image();
@@ -855,6 +857,7 @@ function TestimonialsSlider() {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
+    if (testimonials.length < 2) return;
     const timer = window.setInterval(() => {
       setActive((current) => (current + 1) % testimonials.length);
     }, 4000);
@@ -863,6 +866,8 @@ function TestimonialsSlider() {
   }, []);
 
   const testimonial = testimonials[active];
+
+  if (!testimonial) return null;
 
   return (
     <motion.section
@@ -980,7 +985,7 @@ function InstagramStrip({ instagramUrl }: { instagramUrl?: string }) {
               </motion.div>
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-amanat-cream">
-                <Image src="/placeholder-product.png" alt={image.alt} width={96} height={96} className="object-contain opacity-70" />
+                <Image src="/logo-mark.png" alt={image.alt} width={96} height={96} className="object-contain opacity-70" />
               </div>
             )}
             <motion.div

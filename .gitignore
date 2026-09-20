@@ -26,3 +26,7 @@ dev.job.log
 
 # typescript
 *.tsbuildinfo
+
+# Raw client photos/documents — processed copies live in the Supabase bucket
+/client-assets/
+/.qa-tmp/

@@ -96,4 +96,5 @@ Admin routes and their mutating API calls are gated by `middleware.ts` behind a 
 | `npm run build` | Production build |
 | `npm run start` | Serve a production build |
 | `npm run lint` | Run ESLint |
-| `npm run supabase:import` | Bulk-upload a local folder of product photos into Supabase Storage + `products` + `gallery` + `settings` (see `supabase/README.md`) |
+| `npm run seed:categories` | Sync the 5 categories to Supabase |
+| `npm run import:catalogue` | Import the client catalogue (`scripts/data/*.json` + processed photos) — see `docs/PLACEHOLDER_CLEANUP.md` |

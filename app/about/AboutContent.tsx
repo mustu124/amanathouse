@@ -85,15 +85,12 @@ export function AboutContent() {
 
           <motion.div variants={itemReveal} className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-amanat-sand shadow-soft">
             <Image
-              src="/placeholder-product.png"
-              alt="Amanat House pieces styled together"
+              src="/brand/about.webp"
+              alt="Amanat House Evil Charm Bloom Neck Chain worn layered"
               fill
               sizes="(min-width: 1024px) 40vw, 90vw"
-              className="object-contain p-12 opacity-80"
+              className="object-contain"
             />
-            <span className="absolute bottom-3 left-3 right-3 rounded-[2px] bg-black/45 px-3 py-1.5 text-center text-xs font-bold text-white backdrop-blur">
-              Photo placeholder — 4:5 portrait, 1200 &times; 1500px, ivory background
-            </span>
           </motion.div>
         </div>
 

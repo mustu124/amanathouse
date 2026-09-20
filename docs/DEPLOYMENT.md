@@ -49,10 +49,9 @@ project (billing, backups, access control) from day one.
 5. From Project Settings → API, copy the **Project URL**, **anon public**
    key, and **service_role** key — these feed the Vercel env vars below.
 6. Run `npm run seed:categories` once (from a machine with these new
-   credentials in `.env.local`) to seed the 10 jewellery categories. Run
-   `npm run seed:products` too if the client wants the placeholder catalog
-   live at launch — see [docs/PLACEHOLDER_CLEANUP.md](PLACEHOLDER_CLEANUP.md)
-   for removing it later once real products are entered.
+   credentials in `.env.local`) to seed the 5 jewellery categories, then
+   `python scripts/process-catalogue-images.py` and `npm run import:catalogue`
+   to load the real catalogue — see [docs/PLACEHOLDER_CLEANUP.md](PLACEHOLDER_CLEANUP.md).
 
 ## 3. Create the Vercel project
 
@@ -143,18 +142,17 @@ site isn't truly launch-ready without them:
 1. **The real domain name** — this doc uses `amanathouse.com` as a
    placeholder throughout. Confirm the actual domain (already owned, or
    needs registering) and who has access to its DNS settings.
-2. **Product catalogue** — a real product list (name, category, price,
-   material/plating details, stock) to replace the placeholder catalog
-   from `scripts/seed-placeholder-products.ts`. See
-   [docs/PLACEHOLDER_CLEANUP.md](PLACEHOLDER_CLEANUP.md) for how to remove
-   placeholders once real products are entered.
-3. **Real product photography** — every image on the site is currently
-   `/placeholder-product.png` or a generated category graphic. Spec is in
-   PLACEHOLDER_CLEANUP.md (4:5 portrait, 1200×1500px, WebP, under 300KB).
-4. **Policy confirmations** — `lib/content/policies.ts` has returns
-   (currently "7 days for damaged/incorrect items"), shipping, and care/
-   warranty text marked `TODO-confirm` — the client needs to confirm or
-   correct the actual terms before this is legally/operationally accurate.
+2. **Rings, Earrings, Bracelets and Anklets** — only Necklaces have been
+   imported (20 products). The client still needs to send each remaining
+   category's document and photos (same process: see
+   [docs/PLACEHOLDER_CLEANUP.md](PLACEHOLDER_CLEANUP.md)). The 11 ring photos
+   are already in `client-assets/rings/` waiting for names, prices and copy.
+3. **Real stock quantities, weights and lengths** — imported products use
+   10 units of stock as a stand-in and have no weight or chain length.
+4. **Policy confirmations** — returns, shipping and the 6-month warranty
+   in `lib/content/policies.ts` now follow the client's document; confirm
+   the "free shipping above ₹999" ticker line and the `new50` welcome offer
+   (5% off, applied manually — there is no discount-code engine yet).
 5. **Instagram handle** — `NEXT_PUBLIC_INSTAGRAM_URL` is currently set to
    `https://www.instagram.com/amanat.house`; confirm this is the real,
    final handle the client wants live (or provide the correct one).

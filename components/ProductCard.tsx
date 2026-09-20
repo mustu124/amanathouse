@@ -70,7 +70,7 @@ export function ProductCard({ product, onQuickView, onMoreLikeThis }: ProductCar
         <Link href={productHref} aria-label={`View ${product.name}`}>
           <motion.div className="h-full w-full" whileHover={{ scale: 1.08 }} transition={{ duration: 0.55 }}>
             <Image
-              src={image?.url ? optimizedMediaUrl(image.url, 700) : "/placeholder-product.png"}
+              src={image?.url ? optimizedMediaUrl(image.url, 700) : "/logo-mark.png"}
               alt={image?.alt ?? product.name}
               fill
               sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw"
@@ -217,7 +217,7 @@ export function QuickViewModal({
           >
             <div className="relative aspect-[4/5] bg-amanat-sand md:aspect-auto">
               <Image
-                src={product.images[0]?.url ? optimizedMediaUrl(product.images[0].url, 1000) : "/placeholder-product.png"}
+                src={product.images[0]?.url ? optimizedMediaUrl(product.images[0].url, 1000) : "/logo-mark.png"}
                 alt={product.images[0]?.alt ?? product.name}
                 fill
                 sizes="(min-width: 768px) 44vw, 92vw"

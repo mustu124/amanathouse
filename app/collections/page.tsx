@@ -162,7 +162,7 @@ export default function CollectionsPage() {
 function GalleryTile({ item, onClick }: { item: GalleryItem; onClick: () => void }) {
   const heightSeed = item.order ?? 1;
   const thumbnailSrc = item.thumbnailUrl || item.url;
-  const optimizedThumbnail = thumbnailSrc === "/placeholder-product.png" ? thumbnailSrc : optimizedMediaUrl(thumbnailSrc, 720);
+  const optimizedThumbnail = thumbnailSrc === "/logo-mark.png" ? thumbnailSrc : optimizedMediaUrl(thumbnailSrc, 720);
   const productHref = item.productSlug ? `/shop/${encodeURIComponent(item.productSlug)}` : "";
 
   if (productHref) {

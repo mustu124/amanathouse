@@ -169,11 +169,19 @@ select {
   cursor: not-allowed;
 }
 
-/* Column counts are divisors of 10 (2, 5, 10) at every breakpoint so an
-   exactly-10-item category grid never leaves a lonely orphan in the last
-   row, at any viewport width. */
+/* Column counts (2 on mobile, 5 from sm up) keep the 5-item
+   category grid tidy — the odd last mobile tile is centred below. */
 .category-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* An odd last tile would sit alone on the left at 2 columns — centre it. */
+@media (max-width: 639px) {
+  .category-grid > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc(50% - 0.5rem);
+  }
 }
 
 @media (min-width: 640px) {
