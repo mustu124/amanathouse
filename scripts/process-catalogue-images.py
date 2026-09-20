@@ -1,10 +1,9 @@
 """Turn the client's raw photos into storefront-ready WebP files.
 
-Reads scripts/data/necklaces.json and client-assets/necklaces/*, writes
+Reads scripts/data/{necklaces,rings}.json and client-assets/{necklaces,rings}/*, writes
 client-assets/processed/<slug>-1.webp: 1200x1500 (4:5), the whole photo kept
 in frame on an ivory canvas (never cropped, except the Teddy collage), under
-300KB. Also builds the homepage hero images, About/stack images and the
-Necklaces category tile.
+300KB. Also builds the homepage hero images and About/stack images.
 
 Usage: python scripts/process-catalogue-images.py
 Needs: pip install pillow pillow-heif
@@ -20,6 +19,7 @@ pillow_heif.register_heif_opener()
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW = os.path.join(ROOT, "client-assets", "necklaces")
+RAW_RINGS = os.path.join(ROOT, "client-assets", "rings")
 OUT = os.path.join(ROOT, "client-assets", "processed")
 PUBLIC = os.path.join(ROOT, "public")
 IVORY = (250, 245, 236)
@@ -28,15 +28,15 @@ MAX_BYTES = 300 * 1024
 os.makedirs(OUT, exist_ok=True)
 
 
-def find_raw(prefix):
-    for name in sorted(os.listdir(RAW)):
+def find_raw(prefix, folder=RAW):
+    for name in sorted(os.listdir(folder)):
         if name.startswith(prefix):
-            return os.path.join(RAW, name)
+            return os.path.join(folder, name)
     raise FileNotFoundError(prefix)
 
 
-def load(prefix, crop=None):
-    im = ImageOps.exif_transpose(Image.open(find_raw(prefix))).convert("RGB")
+def load(prefix, crop=None, folder=RAW):
+    im = ImageOps.exif_transpose(Image.open(find_raw(prefix, folder))).convert("RGB")
     if crop == "lower-photo":
         # The Teddy source is a collage: a camera-screen graphic on top, the
         # real photo below. Find the hard boundary row and keep what is below.
@@ -71,16 +71,18 @@ def save_webp(im, path, max_bytes=MAX_BYTES):
 
 
 def main():
-    products = json.load(open(os.path.join(ROOT, "scripts", "data", "necklaces.json"), encoding="utf-8"))
-    cache = {}
-    for p in products:
-        key = (p["image"], p.get("crop"))
-        if key not in cache:
-            cache[key] = load(p["image"], p.get("crop"))
-        canvas = fit_canvas(cache[key], (1200, 1500))
-        path = os.path.join(OUT, f"{p['slug']}-1.webp")
-        q = save_webp(canvas, path)
-        print(f"{p['slug']}-1.webp  q{q}  {os.path.getsize(path) // 1024}KB")
+    datasets = (("necklaces.json", RAW), ("rings.json", RAW_RINGS))
+    for data_file, folder in datasets:
+        products = json.load(open(os.path.join(ROOT, "scripts", "data", data_file), encoding="utf-8"))
+        cache = {}
+        for p in products:
+            key = (p["image"], p.get("crop"))
+            if key not in cache:
+                cache[key] = load(p["image"], p.get("crop"), folder)
+            canvas = fit_canvas(cache[key], (1200, 1500))
+            path = os.path.join(OUT, f"{p['slug']}-1.webp")
+            q = save_webp(canvas, path)
+            print(f"{p['slug']}-1.webp  q{q}  {os.path.getsize(path) // 1024}KB")
 
     # Homepage hero: full-bleed. A blurred, ivory-tinted copy of the photo fills
     # the whole frame; the sharp photo sits on top (right on desktop, top on
@@ -98,13 +100,7 @@ def main():
         canvas = fit_canvas(load(prefix), (1200, 1500))
         save_webp(canvas, os.path.join(PUBLIC, "brand", f"{name}.webp"))
 
-    # Necklaces category tile: square crop around the necklace.
-    tile_src = load("A3684AC4")
-    w, h = tile_src.size
-    top = int(h * 0.06)
-    tile = tile_src.crop((0, top, w, top + w)).resize((800, 800), Image.LANCZOS)
-    tile.save(os.path.join(PUBLIC, "categories", "necklaces.jpg"), quality=88)
-    print("hero, brand and category images written")
+    print("hero and brand images written (category tiles now come from client-assets/category_images)")
 
 
 if __name__ == "__main__":
