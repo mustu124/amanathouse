@@ -101,13 +101,13 @@ export function Navbar() {
         >
           <motion.a href="/" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="inline-flex items-center">
             <Image
-              src="/logo-wordmark.png"
+              src="/logo.png"
               alt="Amanat House"
-              width={200}
-              height={32}
+              width={1783}
+              height={733}
               quality={95}
               priority
-              className="h-8 w-auto object-contain"
+              className="h-[68px] w-auto object-contain"
             />
           </motion.a>
 
@@ -188,13 +188,13 @@ export function Navbar() {
           <CartButton itemCount={itemCount} onClick={openCart} />
           <motion.a href="/" whileTap={{ scale: 0.96 }} className="justify-self-center">
             <Image
-              src="/logo-wordmark.png"
+              src="/logo.png"
               alt="Amanat House"
-              width={162}
-              height={26}
+              width={1783}
+              height={733}
               quality={95}
               priority
-              className="h-[26px] w-auto object-contain"
+              className="h-[46px] w-auto object-contain"
             />
           </motion.a>
           <motion.button
@@ -346,9 +346,9 @@ function MobileSidebar({
 
             <motion.div
               variants={mobileItemVariants}
-              className="h-14 w-14 overflow-hidden rounded-2xl"
+              className="h-16 w-40 overflow-hidden"
             >
-              <Image src="/logo.png" alt="Amanat House" width={64} height={64} quality={95} className="h-full w-full object-contain" />
+              <Image src="/logo.png" alt="Amanat House" width={1783} height={733} quality={95} className="h-full w-full object-contain object-left" />
             </motion.div>
 
             <motion.nav className="mt-8 grid gap-1" variants={mobileItemVariants}>

@@ -71,8 +71,7 @@ function Sidebar({ pathname, onNavigate }: { pathname: string; onNavigate: () =>
   return (
     <div className="flex h-full flex-col p-5">
       <Link href="/admin" onClick={onNavigate} className="flex items-center gap-3">
-        <Image src="/logo.png" alt="Amanat House" width={56} height={56} quality={95} className="rounded-xl object-contain" />
-        <span className="font-heading text-xl font-bold">Amanat House</span>
+        <Image src="/logo.png" alt="Amanat House" width={1783} height={733} quality={95} className="h-14 w-auto object-contain" />
       </Link>
       <nav className="mt-8 grid gap-2">
         {links.map(([label, href]) => {

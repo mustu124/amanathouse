@@ -57,6 +57,11 @@ def fit_canvas(im, size, pad=IVORY):
     return canvas
 
 
+def hero_frame(src, size, anchor):
+    # Full-bleed cover crop; focal point kept on the necklace area (upper-middle).
+    return ImageOps.fit(src, size, Image.LANCZOS, centering=(0.5, 0.38))
+
+
 def save_webp(im, path, max_bytes=MAX_BYTES):
     for quality in (90, 86, 82, 78, 74, 70, 65, 60):
         im.save(path, "WEBP", quality=quality, method=6)
@@ -77,19 +82,15 @@ def main():
         q = save_webp(canvas, path)
         print(f"{p['slug']}-1.webp  q{q}  {os.path.getsize(path) // 1024}KB")
 
-    # Homepage hero: desktop 16:9 (text sits on the ivory left), mobile 9:16.
+    # Homepage hero: full-bleed. A blurred, ivory-tinted copy of the photo fills
+    # the whole frame; the sharp photo sits on top (right on desktop, top on
+    # mobile) with a soft edge, so no part of the screen is a flat empty band.
     os.makedirs(os.path.join(PUBLIC, "hero"), exist_ok=True)
     heroes = [("B0EC1FD1", 1), ("E33FDD03", 2), ("0A2E4FFF", 3)]
     for prefix, n in heroes:
         src = load(prefix)
-        desktop = Image.new("RGB", (1920, 1080), IVORY)
-        photo = ImageOps.contain(src, (1000, 1080), Image.LANCZOS)
-        desktop.paste(photo, (1920 - photo.width - 40, (1080 - photo.height) // 2))
-        save_webp(desktop, os.path.join(PUBLIC, "hero", f"hero-{n}.webp"), 260 * 1024)
-        mobile = Image.new("RGB", (1080, 1920), IVORY)
-        photo_m = ImageOps.contain(src, (1080, 1500), Image.LANCZOS)
-        mobile.paste(photo_m, ((1080 - photo_m.width) // 2, 0))
-        save_webp(mobile, os.path.join(PUBLIC, "hero", f"hero-{n}-mobile.webp"), 260 * 1024)
+        save_webp(hero_frame(src, (1920, 1080), "right"), os.path.join(PUBLIC, "hero", f"hero-{n}.webp"), 300 * 1024)
+        save_webp(hero_frame(src, (1080, 1920), "top"), os.path.join(PUBLIC, "hero", f"hero-{n}-mobile.webp"), 300 * 1024)
 
     # About + "everyday stack" editorial images (4:5, same treatment).
     os.makedirs(os.path.join(PUBLIC, "brand"), exist_ok=True)

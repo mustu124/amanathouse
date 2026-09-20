@@ -49,8 +49,8 @@ export function AboutContent() {
             document structure valid for screen readers without changing
             the design. */}
         <h1 className="sr-only">About Amanat House</h1>
-        <motion.div variants={itemReveal} className="relative mt-8 h-28 w-48 sm:h-32 sm:w-56">
-          <Image src="/logo.png" alt="Amanat House" fill sizes="224px" priority className="object-contain" />
+        <motion.div variants={itemReveal} className="relative mt-8 h-28 w-64 sm:h-36 sm:w-80">
+          <Image src="/logo.png" alt="Amanat House" fill sizes="320px" priority className="object-contain" />
         </motion.div>
         <motion.p variants={itemReveal} className="mt-6 text-xs font-black uppercase tracking-[0.3em] text-amanat-terracotta">
           Estd 2019

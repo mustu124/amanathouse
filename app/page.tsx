@@ -605,7 +605,7 @@ function CategoryCircle({
       whileTap={{ scale: 0.97 }}
       className="group flex w-full min-w-0 flex-col items-center gap-3 text-center"
     >
-      <span className="relative flex h-[clamp(92px,27vw,104px)] w-[clamp(92px,27vw,104px)] items-center justify-center rounded-full bg-white shadow-soft transition-shadow duration-200 group-hover:shadow-[0_18px_45px_rgba(162,62,44,0.34)] sm:h-[112px] sm:w-[112px] xl:h-[124px] xl:w-[124px]">
+      <span className="relative flex h-[clamp(120px,36vw,150px)] w-[clamp(120px,36vw,150px)] items-center justify-center rounded-full bg-white shadow-soft transition-shadow duration-200 group-hover:shadow-[0_18px_45px_rgba(162,62,44,0.34)] sm:h-[120px] sm:w-[120px] lg:h-[150px] lg:w-[150px] xl:h-[200px] xl:w-[200px]">
         <motion.span
           className="absolute inset-[-3px] rounded-full border-2 border-dashed border-amanat-terracotta sm:inset-[-6px]"
           animate={{ rotate: isHovered ? 360 : 0 }}
@@ -1023,8 +1023,8 @@ function Footer({ settings }: { settings: PublicSettings | null }) {
     >
       <motion.div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-4" variants={sectionReveal}>
         <motion.div variants={itemReveal}>
-          <motion.div className="relative h-16 w-16 overflow-hidden rounded-xl" whileHover={{ rotate: -4, scale: 1.04 }}>
-            <Image src="/logo.png" alt="Amanat House" fill sizes="64px" quality={95} className="object-contain" />
+          <motion.div className="relative h-24 w-56 overflow-hidden" whileHover={{ rotate: -4, scale: 1.04 }}>
+            <Image src="/logo.png" alt="Amanat House" fill sizes="224px" quality={95} className="object-contain object-left" />
           </motion.div>
           <h2 className="mt-4 font-heading text-3xl font-bold text-amanat-brown">Amanat House</h2>
           <p className="mt-2 font-bold text-amanat-sage">Made to be kept.</p>
