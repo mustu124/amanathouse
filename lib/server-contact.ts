@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from "next/cache";
 import { env } from "@/lib/env";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase";
 
@@ -18,6 +19,8 @@ export async function getServerContact(): Promise<ServerContact> {
     instagramUrl: env.instagramUrl,
     address: env.storeAddress
   };
+  // supabase-js uses fetch(), which Next would otherwise cache between requests.
+  noStore();
   if (!isSupabaseConfigured()) return fallback;
 
   try {

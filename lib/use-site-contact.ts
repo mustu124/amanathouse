@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { createContext, createElement, useContext, useEffect, useState, type ReactNode } from "react";
 import { env } from "@/lib/env";
 
 export type SiteContact = {
@@ -23,6 +23,14 @@ type SettingsShape = {
   storeAddress?: string;
   socialLinks?: { instagram?: string };
 };
+
+// Seeded by the server layout with the admin's saved values, so the very first
+// render already shows them (no flash of the build-time env values).
+const SiteContactContext = createContext<SiteContact | null>(null);
+
+export function SiteContactProvider({ value, children }: { value: SiteContact; children: ReactNode }) {
+  return createElement(SiteContactContext.Provider, { value }, children);
+}
 
 const CACHE_MS = 30_000;
 let cached: { value: SiteContact; at: number } | null = null;
@@ -57,7 +65,8 @@ function loadSiteContact(): Promise<SiteContact> {
 }
 
 export function useSiteContact(): SiteContact {
-  const [contact, setContact] = useState<SiteContact>(cached?.value ?? fallback);
+  const seeded = useContext(SiteContactContext);
+  const [contact, setContact] = useState<SiteContact>(cached?.value ?? seeded ?? fallback);
 
   useEffect(() => {
     let isMounted = true;

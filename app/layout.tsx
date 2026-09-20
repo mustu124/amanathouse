@@ -4,6 +4,7 @@ import { Providers } from "@/components/providers";
 import { Navbar } from "@/components/Navbar";
 import { env, STORE_ADDRESS_TODO } from "@/lib/env";
 import { getServerContact } from "@/lib/server-contact";
+import { SiteContactProvider } from "@/lib/use-site-contact";
 import { bodySans, displaySerif, priceSerif } from "@/lib/fonts";
 
 export const metadata: Metadata = {
@@ -66,8 +67,8 @@ export const viewport: Viewport = {
   themeColor: "#FAF5EC"
 };
 
-// Structured data reads the admin's saved contact settings; refresh at most every minute.
-export const revalidate = 60;
+// Contact details come from the admin's saved settings on every request, so a change shows up immediately.
+export const dynamic = "force-dynamic";
 
 export default async function RootLayout({
   children
@@ -138,10 +139,12 @@ export default async function RootLayout({
         >
           Skip to main content
         </a>
+        <SiteContactProvider value={contact}>
         <Providers>
           <Navbar />
           {children}
         </Providers>
+        </SiteContactProvider>
       </body>
     </html>
   );
