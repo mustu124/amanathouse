@@ -1,4 +1,4 @@
-// Re-runnable seed: upserts the 5 jewellery categories (name, slug, icon,
+// Re-runnable seed: upserts the 4 jewellery categories (name, slug, icon,
 // description, sort order) into both the `categories` table and the
 // `settings.categories` JSONB column that the storefront/admin actually
 // read from. Safe to run repeatedly — it's an upsert, not an insert.

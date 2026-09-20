@@ -7,7 +7,7 @@ export type CategoryDetail = {
   image: string;
 };
 
-// Single source of truth for the 5 jewellery categories: name, slug (used
+// Single source of truth for the 4 jewellery categories: name, slug (used
 // in /shop?category=<slug> URLs and the categories DB table), a 12-18 word
 // description, display order, and the placeholder product image.
 export const CATEGORY_DETAILS: CategoryDetail[] = [
@@ -46,15 +46,6 @@ export const CATEGORY_DETAILS: CategoryDetail[] = [
       "Everyday chain bracelets and charm styles, light and durable enough to wear through daily routines.",
     sortOrder: 3,
     image: "/categories/bracelets.jpg"
-  },
-  {
-    name: "Anklets",
-    slug: "anklets",
-    icon: "🦶",
-    description:
-      "Delicate anklets with fine chains and subtle charms, designed for everyday wear and gentle movement.",
-    sortOrder: 4,
-    image: "/categories/anklets.jpg"
   }
 ];
 

@@ -143,7 +143,7 @@ site isn't truly launch-ready without them:
 1. **The real domain name** — this doc uses `amanathouse.com` as a
    placeholder throughout. Confirm the actual domain (already owned, or
    needs registering) and who has access to its DNS settings.
-2. **Rings, Earrings, Bracelets and Anklets** — only Necklaces have been
+2. **Rings, Earrings and Bracelets** — only Necklaces have been
    imported (20 products). The client still needs to send each remaining
    category's document and photos (same process: see
    [docs/PLACEHOLDER_CLEANUP.md](PLACEHOLDER_CLEANUP.md)). The 11 ring photos
