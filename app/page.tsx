@@ -1149,7 +1149,7 @@ function Footer({ settings }: { settings: PublicSettings | null }) {
       </motion.div>
 
       <motion.div variants={itemReveal} className="mx-auto mt-12 max-w-7xl border-t border-ivory/20 pt-8 text-center">
-        <p className="text-sm text-ivory/60">{settings?.footerCopyright || "\u00A9 2025 Amanat House"}</p>
+        <p className="text-sm text-ivory/60">{settings?.footerCopyright || "\u00A9 2026 Amanat House"}</p>
         <div className="mt-5 flex justify-center gap-4">
           {socials.map((social) => (
             <a

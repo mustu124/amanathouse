@@ -148,7 +148,7 @@ export default function AdminSiteSettingsPage() {
       <AdminSection title="Footer">
         <label className="grid gap-2 text-sm font-bold text-amanat-brown">
           Footer copyright text
-          <input value={form.footerCopyright ?? ""} onChange={(event) => update("footerCopyright", event.target.value)} className="field-input" placeholder="(c) 2025 Amanat House" />
+          <input value={form.footerCopyright ?? ""} onChange={(event) => update("footerCopyright", event.target.value)} className="field-input" placeholder="(c) 2026 Amanat House" />
         </label>
       </AdminSection>
     </div>

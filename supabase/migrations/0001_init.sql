@@ -283,6 +283,6 @@ select
   'Amanat House creates timeless gold and bridal jewellery for life''s most cherished moments.',
   'Amanat House | Timeless Jewellery, Made to Treasure',
   'Shop fine gold, bridal, and everyday jewellery from Amanat House.',
-  '© 2025 Amanat House',
+  '© 2026 Amanat House',
   '[]'::jsonb
 where not exists (select 1 from public.settings);

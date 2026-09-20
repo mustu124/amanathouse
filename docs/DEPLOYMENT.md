@@ -154,7 +154,7 @@ site isn't truly launch-ready without them:
    the "free shipping above ₹999" ticker line and the `new50` welcome offer
    (5% off, applied manually — there is no discount-code engine yet).
 5. **Instagram handle** — `NEXT_PUBLIC_INSTAGRAM_URL` is currently set to
-   `https://www.instagram.com/amanat.house`; confirm this is the real,
+   `https://www.instagram.com/amanat.jewelhouse`; confirm this is the real,
    final handle the client wants live (or provide the correct one).
 6. **City/address** — `NEXT_PUBLIC_STORE_ADDRESS` is unset, so the site
    currently shows a visible `TODO: confirm city` placeholder in the

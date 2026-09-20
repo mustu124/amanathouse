@@ -92,8 +92,8 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 SUPABASE_STORAGE_BUCKET=amanat-house
 NEXT_PUBLIC_SITE_URL=https://www.amanathouse.com
 NEXT_PUBLIC_WHATSAPP_NUMBER=919999999999
-NEXT_PUBLIC_STORE_EMAIL=hello@amanathouse.com
-NEXT_PUBLIC_INSTAGRAM_URL=https://www.instagram.com/amanathouse
+NEXT_PUBLIC_STORE_EMAIL=amanat.house00@gmail.com
+NEXT_PUBLIC_INSTAGRAM_URL=https://www.instagram.com/amanat.jewelhouse
 ```
 
 ## 7. Import the catalogue
