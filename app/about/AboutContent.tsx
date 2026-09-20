@@ -52,9 +52,6 @@ export function AboutContent() {
         <motion.div variants={itemReveal} className="relative mt-8 h-28 w-64 sm:h-36 sm:w-80">
           <Image src="/logo.png" alt="Amanat House" fill sizes="320px" priority className="object-contain" />
         </motion.div>
-        <motion.p variants={itemReveal} className="mt-6 text-xs font-black uppercase tracking-[0.3em] text-amanat-terracotta">
-          Estd 2019
-        </motion.p>
       </motion.section>
 
       {/* Editorial copy block */}
