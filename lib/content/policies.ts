@@ -2,11 +2,27 @@
 // accordion, so all three stay in sync from one place. Returns, shipping and
 // warranty terms come from the client's product document.
 
-export const RETURNS_POLICY_TEXT =
-  "Please record a clear unboxing video while opening your package — it is mandatory for any return or exchange request. If you receive a damaged, defective, or incorrect product, you can request an exchange within 5–7 days of delivery. We also accept returns within 5–7 days of delivery, provided the item is unused, in its original condition, and returned with its original packaging. Requests without a valid unboxing video may not be eligible.";
+export const SHIPPING_POLICY_INTRO = "At Amanat, every order is packed with love and care.";
 
-export const SHIPPING_POLICY_TEXT =
-  "We offer reliable domestic standard shipping across India, with delivery typically taking 5–7 business days after processing. All packages are shipped with tracking and are fully insured until delivery.";
+export const SHIPPING_POLICY_POINTS = [
+  "Orders are processed within 1–3 business days.",
+  "Delivery usually takes 5–7 business days, depending on your location.",
+  "Once your order is shipped, you will receive a tracking ID/AWB number via email or WhatsApp.",
+  "Delivery timelines may vary during sales, festive seasons, or due to unforeseen courier delays."
+];
+
+export const RETURNS_POLICY_INTRO = "Your satisfaction is important to us.";
+
+export const RETURNS_POLICY_POINTS = [
+  "Please record a clear unboxing video while opening your package. This is mandatory for any return or exchange request.",
+  "Returns or exchanges are accepted only if the product is damaged, defective, or incorrect.",
+  "You must raise a return/exchange request within 5–7 days of receiving your order.",
+  "The item must be unused, in its original packaging, and with all tags intact."
+];
+
+export const SHIPPING_POLICY_TEXT = `${SHIPPING_POLICY_INTRO} ${SHIPPING_POLICY_POINTS.join(" ")}`;
+
+export const RETURNS_POLICY_TEXT = `${RETURNS_POLICY_INTRO} ${RETURNS_POLICY_POINTS.join(" ")}`;
 
 export const WARRANTY_TEXT = "Every Amanat House piece comes with a 6-month warranty.";
 

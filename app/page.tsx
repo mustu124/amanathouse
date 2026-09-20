@@ -16,7 +16,12 @@ import {
 import { env, STORE_ADDRESS_TODO } from "@/lib/env";
 import { HAMPER_CATEGORY } from "@/lib/hampers";
 import { getDisplayMediaUrl } from "@/lib/media";
-import { RETURNS_POLICY_TEXT, SHIPPING_POLICY_TEXT } from "@/lib/content/policies";
+import {
+  RETURNS_POLICY_INTRO,
+  RETURNS_POLICY_POINTS,
+  SHIPPING_POLICY_INTRO,
+  SHIPPING_POLICY_POINTS
+} from "@/lib/content/policies";
 import { CATEGORY_DETAILS, slugifyCategoryName } from "@/lib/product-data";
 import { whatsappLink } from "@/lib/whatsapp";
 
@@ -1145,11 +1150,11 @@ function Footer({ settings }: { settings: PublicSettings | null }) {
           <FooterAccordion title="Policies">
             <div>
               <p className="font-semibold text-ivory">Returns</p>
-              <p className="mt-1 text-ivory/70">{RETURNS_POLICY_TEXT}</p>
+              <PolicyList intro={RETURNS_POLICY_INTRO} points={RETURNS_POLICY_POINTS} />
             </div>
             <div>
               <p className="font-semibold text-ivory">Shipping</p>
-              <p className="mt-1 text-ivory/70">{SHIPPING_POLICY_TEXT}</p>
+              <PolicyList intro={SHIPPING_POLICY_INTRO} points={SHIPPING_POLICY_POINTS} />
             </div>
           </FooterAccordion>
         </motion.div>
@@ -1171,6 +1176,19 @@ function Footer({ settings }: { settings: PublicSettings | null }) {
         </div>
       </motion.div>
     </motion.footer>
+  );
+}
+
+function PolicyList({ intro, points }: { intro: string; points: string[] }) {
+  return (
+    <div className="mt-1 text-ivory/70">
+      <p>{intro}</p>
+      <ul className="mt-2 grid list-disc gap-1.5 pl-5">
+        {points.map((point) => (
+          <li key={point}>{point}</li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
