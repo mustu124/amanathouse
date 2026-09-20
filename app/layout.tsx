@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { Navbar } from "@/components/Navbar";
-import { env } from "@/lib/env";
+import { env, STORE_ADDRESS_TODO } from "@/lib/env";
 import { bodySans, displaySerif, priceSerif } from "@/lib/fonts";
 
 export const metadata: Metadata = {
@@ -81,11 +81,9 @@ export default function RootLayout({
     url: env.siteUrl,
     logo: `${env.siteUrl}/logo.png`,
     sameAs: [env.instagramUrl],
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: env.storeAddress,
-      addressCountry: "IN"
-    },
+    ...(env.storeAddress !== STORE_ADDRESS_TODO
+      ? { address: { "@type": "PostalAddress", addressLocality: env.storeAddress, addressCountry: "IN" } }
+      : { address: { "@type": "PostalAddress", addressCountry: "IN" } }),
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
