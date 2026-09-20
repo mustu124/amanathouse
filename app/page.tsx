@@ -13,7 +13,7 @@ import {
   HOME_TESTIMONIALS,
   MARQUEE_TICKER_TEXT
 } from "@/lib/content/home";
-import { env, STORE_ADDRESS_TODO } from "@/lib/env";
+import { env } from "@/lib/env";
 import { HAMPER_CATEGORY } from "@/lib/hampers";
 import { getDisplayMediaUrl } from "@/lib/media";
 import { RETURNS_POLICY_TEXT, SHIPPING_POLICY_TEXT } from "@/lib/content/policies";
@@ -1026,110 +1026,88 @@ function InstagramStrip({ instagramUrl }: { instagramUrl?: string }) {
 }
 
 function Footer({ settings }: { settings: PublicSettings | null }) {
+  const links = ["Home", "Shop", "About", "Contact"];
   const whatsappNumber = settings?.whatsappNumber ?? env.whatsappNumber;
   const instagramUrl = settings?.socialLinks?.instagram || env.instagramUrl;
-  const address = settings?.storeAddress ?? env.storeAddress;
-  const email = settings?.storeEmail ?? env.storeEmail;
-  const phone = `+${whatsappNumber}`;
+  const contactDetails = {
+    address: settings?.storeAddress ?? env.storeAddress,
+    email: settings?.storeEmail ?? env.storeEmail,
+    phone: `+${whatsappNumber}`
+  };
   const footerWhatsAppLink = whatsappLink("Hi Amanat House! I have a question about your jewellery.", whatsappNumber);
-  const socials = [
-    { label: "Instagram", href: instagramUrl, icon: <InstagramIcon className="h-5 w-5" /> },
-    ...(settings?.socialLinks?.facebook ? [{ label: "Facebook", href: settings.socialLinks.facebook, icon: <span className="text-lg font-bold">f</span> }] : []),
-    { label: "WhatsApp", href: footerWhatsAppLink, icon: <span className="text-lg">☎</span> }
-  ];
 
   return (
     <motion.footer
-      className="bg-ink px-6 py-14 text-ivory md:px-10"
+      className="bg-amanat-cream px-6 py-12 md:px-10"
       variants={sectionReveal}
       initial="hidden"
       whileInView="show"
-      viewport={{ once: true, amount: 0.15 }}
+      viewport={{ once: true, amount: 0.25 }}
     >
-      <motion.div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[1.2fr_1fr_1fr_1fr] md:gap-12" variants={sectionReveal}>
+      <motion.div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-4" variants={sectionReveal}>
         <motion.div variants={itemReveal}>
-          <h2 className="font-heading text-4xl font-medium tracking-[0.08em]">AMANAT</h2>
-          <p className="mt-2 text-xs font-semibold uppercase tracking-[0.28em] text-gold">Made to be kept</p>
-          <p className="mt-5 max-w-xs text-sm leading-7 text-ivory/70">
-            Minimal everyday jewellery in 316L steel and 18K PVD gold — waterproof, anti-tarnish, made in India.
-          </p>
+          <motion.div className="relative h-24 w-56 overflow-hidden" whileHover={{ rotate: -4, scale: 1.04 }}>
+            <Image src="/logo.png" alt="Amanat House" fill sizes="224px" quality={95} className="object-contain object-left" />
+          </motion.div>
+          <h2 className="mt-4 font-heading text-3xl font-bold text-amanat-brown">Amanat House</h2>
+          <p className="mt-2 font-bold text-amanat-sage">Made to be kept.</p>
         </motion.div>
 
-        <motion.div variants={itemReveal}>
-          <h3 className="text-xs font-semibold uppercase tracking-[0.24em] text-gold">Contact</h3>
-          <div className="mt-4 grid gap-2 text-sm leading-7">
-            {address && address !== STORE_ADDRESS_TODO && <p className="text-ivory/80">{address}</p>}
-            <a href={`mailto:${email}`} className="hover:text-gold">
-              {email}
-            </a>
-            <a href={`tel:${phone}`} className="hover:text-gold">
-              {phone}
-            </a>
-          </div>
-        </motion.div>
-
-        <motion.div variants={itemReveal}>
-          <FooterAccordion title="Support">
-            <a href="/shop" className="hover:text-gold">Shop</a>
-            <a href="/hampers" className="hover:text-gold">Gift hampers</a>
-            <a href="/about" className="hover:text-gold">About us</a>
-            <a href="/contact" className="hover:text-gold">Contact &amp; FAQs</a>
-            <a href={footerWhatsAppLink} className="hover:text-gold">Chat on WhatsApp</a>
-          </FooterAccordion>
-        </motion.div>
-
-        <motion.div variants={itemReveal}>
-          <FooterAccordion title="Policies">
-            <div>
-              <p className="font-semibold text-ivory">Returns</p>
-              <p className="mt-1 text-ivory/70">{RETURNS_POLICY_TEXT}</p>
-            </div>
-            <div>
-              <p className="font-semibold text-ivory">Shipping</p>
-              <p className="mt-1 text-ivory/70">{SHIPPING_POLICY_TEXT}</p>
-            </div>
-          </FooterAccordion>
-        </motion.div>
-      </motion.div>
-
-      <motion.div variants={itemReveal} className="mx-auto mt-12 max-w-7xl border-t border-ivory/20 pt-8 text-center">
-        <p className="text-sm text-ivory/60">{settings?.footerCopyright || "\u00A9 2025 Amanat House"}</p>
-        <div className="mt-5 flex justify-center gap-4">
-          {socials.map((social) => (
-            <a
-              key={social.label}
-              href={social.href}
-              aria-label={social.label}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-ivory/30 text-ivory transition hover:border-gold hover:text-gold"
+        <motion.nav variants={sectionReveal} className="grid gap-3">
+          {links.map((link) => (
+            <motion.a
+              key={link}
+              variants={itemReveal}
+              whileHover={{ x: 6, color: "#A23E2C" }}
+              href={link === "Home" ? "/" : `/${link.toLowerCase()}`}
+              className="font-bold text-amanat-brown"
             >
-              {social.icon}
-            </a>
+              {link}
+            </motion.a>
           ))}
-        </div>
+        </motion.nav>
+
+        <motion.div variants={sectionReveal} className="md:col-span-2">
+          <motion.div variants={itemReveal} className="flex gap-3">
+            {[
+              ["Instagram", instagramUrl, "◎"],
+              ...(settings?.socialLinks?.facebook ? [["Facebook", settings.socialLinks.facebook, "f"]] : []),
+              ["WhatsApp", footerWhatsAppLink, "☎"]
+            ].map(([label, href, icon]) => (
+              <motion.a
+                key={label}
+                href={href}
+                aria-label={label}
+                whileHover={{ y: -4, scale: 1.06, backgroundColor: "#A23E2C", color: "#ffffff" }}
+                whileTap={{ scale: 0.95 }}
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-lg font-black text-amanat-brown shadow-sm"
+              >
+                {label === "Instagram" ? <InstagramIcon className="h-6 w-6" /> : icon}
+              </motion.a>
+            ))}
+          </motion.div>
+          <motion.p variants={itemReveal} className="mt-6 font-bold text-amanat-brown">
+            Made with love in India
+          </motion.p>
+          <motion.div variants={itemReveal} className="mt-4 grid gap-1 text-sm font-bold leading-6 text-stone-600">
+            <a href={`mailto:${contactDetails.email}`} className="hover:text-amanat-terracotta">
+              {contactDetails.email}
+            </a>
+            <a href={`tel:${contactDetails.phone}`} className="hover:text-amanat-terracotta">
+              {contactDetails.phone}
+            </a>
+            {/* TODO-confirm: real city/address — see NEXT_PUBLIC_STORE_ADDRESS in docs/ENV_SETUP.md */}
+            <p>{contactDetails.address}</p>
+            {/* TODO-confirm: exact returns/shipping terms with the client — see lib/content/policies.ts */}
+            <p>Returns: {RETURNS_POLICY_TEXT}</p>
+            <p>Shipping: {SHIPPING_POLICY_TEXT}</p>
+          </motion.div>
+          <motion.p variants={itemReveal} className="mt-2 text-sm text-stone-600">
+            {settings?.footerCopyright || "\u00A9 2025 Amanat House"}
+          </motion.p>
+        </motion.div>
       </motion.div>
     </motion.footer>
-  );
-}
-
-function FooterAccordion({ title, children }: { title: string; children: React.ReactNode }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  // Collapsible on phones; always expanded from md up.
-  return (
-    <div className="border-b border-ivory/20 pb-3 md:border-0 md:pb-0">
-      <button
-        type="button"
-        aria-expanded={isOpen}
-        onClick={() => setIsOpen((open) => !open)}
-        className="flex w-full items-center justify-between text-left text-xs font-semibold uppercase tracking-[0.24em] text-gold md:cursor-default"
-      >
-        {title}
-        <span aria-hidden="true" className="text-lg leading-none text-ivory md:hidden">
-          {isOpen ? "−" : "+"}
-        </span>
-      </button>
-      <div className={`mt-4 gap-3 text-sm leading-7 md:grid ${isOpen ? "grid" : "hidden"}`}>{children}</div>
-    </div>
   );
 }
 
