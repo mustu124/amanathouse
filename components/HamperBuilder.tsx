@@ -209,7 +209,7 @@ export function HamperBuilder({ hamper }: { hamper: Hamper }) {
                       )}
                     </div>
                     <p className="mt-3 font-heading text-lg font-bold leading-tight">{product.name}</p>
-                    <p className="text-sm text-amanat-sage">
+                    <p className="font-price text-sm text-amanat-sage">
                       {formatMoney(product.price)}
                       {product.metalTone ? ` · ${product.metalTone.replace("-", " ")}` : ""}
                     </p>
@@ -277,7 +277,7 @@ export function HamperBuilder({ hamper }: { hamper: Hamper }) {
           <span className="text-xs font-bold uppercase tracking-[0.16em] text-amanat-sage">
             Your hamper · {price.itemCount} item{price.itemCount === 1 ? "" : "s"} {isSummaryOpen ? "▾" : "▴"}
           </span>
-          <span className="font-heading text-2xl font-bold">{formatMoney(price.total)}</span>
+          <span className="font-price text-2xl font-medium">{formatMoney(price.total)}</span>
         </button>
         {isSummaryOpen && <div className="max-h-[55vh] overflow-y-auto px-4 pb-2 pt-2">{summary}</div>}
         {!isSummaryOpen && (
@@ -332,7 +332,7 @@ function SummaryPanel({
                 {variant ? ` (${variant})` : ""} × {quantity}
               </span>
               <span className="flex shrink-0 items-center gap-3">
-                <span className="text-stone-500">{formatMoney(entry.product.price * quantity)}</span>
+                <span className="font-price text-stone-500">{formatMoney(entry.product.price * quantity)}</span>
                 {!requiredIds.includes(entry.product._id) && (
                   <button type="button" aria-label={`Remove ${entry.product.name}`} onClick={() => onRemove(entry.product._id)} className="text-xs font-bold text-amanat-terracotta">
                     Remove
@@ -347,29 +347,29 @@ function SummaryPanel({
       <dl className="mt-4 grid gap-1.5 border-t border-ink/10 pt-4 text-sm">
         <div className="flex justify-between">
           <dt>{showWorth ? "Worth" : "Items subtotal"}</dt>
-          <dd>{formatMoney(price.itemsSubtotal)}</dd>
+          <dd className="font-price">{formatMoney(price.itemsSubtotal)}</dd>
         </div>
         {!isFixed && price.discountAmount > 0 && (
           <div className="flex justify-between text-amanat-terracotta">
             <dt>Discount ({price.discountPercentApplied}%)</dt>
-            <dd>−{formatMoney(price.discountAmount)}</dd>
+            <dd className="font-price">−{formatMoney(price.discountAmount)}</dd>
           </div>
         )}
         {isFixed && (
           <div className="flex justify-between">
             <dt>Hamper price</dt>
-            <dd>{formatMoney(hamper.fixedPrice ?? 0)}</dd>
+            <dd className="font-price">{formatMoney(hamper.fixedPrice ?? 0)}</dd>
           </div>
         )}
         {price.packagingFee > 0 && (
           <div className="flex justify-between">
             <dt>Gift packaging</dt>
-            <dd>{formatMoney(price.packagingFee)}</dd>
+            <dd className="font-price">{formatMoney(price.packagingFee)}</dd>
           </div>
         )}
         <div className="mt-2 flex items-baseline justify-between border-t border-ink/10 pt-3">
           <dt className="font-bold">Total</dt>
-          <dd className="font-heading text-3xl font-bold">{formatMoney(price.total)}</dd>
+          <dd className="font-price text-3xl font-medium">{formatMoney(price.total)}</dd>
         </div>
         {price.savings > 0 && <p className="text-right text-sm font-bold text-amanat-terracotta">You save {formatMoney(price.savings)}</p>}
       </dl>

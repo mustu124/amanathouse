@@ -761,7 +761,7 @@ function FeaturedProducts() {
                 <span className="inline-flex min-h-8 max-w-full items-center rounded-full bg-amanat-sand px-2.5 py-1 text-xs font-black uppercase leading-tight tracking-[0.08em] text-amanat-sage sm:min-h-0 sm:px-3 sm:tracking-[0.12em]">
                   {product.category}
                 </span>
-                <span className="font-black text-amanat-brown sm:text-base">{"\u20B9"}{product.price.toLocaleString("en-IN")}</span>
+                <span className="font-price font-medium text-amanat-brown sm:text-base">{"\u20B9"}{product.price.toLocaleString("en-IN")}</span>
               </div>
               <div className="mt-auto flex items-center gap-2 pt-1">
                 <motion.button

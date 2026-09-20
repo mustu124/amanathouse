@@ -185,7 +185,7 @@ function FilterContent({
       )}
 
       <div className="mt-7">
-        <label htmlFor="max-price" className="text-xs font-black uppercase tracking-[0.16em] text-amanat-sage">
+        <label htmlFor="max-price" className="font-price text-xs font-semibold uppercase tracking-[0.16em] text-amanat-sage">
           Price up to {"\u20B9"}{filters.maxPrice.toLocaleString("en-IN")}
         </label>
         <input

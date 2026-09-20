@@ -3,7 +3,7 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 import { Navbar } from "@/components/Navbar";
 import { env } from "@/lib/env";
-import { bodySans, displaySerif } from "@/lib/fonts";
+import { bodySans, displaySerif, priceSerif } from "@/lib/fonts";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.siteUrl),
@@ -109,7 +109,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className={`${displaySerif.variable} ${bodySans.variable}`}>
+    <html lang="en" className={`${displaySerif.variable} ${bodySans.variable} ${priceSerif.variable}`}>
       <head>
         {supabaseUrl && (
           <>

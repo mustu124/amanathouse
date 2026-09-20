@@ -597,7 +597,7 @@ function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
                     />
                     <span className="flex flex-col justify-center">
                       <span className="font-heading text-xl font-bold">{product.name}</span>
-                      <span className="mt-2 font-black text-amanat-terracotta">
+                      <span className="mt-2 font-price font-medium text-amanat-terracotta">
                         ₹{product.price.toLocaleString("en-IN")}
                       </span>
                     </span>

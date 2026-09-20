@@ -152,7 +152,7 @@ export function CartSidebar() {
                           {item.selectedVariant && (
                             <p className="mt-1 text-xs font-bold text-stone-500">Size: {item.selectedVariant}</p>
                           )}
-                          <p className="mt-2 font-black text-amanat-terracotta">
+                          <p className="mt-2 font-price font-medium text-amanat-terracotta">
                             ₹{(item.product.price * item.quantity).toLocaleString("en-IN")}
                           </p>
                         </div>
@@ -206,7 +206,7 @@ export function CartSidebar() {
               <footer className="sticky bottom-0 border-t border-amanat-brown/10 bg-amanat-cream p-5">
                 <div className="flex items-center justify-between font-black">
                   <span>Subtotal</span>
-                  <span>₹{totalPrice.toLocaleString("en-IN")}</span>
+                  <span className="font-price font-medium">₹{totalPrice.toLocaleString("en-IN")}</span>
                 </div>
                 <p className="mt-2 text-sm font-bold text-amanat-sage">Shipping calculated at checkout</p>
                 {hasBlockingHamperNotice && (
@@ -286,10 +286,10 @@ function HamperCartLine({
           <p className="mt-1 text-xs font-bold uppercase tracking-[0.08em] text-amanat-sage">
             Hamper · {unitCount} item{unitCount === 1 ? "" : "s"}
           </p>
-          <p className="mt-2 font-black text-amanat-terracotta">
+          <p className="mt-2 font-price font-medium text-amanat-terracotta">
             {formatMoney(hamper.total * item.quantity)}
             {hasSaving && (
-              <span className="ml-2 text-xs font-bold text-stone-400 line-through">
+              <span className="ml-2 font-price text-xs font-normal text-stone-400 line-through">
                 {formatMoney(worth * item.quantity)}
               </span>
             )}
@@ -334,7 +334,7 @@ function HamperCartLine({
                 {line.name}
                 {line.variant ? ` (${line.variant})` : ""} × {line.quantity}
               </span>
-              <span className="shrink-0 text-stone-500">{formatMoney(line.unitPrice * line.quantity)}</span>
+              <span className="shrink-0 font-price text-stone-500">{formatMoney(line.unitPrice * line.quantity)}</span>
             </li>
           ))}
           <li className="mt-1 flex justify-between border-t border-amanat-brown/10 pt-2 text-xs text-stone-500">
@@ -591,7 +591,7 @@ function CheckoutModal({
                   <div className="rounded-2xl bg-white p-4">
                     <div className="flex justify-between font-black">
                       <span>Order Total</span>
-                      <span>₹{totalPrice.toLocaleString("en-IN")}</span>
+                      <span className="font-price font-medium">₹{totalPrice.toLocaleString("en-IN")}</span>
                     </div>
                   </div>
 

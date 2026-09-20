@@ -142,7 +142,7 @@ export function ProductCard({ product, onQuickView, onMoreLikeThis }: ProductCar
               </span>
             )}
           </div>
-          <span className="font-black text-amanat-brown sm:text-base">{"\u20B9"}{product.price.toLocaleString("en-IN")}</span>
+          <span className="font-price font-medium text-amanat-brown sm:text-base">{"\u20B9"}{product.price.toLocaleString("en-IN")}</span>
         </div>
 
         <div className="mt-auto grid grid-cols-2 gap-2 pt-3 sm:pt-4">
@@ -238,7 +238,7 @@ export function QuickViewModal({
                 {product.subcategory ? `${product.category} / ${product.subcategory}` : product.category}
               </p>
               <h2 className="mt-3 font-heading text-3xl font-bold text-amanat-brown">{product.name}</h2>
-              <p className="mt-3 text-2xl font-black text-amanat-terracotta">
+              <p className="mt-3 font-price text-2xl font-medium text-amanat-terracotta">
                 {"\u20B9"}{product.price.toLocaleString("en-IN")}
               </p>
               <p className="mt-5 leading-7 text-stone-700">{product.description}</p>

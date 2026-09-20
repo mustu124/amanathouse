@@ -45,7 +45,8 @@ module.exports = {
       fontFamily: {
         heading: ["var(--font-serif)", ...defaultTheme.fontFamily.serif],
         sans: ["var(--font-sans)", ...defaultTheme.fontFamily.sans],
-        body: ["var(--font-sans)", ...defaultTheme.fontFamily.sans]
+        body: ["var(--font-sans)", ...defaultTheme.fontFamily.sans],
+        price: ["var(--font-price)", ...defaultTheme.fontFamily.serif]
       },
       letterSpacing: {
         eyebrow: "0.2em"

@@ -293,18 +293,18 @@ export function ProductDetailContent({ params }: { params: { slug: string } }) {
           <h1 className="mt-3 font-heading text-[28px] font-bold leading-tight text-amanat-brown md:text-4xl">{product.name}</h1>
 
           <div className="mt-4 flex flex-wrap items-center gap-3">
-            <span className="text-3xl font-black text-amanat-terracotta">
+            <span className="font-price text-3xl font-medium text-amanat-terracotta">
               {"₹"}
               {product.price.toLocaleString("en-IN")}
             </span>
             {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-lg font-bold text-stone-400 line-through">
+              <span className="font-price text-lg font-normal text-stone-400 line-through">
                 {"₹"}
                 {product.originalPrice.toLocaleString("en-IN")}
               </span>
             )}
             {savings > 0 && (
-              <span className="rounded-full bg-amanat-gold/20 px-3 py-1 text-xs font-black uppercase tracking-[0.12em] text-amanat-brown">
+              <span className="rounded-full bg-amanat-gold/20 px-3 py-1 font-price text-xs font-semibold uppercase tracking-[0.12em] text-amanat-brown">
                 Save {"₹"}
                 {savings.toLocaleString("en-IN")}
               </span>
