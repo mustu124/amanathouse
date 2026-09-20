@@ -143,12 +143,9 @@ site isn't truly launch-ready without them:
 1. **The real domain name** — this doc uses `amanathouse.com` as a
    placeholder throughout. Confirm the actual domain (already owned, or
    needs registering) and who has access to its DNS settings.
-2. **Ring prices, and Earrings and Bracelets** — Necklaces (20) and Rings (11)
-   are imported. The client's ring document had names, descriptions and
-   photos but **no prices**: all 11 rings are at a placeholder ₹599 in
-   `scripts/data/rings.json` (fix in `/admin/products`, or edit the JSON and
-   re-run `npm run import:catalogue`). Earrings and Bracelets still need
-   their documents and photos (same process: see
+2. **Earrings and Bracelets** — Necklaces (20) and Rings (11, with client
+   prices) are imported. Earrings and Bracelets still need their documents
+   and photos (same process: see
    [docs/PLACEHOLDER_CLEANUP.md](PLACEHOLDER_CLEANUP.md)).
 3. **Real stock quantities, weights and lengths** — imported products use
    10 units of stock as a stand-in and have no weight or chain length.
