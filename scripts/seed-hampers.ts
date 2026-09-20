@@ -1,9 +1,8 @@
-// Seeds two placeholder hampers (is_placeholder = true) from products that
+// Seeds three placeholder hampers (is_placeholder = true) from products that
 // already exist in the database. Idempotent: matched on slug, eligible
 // products are replaced each run. Requires migration 0003_hampers.sql.
 //
-//   python scripts/... (not needed) -> ivory placeholder heroes live in
-//   client-assets/hampers/<slug>.webp (1200x1500, 4:5)
+// Hero photos are read from client-assets/hampers/<slug>.webp (1200x1500, 4:5).
 //   npm run seed:hampers
 import { createClient } from "@supabase/supabase-js";
 import { loadEnvConfig } from "@next/env";
@@ -37,6 +36,7 @@ type SeedHamper = {
   sortOrder: number;
   eligibleCount: number;
   requiredCount: number;
+  category?: string;
 };
 
 const HAMPERS: SeedHamper[] = [
@@ -71,13 +71,30 @@ const HAMPERS: SeedHamper[] = [
     sortOrder: 1,
     eligibleCount: 6,
     requiredCount: 1
+  },
+  {
+    slug: "the-ring-edit",
+    name: "The Ring Edit",
+    shortDescription: "Stack your favourite rings and take 10% off.",
+    longDescription:
+      "Solitaires, pearls, charms and open bands - pick two to four rings from the collection and 10% comes off the total automatically. Made for stacking, made to be kept.",
+    pricingMode: "percentage",
+    discountPercent: 10,
+    fixedPrice: null,
+    packagingFee: 0,
+    minItems: 2,
+    maxItems: 4,
+    sortOrder: 2,
+    eligibleCount: 8,
+    requiredCount: 0,
+    category: "Rings"
   }
 ];
 
 async function main() {
   const { data: products, error } = await supabase
     .from("products")
-    .select("id, name, price")
+    .select("id, name, price, category")
     .eq("active", true)
     .order("name", { ascending: true })
     .limit(60);
@@ -118,7 +135,8 @@ async function main() {
     if (saveError || !saved) throw saveError ?? new Error("Hamper save failed");
 
     // Spread the eligible list across the price range rather than taking the first N names.
-    const byPrice = [...products].sort((a, b) => Number(a.price) - Number(b.price));
+    const pool = hamper.category ? products.filter((product) => product.category === hamper.category) : products;
+    const byPrice = [...pool].sort((a, b) => Number(a.price) - Number(b.price));
     const step = Math.max(Math.floor(byPrice.length / hamper.eligibleCount), 1);
     const eligible = Array.from({ length: hamper.eligibleCount }, (_, index) => byPrice[Math.min(index * step, byPrice.length - 1)]);
     const unique = Array.from(new Map(eligible.map((product) => [product.id, product])).values());

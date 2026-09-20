@@ -1,7 +1,7 @@
 import { fail } from "@/lib/api";
 import { getSupabaseAdmin, SUPABASE_BUCKET } from "@/lib/supabase";
 
-const allowedPrefixes = ["products/", "gallery/", "uploads/", "homepage/", "images/"];
+const allowedPrefixes = ["products/", "gallery/", "uploads/", "homepage/", "images/", "hampers/"];
 
 export async function GET(request: Request) {
   try {
