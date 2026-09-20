@@ -991,6 +991,11 @@ function InstagramStrip({ instagramUrl }: { instagramUrl?: string }) {
             }}
             aria-label={instagramUrl ? "Open Amanat House Instagram" : "Instagram link coming soon"}
             variants={itemReveal}
+            // Tiles remount when the product images arrive, after the parent's
+            // reveal has already finished, so they must trigger their own reveal.
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.1 }}
             whileHover={{ scale: 0.97 }}
             className="group relative aspect-square overflow-hidden bg-amanat-sand"
           >
