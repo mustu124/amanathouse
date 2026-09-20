@@ -9,7 +9,7 @@ import { useSiteContact } from "@/lib/use-site-contact";
 import { whatsappLink } from "@/lib/whatsapp";
 
 export function ContactContent() {
-  const { whatsappNumber, email: storeEmail, address: storeAddress } = useSiteContact();
+  const { whatsappNumber, email: storeEmail, address: storeAddress, whatsappGroupUrl } = useSiteContact();
   const [form, setForm] = useState({ name: "", phone: "", message: "" });
   const [openFaq, setOpenFaq] = useState(CONTACT_FAQ[0]?.question ?? "");
 
@@ -65,6 +65,9 @@ export function ContactContent() {
               className="rounded-xl bg-white/10 p-4"
             >
               WhatsApp: +{whatsappNumber}
+            </a>
+            <a href={whatsappGroupUrl} target="_blank" rel="noreferrer" className="rounded-xl bg-white/10 p-4">
+              Join our WhatsApp community
             </a>
             <a href={`mailto:${storeEmail}`} className="rounded-xl bg-white/10 p-4">
               Email: {storeEmail}

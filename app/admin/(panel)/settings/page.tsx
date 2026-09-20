@@ -13,6 +13,7 @@ type SiteSettings = {
   socialLinks?: {
     instagram?: string;
     facebook?: string;
+    whatsappGroup?: string;
   };
   aboutText?: string;
   storeEmail?: string;
@@ -23,7 +24,7 @@ type SiteSettings = {
 export default function AdminSiteSettingsPage() {
   const [form, setForm] = useState<SiteSettings>({
     whatsappNumber: "",
-    socialLinks: { instagram: "", facebook: "" },
+    socialLinks: { instagram: "", facebook: "", whatsappGroup: "" },
     aboutText: "",
     storeEmail: "",
     storeAddress: "",
@@ -46,7 +47,8 @@ export default function AdminSiteSettingsPage() {
           whatsappNumber: settings.whatsappNumber ?? "",
           socialLinks: {
             instagram: settings.socialLinks?.instagram ?? "",
-            facebook: settings.socialLinks?.facebook ?? ""
+            facebook: settings.socialLinks?.facebook ?? "",
+            whatsappGroup: settings.socialLinks?.whatsappGroup ?? ""
           },
           aboutText: settings.aboutText ?? "",
           storeEmail: settings.storeEmail ?? "",
@@ -78,7 +80,7 @@ export default function AdminSiteSettingsPage() {
     setForm((current) => ({ ...current, [key]: value }));
   };
 
-  const updateSocial = (key: "instagram" | "facebook", value: string) => {
+  const updateSocial = (key: "instagram" | "facebook" | "whatsappGroup", value: string) => {
     setForm((current) => ({
       ...current,
       socialLinks: {
@@ -138,6 +140,10 @@ export default function AdminSiteSettingsPage() {
             <label className="grid gap-2 text-sm font-bold text-amanat-brown">
               Facebook URL
               <input value={form.socialLinks?.facebook ?? ""} onChange={(event) => updateSocial("facebook", event.target.value)} className="field-input" />
+            </label>
+            <label className="grid gap-2 text-sm font-bold text-amanat-brown md:col-span-2">
+              WhatsApp community group link
+              <input value={form.socialLinks?.whatsappGroup ?? ""} onChange={(event) => updateSocial("whatsappGroup", event.target.value)} className="field-input" placeholder="https://chat.whatsapp.com/..." />
             </label>
             <label className="grid gap-2 text-sm font-bold text-amanat-brown md:col-span-2">
               Store address

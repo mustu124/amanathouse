@@ -1,12 +1,13 @@
 "use client";
 
 import { createContext, createElement, useContext, useEffect, useState, type ReactNode } from "react";
-import { env } from "@/lib/env";
+import { DEFAULT_WHATSAPP_GROUP_URL, env } from "@/lib/env";
 
 export type SiteContact = {
   email: string;
   whatsappNumber: string;
   instagramUrl: string;
+  whatsappGroupUrl: string;
   address: string;
 };
 
@@ -14,6 +15,7 @@ const fallback: SiteContact = {
   email: env.storeEmail,
   whatsappNumber: env.whatsappNumber,
   instagramUrl: env.instagramUrl,
+  whatsappGroupUrl: DEFAULT_WHATSAPP_GROUP_URL,
   address: env.storeAddress
 };
 
@@ -21,7 +23,7 @@ type SettingsShape = {
   storeEmail?: string;
   whatsappNumber?: string;
   storeAddress?: string;
-  socialLinks?: { instagram?: string };
+  socialLinks?: { instagram?: string; whatsappGroup?: string };
 };
 
 // Seeded by the server layout with the admin's saved values, so the very first
@@ -51,6 +53,7 @@ function loadSiteContact(): Promise<SiteContact> {
         email: settings.storeEmail?.trim() || fallback.email,
         whatsappNumber: settings.whatsappNumber?.trim() || fallback.whatsappNumber,
         instagramUrl: settings.socialLinks?.instagram?.trim() || fallback.instagramUrl,
+        whatsappGroupUrl: settings.socialLinks?.whatsappGroup?.trim() || fallback.whatsappGroupUrl,
         address: settings.storeAddress?.trim() || fallback.address
       };
       cached = { value, at: Date.now() };

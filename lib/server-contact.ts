@@ -1,11 +1,12 @@
 import { unstable_noStore as noStore } from "next/cache";
-import { env } from "@/lib/env";
+import { DEFAULT_WHATSAPP_GROUP_URL, env } from "@/lib/env";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase";
 
 export type ServerContact = {
   email: string;
   whatsappNumber: string;
   instagramUrl: string;
+  whatsappGroupUrl: string;
   address: string;
 };
 
@@ -17,6 +18,7 @@ export async function getServerContact(): Promise<ServerContact> {
     email: env.storeEmail,
     whatsappNumber: env.whatsappNumber,
     instagramUrl: env.instagramUrl,
+    whatsappGroupUrl: DEFAULT_WHATSAPP_GROUP_URL,
     address: env.storeAddress
   };
   // supabase-js uses fetch(), which Next would otherwise cache between requests.
@@ -30,11 +32,12 @@ export async function getServerContact(): Promise<ServerContact> {
     const row = singleton.data ?? (await supabase.from("settings").select(columns).order("updated_at", { ascending: false }).limit(1).maybeSingle()).data;
     if (!row) return fallback;
 
-    const socialLinks = (row.social_links ?? {}) as { instagram?: string };
+    const socialLinks = (row.social_links ?? {}) as { instagram?: string; whatsappGroup?: string };
     return {
       email: row.store_email?.trim() || fallback.email,
       whatsappNumber: row.whatsapp_number?.trim() || fallback.whatsappNumber,
       instagramUrl: socialLinks.instagram?.trim() || fallback.instagramUrl,
+      whatsappGroupUrl: socialLinks.whatsappGroup?.trim() || fallback.whatsappGroupUrl,
       address: row.store_address?.trim() || fallback.address
     };
   } catch {

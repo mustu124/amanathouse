@@ -1,6 +1,6 @@
 import { fail, ok } from "@/lib/api";
 import { assertAdmin } from "@/lib/admin-auth";
-import { env } from "@/lib/env";
+import { DEFAULT_WHATSAPP_GROUP_URL, env } from "@/lib/env";
 import { CATEGORY_DETAILS, slugifyCategoryName } from "@/lib/product-data";
 import { HOME_HERO_SLIDES, MARQUEE_TICKER_TEXT } from "@/lib/content/home";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase";
@@ -33,6 +33,7 @@ const defaultSettings = {
   whatsappNumber: env.whatsappNumber,
   socialLinks: {
     instagram: env.instagramUrl,
+    whatsappGroup: DEFAULT_WHATSAPP_GROUP_URL,
     facebook: "https://www.facebook.com/"
   },
   aboutText:

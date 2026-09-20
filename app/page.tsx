@@ -1139,6 +1139,7 @@ function Footer({ settings }: { settings: PublicSettings | null }) {
             <a href="/about" className="hover:text-gold">About us</a>
             <a href="/contact" className="hover:text-gold">Contact &amp; FAQs</a>
             <a href={footerWhatsAppLink} className="hover:text-gold">Chat on WhatsApp</a>
+            <a href={contact.whatsappGroupUrl} target="_blank" rel="noreferrer" className="hover:text-gold">Join our WhatsApp community</a>
           </FooterAccordion>
         </motion.div>
 

@@ -23,6 +23,9 @@ assertPresent("NEXT_PUBLIC_INSTAGRAM_URL", instagramUrl);
 // this is displayed until NEXT_PUBLIC_STORE_ADDRESS is set.
 export const STORE_ADDRESS_TODO = "TODO: confirm city — India";
 
+// Starting value for the community group; the admin can change it in Site Settings.
+export const DEFAULT_WHATSAPP_GROUP_URL = "https://chat.whatsapp.com/GZCNtZyUkDA4YRaHlgUzFq";
+
 export const env = {
   siteUrl,
   whatsappNumber,
