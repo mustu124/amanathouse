@@ -467,7 +467,7 @@ function AnnouncementTicker({ text }: { text?: string }) {
   useAnimationFrame((_, delta) => {
     if (isHovered) return;
 
-    const next = tickerX.get() - delta * 0.004;
+    const next = tickerX.get() - delta * 0.0018;
     tickerX.set(next <= -50 ? 0 : next);
   });
 
