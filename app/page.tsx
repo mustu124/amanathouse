@@ -273,6 +273,7 @@ export default function HomePage() {
       <EverydayStackSection />
       <TestimonialsSlider />
       <InstagramStrip instagramUrl={settings?.socialLinks?.instagram} />
+      <WhyChooseUs />
       <Footer settings={settings} />
     </main>
   );
@@ -1030,6 +1031,62 @@ function InstagramStrip({ instagramUrl }: { instagramUrl?: string }) {
   );
 }
 
+const WHY_CHOOSE_ITEMS = [
+  {
+    title: "Everyday Proof",
+    text: "Designed to keep up, through it all",
+    icon: <path d="M12 3C9 7.5 6.5 10.5 6.5 14a5.5 5.5 0 0 0 11 0C17.5 10.5 15 7.5 12 3Z" />
+  },
+  {
+    title: "Premium Quality",
+    text: "18K Gold PVD Coating",
+    icon: <path d="M6 4h12l3 5-9 11L3 9l3-5Zm-3 5h18M9 4l-2 5 5 11 5-11-2-5" />
+  },
+  {
+    title: "Hypoallergenic",
+    text: "Skin Friendly & Safe",
+    icon: <path d="M12 20S3.5 14.5 3.5 8.8A4.6 4.6 0 0 1 12 6.6a4.6 4.6 0 0 1 8.5 2.2C20.5 14.5 12 20 12 20Z" />
+  },
+  {
+    title: "Made to Stay",
+    text: "Waterproof & tarnish-free",
+    icon: <path d="M3 8c2-2 4-2 6 0s4 2 6 0 4-2 6 0M3 13c2-2 4-2 6 0s4 2 6 0 4-2 6 0M3 18c2-2 4-2 6 0s4 2 6 0 4-2 6 0" />
+  },
+  {
+    title: "Perfect for Gifting",
+    text: "Comes in a luxe pouch & box",
+    icon: <path d="M4 10h16v10H4V10Zm-1-4h18v4H3V6Zm9 0v14M12 6C9 6 7 4.5 8 3s4 1 4 3Zm0 0c3 0 5-1.5 4-3s-4 1-4 3Z" />
+  }
+];
+
+function WhyChooseUs() {
+  return (
+    <motion.section
+      className="bg-ivory px-6 py-16 md:px-10 md:py-20"
+      variants={sectionReveal}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, amount: 0.15 }}
+    >
+      <motion.div variants={itemReveal} className="text-center">
+        <h2 className="font-heading text-3xl font-semibold uppercase tracking-[0.12em] text-ink sm:text-4xl">Why choose Amanat House?</h2>
+        <div className="mx-auto mt-5 h-px w-20 bg-gold" />
+      </motion.div>
+      <motion.ul variants={sectionReveal} className="mx-auto mt-12 grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-5">
+        {WHY_CHOOSE_ITEMS.map((item) => (
+          <motion.li key={item.title} variants={itemReveal} className="flex flex-col items-center text-center">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" className="h-10 w-10 text-ink">
+              {item.icon}
+            </svg>
+            <h3 className="mt-5 font-heading text-2xl font-medium text-ink">{item.title}</h3>
+            <p className="mt-2 max-w-[16rem] text-sm leading-6 text-stone-600">{item.text}</p>
+          </motion.li>
+        ))}
+      </motion.ul>
+    </motion.section>
+  );
+}
+
 function Footer({ settings }: { settings: PublicSettings | null }) {
   const whatsappNumber = settings?.whatsappNumber ?? env.whatsappNumber;
   const instagramUrl = settings?.socialLinks?.instagram || env.instagramUrl;
@@ -1053,8 +1110,9 @@ function Footer({ settings }: { settings: PublicSettings | null }) {
     >
       <motion.div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[1.2fr_1fr_1fr_1fr] md:gap-12" variants={sectionReveal}>
         <motion.div variants={itemReveal}>
-          <h2 className="font-heading text-4xl font-medium tracking-[0.08em]">AMANAT</h2>
-          <p className="mt-2 text-xs font-semibold uppercase tracking-[0.28em] text-gold">Made to be kept</p>
+          <a href="/" aria-label="Amanat House home" className="inline-block bg-ivory px-6 py-3">
+            <Image src="/logo.png" alt="Amanat House" width={1783} height={733} quality={95} className="h-20 w-auto" />
+          </a>
           <p className="mt-5 max-w-xs text-sm leading-7 text-ivory/70">
             Minimal everyday jewellery in 316L steel and 18K PVD gold — waterproof, anti-tarnish, made in India.
           </p>
