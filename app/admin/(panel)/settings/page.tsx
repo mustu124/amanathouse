@@ -32,14 +32,17 @@ export default function AdminSiteSettingsPage() {
   const [baseSettings, setBaseSettings] = useState<Record<string, unknown>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const storageKey = "amanat-house-site-settings-draft-v2";
+  // v3: earlier versions saved the untouched form as a "draft" on every visit, which then
+  // overwrote newer saved values on the next visit. Drafts now only exist for real edits.
+  const storageKey = "amanat-house-site-settings-draft-v3";
+  const [serverForm, setServerForm] = useState<SiteSettings | null>(null);
 
   useEffect(() => {
     adminFetch<{ settings: Record<string, unknown> & SiteSettings }>("/api/settings")
       .then((res) => {
         const settings = res.data.settings;
         setBaseSettings(settings);
-        setForm({
+        const loaded: SiteSettings = {
           whatsappNumber: settings.whatsappNumber ?? "",
           socialLinks: {
             instagram: settings.socialLinks?.instagram ?? "",
@@ -49,10 +52,12 @@ export default function AdminSiteSettingsPage() {
           storeEmail: settings.storeEmail ?? "",
           storeAddress: settings.storeAddress ?? "",
           footerCopyright: settings.footerCopyright ?? ""
-        });
+        };
+        setForm(loaded);
+        setServerForm(loaded);
 
         const draft = window.localStorage.getItem(storageKey);
-        if (draft) {
+        if (draft && draft !== JSON.stringify(loaded)) {
           setForm(JSON.parse(draft) as SiteSettings);
           toast("Unsaved site settings draft restored.");
         }
@@ -64,8 +69,10 @@ export default function AdminSiteSettingsPage() {
   const draft = useMemo(() => form, [form]);
 
   useEffect(() => {
-    if (!isLoading) window.localStorage.setItem(storageKey, JSON.stringify(draft));
-  }, [draft, isLoading]);
+    if (isLoading || !serverForm) return;
+    if (JSON.stringify(draft) === JSON.stringify(serverForm)) window.localStorage.removeItem(storageKey);
+    else window.localStorage.setItem(storageKey, JSON.stringify(draft));
+  }, [draft, isLoading, serverForm]);
 
   const update = (key: keyof SiteSettings, value: unknown) => {
     setForm((current) => ({ ...current, [key]: value }));
@@ -89,6 +96,7 @@ export default function AdminSiteSettingsPage() {
         body: JSON.stringify({ ...baseSettings, ...form })
       });
       setBaseSettings(saved.data.settings);
+      setServerForm(form);
       window.localStorage.removeItem(storageKey);
       toast.success("Site settings saved");
     } catch (error) {

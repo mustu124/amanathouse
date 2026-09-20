@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { fadeInUp, staggerContainer } from "@/lib/animations";
 import { BUSINESS_HOURS_TEXT, CONTACT_FAQ, RETURNS_POLICY_TEXT, SHIPPING_POLICY_TEXT } from "@/lib/content/policies";
+import { STORE_ADDRESS_TODO } from "@/lib/env";
 import { useSiteContact } from "@/lib/use-site-contact";
 import { whatsappLink } from "@/lib/whatsapp";
 
@@ -69,7 +70,7 @@ export function ContactContent() {
               Email: {storeEmail}
             </a>
             {/* TODO-confirm: real city/address — see NEXT_PUBLIC_STORE_ADDRESS in docs/ENV_SETUP.md */}
-            <p className="rounded-xl bg-white/10 p-4">Address: {storeAddress}</p>
+            {storeAddress !== STORE_ADDRESS_TODO && <p className="rounded-xl bg-white/10 p-4">Address: {storeAddress}</p>}
             <p className="rounded-xl bg-white/10 p-4">Hours: {BUSINESS_HOURS_TEXT}</p>
           </div>
         </motion.div>
