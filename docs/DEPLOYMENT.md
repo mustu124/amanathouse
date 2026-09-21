@@ -93,7 +93,6 @@ create a second Supabase project and give Preview its own
 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | All | Real WhatsApp number, digits only with country code, e.g. `917978022866` |
 | `NEXT_PUBLIC_STORE_EMAIL` | All | Real store contact email |
 | `NEXT_PUBLIC_INSTAGRAM_URL` | All | Real Instagram profile URL |
-| `NEXT_PUBLIC_STORE_ADDRESS` | All | Optional — leave unset until the client confirms a city; the site shows a visible `TODO: confirm city` placeholder rather than a guess |
 
 **On `NEXT_PUBLIC_SITE_URL` for Preview**: Preview deployments get a unique
 `*.vercel.app` URL per deployment, which won't match this fixed value —
@@ -156,12 +155,7 @@ site isn't truly launch-ready without them:
 5. **Instagram handle** — `NEXT_PUBLIC_INSTAGRAM_URL` is currently set to
    `https://www.instagram.com/amanat.jewelhouse`; confirm this is the real,
    final handle the client wants live (or provide the correct one).
-6. **City/address** — `NEXT_PUBLIC_STORE_ADDRESS` is unset, so the site
-   currently shows a visible `TODO: confirm city` placeholder in the
-   footer, contact page, and structured data. Needs a real value before
-   launch (or an explicit decision to omit address entirely, which would
-   need a small code change instead of just leaving this blank).
-7. **Domain access** — whoever manages DNS for the domain needs to either
+6. **Domain access** — whoever manages DNS for the domain needs to either
    make the changes in section 4 themselves, or grant access/instructions
    to whoever is doing this deploy.
 8. **Facebook page** (optional) — the Facebook icon was removed from the

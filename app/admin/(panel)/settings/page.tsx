@@ -17,7 +17,6 @@ type SiteSettings = {
   };
   aboutText?: string;
   storeEmail?: string;
-  storeAddress?: string;
   footerCopyright?: string;
 };
 
@@ -27,7 +26,6 @@ export default function AdminSiteSettingsPage() {
     socialLinks: { instagram: "", facebook: "", whatsappGroup: "" },
     aboutText: "",
     storeEmail: "",
-    storeAddress: "",
     footerCopyright: ""
   });
   const [baseSettings, setBaseSettings] = useState<Record<string, unknown>>({});
@@ -52,7 +50,6 @@ export default function AdminSiteSettingsPage() {
           },
           aboutText: settings.aboutText ?? "",
           storeEmail: settings.storeEmail ?? "",
-          storeAddress: settings.storeAddress ?? "",
           footerCopyright: settings.footerCopyright ?? ""
         };
         setForm(loaded);
@@ -144,10 +141,6 @@ export default function AdminSiteSettingsPage() {
             <label className="grid gap-2 text-sm font-bold text-amanat-brown md:col-span-2">
               WhatsApp community group link
               <input value={form.socialLinks?.whatsappGroup ?? ""} onChange={(event) => updateSocial("whatsappGroup", event.target.value)} className="field-input" placeholder="https://chat.whatsapp.com/..." />
-            </label>
-            <label className="grid gap-2 text-sm font-bold text-amanat-brown md:col-span-2">
-              Store address
-              <textarea value={form.storeAddress ?? ""} onChange={(event) => update("storeAddress", event.target.value)} className="field-input min-h-28" />
             </label>
           </div>
         )}

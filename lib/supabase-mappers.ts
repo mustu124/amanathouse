@@ -140,11 +140,6 @@ export function orderPayloadToSupabase(payload: AnyRecord & { orderNumber?: stri
 
 export function normalizeSupabaseSettings(row: AnyRecord | null, defaults: AnyRecord) {
   if (!row) return defaults;
-  const rawStoreAddress = row.storeAddress ?? row.store_address ?? defaults.storeAddress;
-  const storeAddress =
-    typeof rawStoreAddress === "string" && /pyramid elite|sector 86|gurugram/i.test(rawStoreAddress)
-      ? defaults.storeAddress
-      : rawStoreAddress;
 
   return {
     ...defaults,
@@ -157,7 +152,6 @@ export function normalizeSupabaseSettings(row: AnyRecord | null, defaults: AnyRe
     metaTitle: row.metaTitle ?? row.meta_title ?? defaults.metaTitle,
     metaDescription: row.metaDescription ?? row.meta_description ?? defaults.metaDescription,
     storeEmail: row.storeEmail || row.store_email || defaults.storeEmail,
-    storeAddress,
     footerCopyright: row.footerCopyright ?? row.footer_copyright ?? defaults.footerCopyright,
     categories: row.categories ?? defaults.categories
   };
@@ -174,7 +168,6 @@ export function settingsPayloadToSupabase(payload: AnyRecord) {
     meta_title: payload.metaTitle ?? "",
     meta_description: payload.metaDescription ?? "",
     store_email: payload.storeEmail ?? "",
-    store_address: payload.storeAddress ?? "",
     footer_copyright: payload.footerCopyright ?? "",
     categories: payload.categories ?? [],
     updated_at: new Date().toISOString()

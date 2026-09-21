@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { Navbar } from "@/components/Navbar";
-import { env, STORE_ADDRESS_TODO } from "@/lib/env";
+import { env } from "@/lib/env";
 import { getServerContact } from "@/lib/server-contact";
 import { SiteContactProvider } from "@/lib/use-site-contact";
 import { bodySans, displaySerif, priceSerif } from "@/lib/fonts";
@@ -78,8 +78,6 @@ export default async function RootLayout({
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const contact = await getServerContact();
 
-  // TODO-confirm: addressLocality is a placeholder until the client confirms
-  // a real city — see NEXT_PUBLIC_STORE_ADDRESS in docs/ENV_SETUP.md.
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -87,9 +85,6 @@ export default async function RootLayout({
     url: env.siteUrl,
     logo: `${env.siteUrl}/logo.png`,
     sameAs: [contact.instagramUrl],
-    ...(contact.address !== STORE_ADDRESS_TODO
-      ? { address: { "@type": "PostalAddress", addressLocality: contact.address, addressCountry: "IN" } }
-      : { address: { "@type": "PostalAddress", addressCountry: "IN" } }),
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",

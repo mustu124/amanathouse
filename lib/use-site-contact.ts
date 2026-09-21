@@ -8,21 +8,18 @@ export type SiteContact = {
   whatsappNumber: string;
   instagramUrl: string;
   whatsappGroupUrl: string;
-  address: string;
 };
 
 const fallback: SiteContact = {
   email: env.storeEmail,
   whatsappNumber: env.whatsappNumber,
   instagramUrl: env.instagramUrl,
-  whatsappGroupUrl: DEFAULT_WHATSAPP_GROUP_URL,
-  address: env.storeAddress
+  whatsappGroupUrl: DEFAULT_WHATSAPP_GROUP_URL
 };
 
 type SettingsShape = {
   storeEmail?: string;
   whatsappNumber?: string;
-  storeAddress?: string;
   socialLinks?: { instagram?: string; whatsappGroup?: string };
 };
 
@@ -53,8 +50,7 @@ function loadSiteContact(): Promise<SiteContact> {
         email: settings.storeEmail?.trim() || fallback.email,
         whatsappNumber: settings.whatsappNumber?.trim() || fallback.whatsappNumber,
         instagramUrl: settings.socialLinks?.instagram?.trim() || fallback.instagramUrl,
-        whatsappGroupUrl: settings.socialLinks?.whatsappGroup?.trim() || fallback.whatsappGroupUrl,
-        address: settings.storeAddress?.trim() || fallback.address
+        whatsappGroupUrl: settings.socialLinks?.whatsappGroup?.trim() || fallback.whatsappGroupUrl
       };
       cached = { value, at: Date.now() };
       return value;

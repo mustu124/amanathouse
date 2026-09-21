@@ -13,7 +13,6 @@ import {
   HOME_TESTIMONIALS,
   MARQUEE_TICKER_TEXT
 } from "@/lib/content/home";
-import { STORE_ADDRESS_TODO } from "@/lib/env";
 import { useSiteContact } from "@/lib/use-site-contact";
 import { HAMPER_CATEGORY } from "@/lib/hampers";
 import { getDisplayMediaUrl } from "@/lib/media";
@@ -70,7 +69,6 @@ type PublicSettings = {
   announcementText?: string;
   whatsappNumber?: string;
   storeEmail?: string;
-  storeAddress?: string;
   footerCopyright?: string;
   socialLinks?: {
     instagram?: string;
@@ -1091,7 +1089,6 @@ function Footer({ settings }: { settings: PublicSettings | null }) {
   const contact = useSiteContact();
   const whatsappNumber = contact.whatsappNumber;
   const instagramUrl = contact.instagramUrl;
-  const address = contact.address;
   const email = contact.email;
   const phone = `+${whatsappNumber.replace(/\D/g, "")}`;
   const footerWhatsAppLink = whatsappLink("Hi Amanat House! I have a question about your jewellery.", whatsappNumber);
@@ -1122,7 +1119,6 @@ function Footer({ settings }: { settings: PublicSettings | null }) {
         <motion.div variants={itemReveal}>
           <h3 className="text-xs font-semibold uppercase tracking-[0.24em] text-gold">Contact</h3>
           <div className="mt-4 grid gap-2 text-sm leading-7">
-            {address && address !== STORE_ADDRESS_TODO && <p className="text-ivory/80">{address}</p>}
             <a href={`mailto:${email}`} className="hover:text-gold">
               {email}
             </a>

@@ -22,7 +22,6 @@ missing var can never fail silently at runtime.
 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | **Required** — build/dev throws without it | [lib/whatsapp.ts](../lib/whatsapp.ts) (order messages), [app/contact/page.tsx](../app/contact/page.tsx), [app/api/settings/route.ts](../app/api/settings/route.ts) fallback | Digits only with country code, no `+`/spaces/dashes, e.g. `919999999999` |
 | `NEXT_PUBLIC_STORE_EMAIL` | **Required** — build/dev throws without it | [app/api/settings/route.ts](../app/api/settings/route.ts) fallback (used until an admin sets one in Site Settings) | The store's real contact inbox |
 | `NEXT_PUBLIC_INSTAGRAM_URL` | **Required** — build/dev throws without it | [app/api/settings/route.ts](../app/api/settings/route.ts) fallback (used until an admin sets one in Site Settings) | The brand's Instagram profile URL |
-| `NEXT_PUBLIC_STORE_ADDRESS` | Optional — shows a visible `TODO: confirm city` placeholder when unset, never a guess | [lib/env.ts](../lib/env.ts), footer, contact page, structured data | City/address to display — not yet confirmed by the client |
 
 ### Admin auth
 
