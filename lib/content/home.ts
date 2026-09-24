@@ -13,6 +13,14 @@ export type ContentHeroSlide = {
 
 export const HOME_HERO_SLIDES: ContentHeroSlide[] = [
   {
+    image: "/hero/hero-4.webp",
+    mobileImage: "/hero/hero-4-mobile.webp",
+    headline: "Details, done right.",
+    subtitle: "Rings and earrings finished in 18K PVD gold — waterproof, anti-tarnish, made to be stacked and worn every day.",
+    ctaText: "Shop Now",
+    ctaLink: "/shop"
+  },
+  {
     image: "/hero/hero-1.webp",
     mobileImage: "/hero/hero-1-mobile.webp",
     headline: "Made to be kept.",
