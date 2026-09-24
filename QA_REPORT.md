@@ -377,3 +377,12 @@ Still not machine-verifiable here: browser rendering at 375/768/1440 and cart UI
 Imported 14 earrings and 17 bracelets/kada from the client's PDFs, matched to photos in `client-assets/Earrings-.../` and `client-assets/Bracelets and kada-.../` (folders the client dropped into Downloads). Photos were not named per product, so each PDF's embedded images were extracted with PyMuPDF and matched to the raw HEIC/PNG files by normalized cross-correlation on a rotation-corrected grayscale thumbnail — every one of the 31 matches scored 0.999–1.000 (exact pixel-content match) except one (Élan Bracelet, page 6), which needed a manual visual check after two very similar "beaded bracelet, hand near face" photos scored close together; confirmed by comparing the charm detail at full resolution.
 
 62 active products are now live (20 necklaces, 11 rings, 14 earrings, 17 bracelets). Rings, Earrings and Bracelets all have real client prices; only Anklets and any future categories remain unimported.
+
+## Multiple images per product (earrings/bracelets)
+
+The client's photo folders had more shots than products — extra angles of the same piece. Matched by design (confirmed visually at full resolution, not just thumbnail) and added as second/third images:
+- Blush Hoops, Ameera Luxe Hoops (earrings) — 2 images each
+- Élan Duo Bracelet, Celeste Bracelet — 2 images each
+- Date Night Bracelet, Everyday Kada — 3 images each
+
+One bracelet photo (`IMG_0610`, a rose-gold/white-stone tennis bracelet stacked with a fine chain) could not be confidently matched to any of the 17 named products and was left unused rather than guessed.

@@ -83,13 +83,18 @@ def main():
         products = json.load(open(os.path.join(ROOT, "scripts", "data", data_file), encoding="utf-8"))
         cache = {}
         for p in products:
-            key = (p["image"], p.get("crop"))
-            if key not in cache:
-                cache[key] = load(p["image"], p.get("crop"), folder)
-            canvas = fit_canvas(cache[key], (1200, 1500))
-            path = os.path.join(OUT, f"{p['slug']}-1.webp")
-            q = save_webp(canvas, path)
-            print(f"{p['slug']}-1.webp  q{q}  {os.path.getsize(path) // 1024}KB")
+            # First image is p["image"]/p["crop"]; extraImages (optional) are
+            # additional raw-photo prefixes for the same product, e.g. a second
+            # angle the client photographed — these become -2.webp, -3.webp, ...
+            shots = [(p["image"], p.get("crop"))] + [(img, None) for img in p.get("extraImages", [])]
+            for n, (image, crop) in enumerate(shots, start=1):
+                key = (image, crop)
+                if key not in cache:
+                    cache[key] = load(image, crop, folder)
+                canvas = fit_canvas(cache[key], (1200, 1500))
+                path = os.path.join(OUT, f"{p['slug']}-{n}.webp")
+                q = save_webp(canvas, path)
+                print(f"{p['slug']}-{n}.webp  q{q}  {os.path.getsize(path) // 1024}KB")
 
     # Homepage hero: full-bleed. A blurred, ivory-tinted copy of the photo fills
     # the whole frame; the sharp photo sits on top (right on desktop, top on
