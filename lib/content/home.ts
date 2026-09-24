@@ -36,14 +36,6 @@ export const HOME_HERO_SLIDES: ContentHeroSlide[] = [
     subtitle: "316L stainless steel with 18K PVD gold plating, built for daily wear — not just special occasions.",
     ctaText: "Shop Now",
     ctaLink: "/shop"
-  },
-  {
-    image: "/hero/hero-3.webp",
-    mobileImage: "/hero/hero-3-mobile.webp",
-    headline: "Stack your story.",
-    subtitle: "Mix pearls, charms, and chains into a look that's entirely yours. Minimal. Modern. Made to be your Amanat.",
-    ctaText: "Shop Now",
-    ctaLink: "/shop"
   }
 ];
 
