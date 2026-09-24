@@ -142,10 +142,9 @@ site isn't truly launch-ready without them:
 1. **The real domain name** — this doc uses `amanathouse.com` as a
    placeholder throughout. Confirm the actual domain (already owned, or
    needs registering) and who has access to its DNS settings.
-2. **Earrings and Bracelets** — Necklaces (20) and Rings (11, with client
-   prices) are imported. Earrings and Bracelets still need their documents
-   and photos (same process: see
-   [docs/PLACEHOLDER_CLEANUP.md](PLACEHOLDER_CLEANUP.md)).
+2. **Catalogue** — Necklaces (20), Rings (11), Earrings (14) and
+   Bracelets (17) are imported from the client's documents, all with real
+   prices — 62 active products total.
 3. **Real stock quantities, weights and lengths** — imported products use
    10 units of stock as a stand-in and have no weight or chain length.
 4. **Policy confirmations** — returns, shipping and the 6-month warranty

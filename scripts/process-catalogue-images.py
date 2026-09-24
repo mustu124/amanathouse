@@ -20,6 +20,8 @@ pillow_heif.register_heif_opener()
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAW = os.path.join(ROOT, "client-assets", "necklaces")
 RAW_RINGS = os.path.join(ROOT, "client-assets", "rings")
+RAW_EARRINGS = os.path.join(ROOT, "client-assets", "Earrings-20260924T171646Z-1-001", "Earrings")
+RAW_BRACELETS = os.path.join(ROOT, "client-assets", "Bracelets and kada-20260924T171548Z-1-001", "Bracelets and kada")
 OUT = os.path.join(ROOT, "client-assets", "processed")
 PUBLIC = os.path.join(ROOT, "public")
 IVORY = (250, 245, 236)
@@ -71,7 +73,12 @@ def save_webp(im, path, max_bytes=MAX_BYTES):
 
 
 def main():
-    datasets = (("necklaces.json", RAW), ("rings.json", RAW_RINGS))
+    datasets = (
+        ("necklaces.json", RAW),
+        ("rings.json", RAW_RINGS),
+        ("earrings.json", RAW_EARRINGS),
+        ("bracelets.json", RAW_BRACELETS)
+    )
     for data_file, folder in datasets:
         products = json.load(open(os.path.join(ROOT, "scripts", "data", data_file), encoding="utf-8"))
         cache = {}

@@ -371,3 +371,9 @@ Not verifiable here: responsive rendering at 375/768/1440 (no browser automation
 - h) Real order (1 hamper + 1 product) -> HTTP 201; orders.total_amount ₹2,104.36 (= 1,405.36 + 699); order_items has a `hamper` row with the frozen 3-item snapshot and a `product` row. Test order and test hamper rows were deleted afterwards.
 - Seeded placeholder hampers: The Everyday Edit (15%, min 3, 8 eligible) and The Gifting Box (₹1,499, min 2 max 4, 6 eligible, 1 required); `/hampers` pages return 200 and the sitemap lists them.
 Still not machine-verifiable here: browser rendering at 375/768/1440 and cart UI interactions (no browser automation).
+
+## Earrings and Bracelets import (Doc5.pdf, Doc6.pdf)
+
+Imported 14 earrings and 17 bracelets/kada from the client's PDFs, matched to photos in `client-assets/Earrings-.../` and `client-assets/Bracelets and kada-.../` (folders the client dropped into Downloads). Photos were not named per product, so each PDF's embedded images were extracted with PyMuPDF and matched to the raw HEIC/PNG files by normalized cross-correlation on a rotation-corrected grayscale thumbnail — every one of the 31 matches scored 0.999–1.000 (exact pixel-content match) except one (Élan Bracelet, page 6), which needed a manual visual check after two very similar "beaded bracelet, hand near face" photos scored close together; confirmed by comparing the charm detail at full resolution.
+
+62 active products are now live (20 necklaces, 11 rings, 14 earrings, 17 bracelets). Rings, Earrings and Bracelets all have real client prices; only Anklets and any future categories remain unimported.
