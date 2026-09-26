@@ -17,6 +17,7 @@ type SiteSettings = {
   };
   aboutText?: string;
   storeEmail?: string;
+  shippingFee?: number;
   footerCopyright?: string;
 };
 
@@ -26,6 +27,7 @@ export default function AdminSiteSettingsPage() {
     socialLinks: { instagram: "", facebook: "", whatsappGroup: "" },
     aboutText: "",
     storeEmail: "",
+    shippingFee: 0,
     footerCopyright: ""
   });
   const [baseSettings, setBaseSettings] = useState<Record<string, unknown>>({});
@@ -50,6 +52,7 @@ export default function AdminSiteSettingsPage() {
           },
           aboutText: settings.aboutText ?? "",
           storeEmail: settings.storeEmail ?? "",
+          shippingFee: settings.shippingFee ?? 0,
           footerCopyright: settings.footerCopyright ?? ""
         };
         setForm(loaded);
@@ -143,6 +146,25 @@ export default function AdminSiteSettingsPage() {
               <input value={form.socialLinks?.whatsappGroup ?? ""} onChange={(event) => updateSocial("whatsappGroup", event.target.value)} className="field-input" placeholder="https://chat.whatsapp.com/..." />
             </label>
           </div>
+        )}
+      </AdminSection>
+
+      <AdminSection title="Shipping" description="A flat fee added to every order at checkout, on top of the items total.">
+        {isLoading ? (
+          <div className="h-16 animate-pulse rounded-2xl bg-amanat-cream" />
+        ) : (
+          <label className="grid max-w-xs gap-2 text-sm font-bold text-amanat-brown">
+            Shipping fee (₹)
+            <input
+              type="number"
+              min={0}
+              step="0.01"
+              value={form.shippingFee ?? 0}
+              onChange={(event) => update("shippingFee", Math.max(0, Number(event.target.value)))}
+              className="field-input"
+            />
+            <span className="text-xs font-normal text-stone-500">Set to 0 for free shipping.</span>
+          </label>
         )}
       </AdminSection>
 

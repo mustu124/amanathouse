@@ -17,6 +17,7 @@ type Order = {
   deliveryAddress: string;
   pincode: string;
   totalAmount: number;
+  shippingFee?: number;
   status: string;
   createdAt: string;
 };
@@ -151,6 +152,16 @@ export default function AdminOrdersPage() {
                   <p key={`${item.name}-${index}`} className="mt-2">{item.name} x{item.quantity} — {formatCurrency(item.price * item.quantity)}</p>
                 )
               )}
+              <div className="mt-3 grid gap-1 border-t border-amanat-brown/10 pt-2 text-sm">
+                <div className="flex justify-between font-bold text-amanat-sage">
+                  <span>Shipping</span>
+                  <span>{selectedOrder.shippingFee ? formatCurrency(selectedOrder.shippingFee) : "Free"}</span>
+                </div>
+                <div className="flex justify-between font-black">
+                  <span>Order Total</span>
+                  <span>{formatCurrency(selectedOrder.totalAmount)}</span>
+                </div>
+              </div>
             </div>
             <div>
               <h3 className="font-heading text-xl font-bold">Customer</h3>

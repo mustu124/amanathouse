@@ -149,3 +149,7 @@ unsaved draft to restore.
 - **A photo won't upload** — check it's a JPG, PNG, or WebP file, under 10MB,
   and at least 400×400 pixels.
 - **Still stuck** — contact whoever set up your website for you.
+
+## Setting a shipping fee
+
+Go to **Site Settings** and find the **Shipping** section. Enter a flat amount in rupees — it is added to every order's total automatically, on top of whatever the customer's items (and any hampers) cost. Set it to 0 for free shipping. The fee shown to a customer is always the current one; changing it never rewrites the total of an order already placed.

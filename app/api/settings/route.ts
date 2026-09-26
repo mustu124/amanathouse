@@ -42,6 +42,7 @@ const defaultSettings = {
   metaDescription:
     "Shop everyday jewellery from Amanat House: rings, chains, studs, and more in anti-tarnish, waterproof 18K gold-plated steel.",
   storeEmail: env.storeEmail,
+  shippingFee: 0,
   footerCopyright: "\u00A9 2026 Amanat House",
   categories: CATEGORY_DETAILS.map((category) => ({
     name: category.name,

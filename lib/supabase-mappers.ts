@@ -116,6 +116,7 @@ export function normalizeSupabaseOrder(row: AnyRecord) {
     deliveryAddress: row.deliveryAddress ?? row.delivery_address,
     pincode: row.pincode,
     totalAmount: Number(row.totalAmount ?? row.total_amount ?? 0),
+    shippingFee: Number(row.shippingFee ?? row.shipping_fee ?? 0),
     status: row.status,
     whatsappSent: row.whatsappSent ?? row.whatsapp_sent ?? false,
     createdAt: row.createdAt ?? row.created_at,
@@ -133,6 +134,7 @@ export function orderPayloadToSupabase(payload: AnyRecord & { orderNumber?: stri
     delivery_address: payload.deliveryAddress,
     pincode: payload.pincode,
     total_amount: Number(payload.totalAmount ?? 0),
+    shipping_fee: Number(payload.shippingFee ?? 0),
     status: payload.status ?? "pending",
     whatsapp_sent: Boolean(payload.whatsappSent)
   };
@@ -152,6 +154,7 @@ export function normalizeSupabaseSettings(row: AnyRecord | null, defaults: AnyRe
     metaTitle: row.metaTitle ?? row.meta_title ?? defaults.metaTitle,
     metaDescription: row.metaDescription ?? row.meta_description ?? defaults.metaDescription,
     storeEmail: row.storeEmail || row.store_email || defaults.storeEmail,
+    shippingFee: Number(row.shippingFee ?? row.shipping_fee ?? defaults.shippingFee ?? 0),
     footerCopyright: row.footerCopyright ?? row.footer_copyright ?? defaults.footerCopyright,
     categories: row.categories ?? defaults.categories
   };
@@ -168,6 +171,7 @@ export function settingsPayloadToSupabase(payload: AnyRecord) {
     meta_title: payload.metaTitle ?? "",
     meta_description: payload.metaDescription ?? "",
     store_email: payload.storeEmail ?? "",
+    shipping_fee: Number(payload.shippingFee ?? 0),
     footer_copyright: payload.footerCopyright ?? "",
     categories: payload.categories ?? [],
     updated_at: new Date().toISOString()

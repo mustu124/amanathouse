@@ -5,6 +5,8 @@ import { Navbar } from "@/components/Navbar";
 import { env } from "@/lib/env";
 import { getServerContact } from "@/lib/server-contact";
 import { SiteContactProvider } from "@/lib/use-site-contact";
+import { getServerShippingFee } from "@/lib/server-shipping";
+import { ShippingFeeProvider } from "@/lib/use-shipping-fee";
 import { bodySans, displaySerif, priceSerif } from "@/lib/fonts";
 
 export const metadata: Metadata = {
@@ -77,6 +79,7 @@ export default async function RootLayout({
 }>) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const contact = await getServerContact();
+  const shippingFee = await getServerShippingFee();
 
   const organizationJsonLd = {
     "@context": "https://schema.org",
@@ -134,12 +137,14 @@ export default async function RootLayout({
         >
           Skip to main content
         </a>
+        <ShippingFeeProvider value={shippingFee}>
         <SiteContactProvider value={contact}>
         <Providers>
           <Navbar />
           {children}
         </Providers>
         </SiteContactProvider>
+        </ShippingFeeProvider>
       </body>
     </html>
   );

@@ -9,6 +9,7 @@ import { hamperSelectionOf, useCart, type CartItem } from "@/context/CartContext
 import toast from "react-hot-toast";
 import { formatMoney } from "@/lib/pricing/hamper";
 import { useSiteContact } from "@/lib/use-site-contact";
+import { useShippingFee } from "@/lib/use-shipping-fee";
 import { buildWhatsAppMessage, type CustomerInfo } from "@/lib/whatsapp";
 import { slideInRight, staggerContainer } from "@/lib/animations";
 import { getDisplayMediaUrl } from "@/lib/media";
@@ -41,6 +42,7 @@ export function CartSidebar() {
     hasBlockingHamperNotice
   } = useCart();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const shippingFee = useShippingFee();
 
   useEffect(() => {
     const openCheckout = () => {
@@ -205,11 +207,18 @@ export function CartSidebar() {
               </div>
 
               <footer className="sticky bottom-0 border-t border-amanat-brown/10 bg-amanat-cream p-5">
-                <div className="flex items-center justify-between font-black">
+                <div className="flex items-center justify-between font-bold">
                   <span>Subtotal</span>
-                  <span className="font-price font-medium">₹{totalPrice.toLocaleString("en-IN")}</span>
+                  <span className="font-price">₹{totalPrice.toLocaleString("en-IN")}</span>
                 </div>
-                <p className="mt-2 text-sm font-bold text-amanat-sage">Shipping calculated at checkout</p>
+                <div className="mt-1 flex items-center justify-between text-sm font-bold text-amanat-sage">
+                  <span>Shipping</span>
+                  <span className="font-price">{shippingFee > 0 ? `₹${shippingFee.toLocaleString("en-IN")}` : "Free"}</span>
+                </div>
+                <div className="mt-2 flex items-center justify-between border-t border-amanat-brown/10 pt-2 font-black">
+                  <span>Total</span>
+                  <span className="font-price font-medium">₹{(totalPrice + shippingFee).toLocaleString("en-IN")}</span>
+                </div>
                 {hasBlockingHamperNotice && (
                   <p role="alert" className="mt-2 text-sm font-bold text-amanat-terracotta">
                     Review the highlighted hamper above before checking out.
@@ -236,6 +245,7 @@ export function CartSidebar() {
         isOpen={isCheckoutOpen}
         items={items}
         totalPrice={totalPrice}
+        shippingFee={shippingFee}
         onClose={() => setIsCheckoutOpen(false)}
         onComplete={() => {
           clearCart();
@@ -402,15 +412,18 @@ function CheckoutModal({
   isOpen,
   items,
   totalPrice,
+  shippingFee,
   onClose,
   onComplete
 }: {
   isOpen: boolean;
   items: CartItem[];
   totalPrice: number;
+  shippingFee: number;
   onClose: () => void;
   onComplete: () => void;
 }) {
+  const orderTotal = totalPrice + shippingFee;
   const { whatsappNumber } = useSiteContact();
   const [form, setForm] = useState<CheckoutFormState>(initialForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -456,7 +469,7 @@ function CheckoutModal({
       address: form.address.trim(),
       pincode: form.pincode.trim()
     };
-    const whatsappUrl = buildWhatsAppMessage(items, customerInfo, whatsappNumber);
+    const whatsappUrl = buildWhatsAppMessage(items, customerInfo, whatsappNumber, shippingFee);
 
     try {
       const response = await fetch("/api/orders", {
@@ -479,7 +492,8 @@ function CheckoutModal({
           customerEmail: customerInfo.email,
           deliveryAddress: customerInfo.address,
           pincode: customerInfo.pincode,
-          totalAmount: totalPrice,
+          totalAmount: orderTotal,
+          shippingFee,
           whatsappSent: true
         })
       });
@@ -590,10 +604,18 @@ function CheckoutModal({
                     />
                   </FormField>
 
-                  <div className="rounded-2xl bg-white p-4">
-                    <div className="flex justify-between font-black">
+                  <div className="grid gap-1 rounded-2xl bg-white p-4">
+                    <div className="flex justify-between font-bold">
+                      <span>Subtotal</span>
+                      <span className="font-price">₹{totalPrice.toLocaleString("en-IN")}</span>
+                    </div>
+                    <div className="flex justify-between font-bold text-amanat-sage">
+                      <span>Shipping</span>
+                      <span className="font-price">{shippingFee > 0 ? `₹${shippingFee.toLocaleString("en-IN")}` : "Free"}</span>
+                    </div>
+                    <div className="flex justify-between border-t border-amanat-brown/10 pt-1 font-black">
                       <span>Order Total</span>
-                      <span className="font-price font-medium">₹{totalPrice.toLocaleString("en-IN")}</span>
+                      <span className="font-price font-medium">₹{orderTotal.toLocaleString("en-IN")}</span>
                     </div>
                   </div>
 

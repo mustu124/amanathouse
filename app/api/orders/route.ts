@@ -3,6 +3,7 @@ import { assertAdmin } from "@/lib/admin-auth";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase";
 import { normalizeSupabaseOrder, orderPayloadToSupabase } from "@/lib/supabase-mappers";
 import { getHamperBySlug, priceHamperSelection, type HamperSelectionInput } from "@/lib/server-hampers";
+import { getServerShippingFee } from "@/lib/server-shipping";
 import type { HamperSnapshot } from "@/lib/hampers";
 
 type OrderPayload = {
@@ -34,7 +35,7 @@ const TOTAL_TOLERANCE = 1;
 
 // Re-prices every line from the database. Returns the trusted items + total,
 // or an error message when the client's numbers can't be reconciled.
-async function repriceItems(items: OrderPayload["items"], clientTotal: number) {
+async function repriceItems(items: OrderPayload["items"], clientTotal: number, shippingFee: number) {
   const supabase = getSupabaseAdmin();
   const productIds = items
     .filter((item) => item.itemType !== "hamper" && /^[0-9a-f-]{36}$/i.test(item.productId))
@@ -71,7 +72,7 @@ async function repriceItems(items: OrderPayload["items"], clientTotal: number) {
     priced.push({ ...item, quantity, price: unitPrice });
   }
 
-  const serverTotal = serverTotalPaise / 100;
+  const serverTotal = serverTotalPaise / 100 + shippingFee;
   if (Math.abs(serverTotal - Number(clientTotal)) > TOTAL_TOLERANCE) {
     return { error: "Prices have changed since your cart was built. Please review your cart and try again." };
   }
@@ -132,9 +133,12 @@ export async function POST(request: Request) {
     const orderNumber = buildOrderNumber();
     let orderItems: PricedItem[] = payload.items;
     let orderTotal = payload.totalAmount;
+    // Never trust a client-sent shipping fee — always the admin's current one.
+    let shippingFee = 0;
 
     if (isSupabaseConfigured()) {
-      const repriced = await repriceItems(payload.items, payload.totalAmount);
+      shippingFee = await getServerShippingFee();
+      const repriced = await repriceItems(payload.items, payload.totalAmount, shippingFee);
       if ("error" in repriced) return fail(repriced.error ?? "Order could not be verified.", 409);
       orderItems = repriced.priced ?? payload.items;
       orderTotal = repriced.serverTotal ?? payload.totalAmount;
@@ -149,6 +153,7 @@ export async function POST(request: Request) {
       deliveryAddress: payload.deliveryAddress,
       pincode: payload.pincode,
       totalAmount: orderTotal,
+      shippingFee,
       status: "pending",
       whatsappSent: Boolean(payload.whatsappSent)
     };
