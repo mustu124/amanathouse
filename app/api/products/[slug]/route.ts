@@ -120,7 +120,7 @@ export async function PUT(request: Request, { params }: { params: { slug: string
   }
 }
 
-export async function DELETE(_: Request, { params }: { params: { slug: string } }) {
+export async function DELETE(request: Request, { params }: { params: { slug: string } }) {
   const unauthorized = await assertAdmin();
   if (unauthorized) return unauthorized;
 
@@ -131,15 +131,37 @@ export async function DELETE(_: Request, { params }: { params: { slug: string } 
     if (lookupError) throw lookupError;
     if (!existing) return fail("Product not found.", 404);
 
-    const { data: product, error } = await supabase
-      .from("products")
-      .update({ active: false, updated_at: new Date().toISOString() })
-      .eq("id", existing.id)
-      .select("*")
-      .single();
+    const hard = new URL(request.url).searchParams.get("hard") === "true";
 
-    if (error) throw error;
-    return ok({ product: normalizeSupabaseProduct(product) }, "Product deleted.");
+    if (!hard) {
+      const { data: product, error } = await supabase
+        .from("products")
+        .update({ active: false, updated_at: new Date().toISOString() })
+        .eq("id", existing.id)
+        .select("*")
+        .single();
+
+      if (error) throw error;
+      return ok({ product: normalizeSupabaseProduct(product) }, "Product archived.");
+    }
+
+    // Permanent delete. order_items.product_id is ON DELETE SET NULL, so past
+    // orders keep their frozen name/price/quantity and are never affected.
+    // hamper_products is ON DELETE CASCADE, so the product also drops out of
+    // any hamper's eligible list — surfaced in the response message below.
+    const { count: hamperLinkCount } = await supabase
+      .from("hamper_products")
+      .select("id", { count: "exact", head: true })
+      .eq("product_id", existing.id);
+
+    const { error: deleteError } = await supabase.from("products").delete().eq("id", existing.id);
+    if (deleteError) throw deleteError;
+
+    const message =
+      hamperLinkCount && hamperLinkCount > 0
+        ? `Product permanently deleted. It was also removed from ${hamperLinkCount} hamper${hamperLinkCount === 1 ? "" : "s"} it was eligible for.`
+        : "Product permanently deleted.";
+    return ok({ product: null }, message);
   } catch (error) {
     return fail(getErrorMessage(error, "Failed to delete product."));
   }

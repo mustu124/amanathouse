@@ -153,3 +153,8 @@ unsaved draft to restore.
 ## Setting a shipping fee
 
 Go to **Site Settings** and find the **Shipping** section. Enter a flat amount in rupees — it is added to every order's total automatically, on top of whatever the customer's items (and any hampers) cost. Set it to 0 for free shipping. The fee shown to a customer is always the current one; changing it never rewrites the total of an order already placed.
+
+## Archiving vs. deleting a product
+
+- **Archive** hides the product from the shop but keeps it as a draft — use this for something you might bring back, or if it's referenced by past orders you want to keep readable in the admin panel exactly as before.
+- **Delete** removes the product permanently. It also drops out of any hampers it was part of. Past orders are unaffected — each order keeps its own frozen copy of the product's name, price and quantity from when it was purchased, so order history never breaks.
