@@ -302,12 +302,19 @@ export function HamperForm({ hamper }: { hamper?: Hamper }) {
 
       <section className="grid gap-4 rounded-2xl bg-white p-5 shadow-sm">
         <h2 className="font-heading text-2xl font-bold">Pricing</h2>
-        <div className="flex flex-wrap gap-6 font-bold">
-          <label className="flex items-center gap-2">
-            <input type="radio" name="pricing" checked={pricingMode === "percentage"} onChange={() => setPricingMode("percentage")} /> Percentage off the items
+        <p className="text-sm text-stone-500">Choose how the customer&apos;s total is worked out — these are two different pricing methods, not two amounts to add together.</p>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <label className={`flex cursor-pointer flex-col gap-1 rounded-xl border-2 p-3 ${pricingMode === "percentage" ? "border-amanat-terracotta bg-amanat-cream" : "border-amanat-brown/10"}`}>
+            <span className="flex items-center gap-2 font-bold">
+              <input type="radio" name="pricing" checked={pricingMode === "percentage"} onChange={() => setPricingMode("percentage")} /> Percentage off
+            </span>
+            <span className="pl-6 text-xs text-stone-500">The customer&apos;s total is the price of everything they picked, minus a percentage. Pick more, pay more (just discounted).</span>
           </label>
-          <label className="flex items-center gap-2">
-            <input type="radio" name="pricing" checked={pricingMode === "fixed"} onChange={() => setPricingMode("fixed")} /> Fixed price
+          <label className={`flex cursor-pointer flex-col gap-1 rounded-xl border-2 p-3 ${pricingMode === "fixed" ? "border-amanat-terracotta bg-amanat-cream" : "border-amanat-brown/10"}`}>
+            <span className="flex items-center gap-2 font-bold">
+              <input type="radio" name="pricing" checked={pricingMode === "fixed"} onChange={() => setPricingMode("fixed")} /> Fixed price
+            </span>
+            <span className="pl-6 text-xs text-stone-500">The customer always pays this one flat amount, no matter what they pick or how much of it is worth. Set a max item limit too, or this can be picked apart for far less than it&apos;s worth.</span>
           </label>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
@@ -336,6 +343,11 @@ export function HamperForm({ hamper }: { hamper?: Hamper }) {
           <Field label="Maximum items (blank = unlimited)">
             <input type="number" min={1} value={maxItems} onChange={(event) => setMaxItems(event.target.value)} className="field-input" />
             {maxValue != null && maxValue < minValue && <span className="text-xs font-bold text-red-700">Maximum cannot be lower than minimum.</span>}
+            {pricingMode === "fixed" && maxItems === "" && (
+              <span className="text-xs font-bold text-amber-700">
+                No maximum set — with a fixed price, a customer could add many of the same item and still pay only {formatMoney(fixedValue ?? 0)}. Consider setting a limit.
+              </span>
+            )}
           </Field>
         </div>
       </section>
