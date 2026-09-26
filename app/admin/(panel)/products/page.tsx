@@ -44,33 +44,6 @@ export default function AdminProductsPage() {
   const productIdentifier = (product: StoreProduct) => product.slug || product._id;
   const productApiPath = (product: StoreProduct) => `/api/products/${encodeURIComponent(productIdentifier(product))}`;
 
-  // The API soft-deletes (sets active: false) rather than erasing the row —
-  // this keeps past orders referencing this product intact. "Archive" reflects
-  // that honestly instead of claiming the product is gone when it still shows
-  // up (correctly, as a Draft) the moment the list reloads.
-  const archiveProduct = async (product: StoreProduct) => {
-    try {
-      await adminFetch(productApiPath(product), { method: "DELETE" });
-      setSelected((current) => current.filter((id) => id !== productIdentifier(product)));
-      toast.success("Product archived — it's hidden from the storefront but kept as a draft.");
-      load();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Archive failed");
-    }
-  };
-
-  const bulkArchive = async () => {
-    try {
-      const selectedProducts = products.filter((product) => selected.includes(productIdentifier(product)));
-      await Promise.all(selectedProducts.map((product) => adminFetch(productApiPath(product), { method: "DELETE" })));
-      setSelected([]);
-      toast.success("Selected products archived");
-      load();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Bulk archive failed");
-    }
-  };
-
   // Permanent — the row is gone. Past orders keep their own frozen copy of
   // the name/price/quantity, so they're unaffected either way.
   const deleteProduct = async (product: StoreProduct) => {
@@ -123,14 +96,9 @@ export default function AdminProductsPage() {
         title="Product Manager"
         action={
           selected.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              <ConfirmButton message="Archive selected products? They'll be hidden from the storefront but kept as drafts." onConfirm={bulkArchive} className="rounded-full bg-amber-600 px-4 py-2 text-sm font-black text-white">
-                Archive Selected
-              </ConfirmButton>
-              <ConfirmButton message="Permanently delete selected products? This cannot be undone — they'll also be removed from any hampers they're part of. Past orders are unaffected." onConfirm={bulkDelete} className="rounded-full bg-red-700 px-4 py-2 text-sm font-black text-white">
-                Delete Selected
-              </ConfirmButton>
-            </div>
+            <ConfirmButton message="Permanently delete selected products? This cannot be undone — they'll also be removed from any hampers they're part of. Past orders are unaffected." onConfirm={bulkDelete} className="rounded-full bg-red-700 px-4 py-2 text-sm font-black text-white">
+              Delete Selected
+            </ConfirmButton>
           )
         }
       >
@@ -142,7 +110,7 @@ export default function AdminProductsPage() {
           </select>
         </div>
         <div className="grid gap-3">
-          <div className="hidden rounded-xl bg-amanat-cream px-4 py-3 text-xs font-black uppercase tracking-[0.14em] text-amanat-sage xl:grid xl:grid-cols-[minmax(280px,1.7fr)_minmax(150px,1fr)_100px_70px_100px_100px_190px] xl:gap-4">
+          <div className="hidden rounded-xl bg-amanat-cream px-4 py-3 text-xs font-black uppercase tracking-[0.14em] text-amanat-sage xl:grid xl:grid-cols-[minmax(280px,1.7fr)_minmax(150px,1fr)_100px_70px_100px_100px_130px] xl:gap-4">
             <span>Product</span>
             <span>Category</span>
             <span>Price</span>
@@ -155,7 +123,7 @@ export default function AdminProductsPage() {
           {visibleProducts.map((product) => (
             <article
               key={product._id}
-              className="grid gap-4 rounded-2xl border border-amanat-brown/10 bg-white p-4 shadow-sm xl:grid-cols-[minmax(280px,1.7fr)_minmax(150px,1fr)_100px_70px_100px_100px_190px] xl:items-center xl:gap-4"
+              className="grid gap-4 rounded-2xl border border-amanat-brown/10 bg-white p-4 shadow-sm xl:grid-cols-[minmax(280px,1.7fr)_minmax(150px,1fr)_100px_70px_100px_100px_130px] xl:items-center xl:gap-4"
             >
               <div className="flex min-w-0 items-center gap-3">
                 <input
@@ -206,7 +174,6 @@ export default function AdminProductsPage() {
               </button>
               <div className="flex flex-wrap items-center gap-3">
                 <Link href={`/admin/products/${encodeURIComponent(productIdentifier(product))}/edit`} className="font-black text-amanat-terracotta">Edit</Link>
-                <ConfirmButton message="Archive this product? It will be hidden from the storefront but kept as a draft (e.g. past orders keep referencing it)." onConfirm={() => archiveProduct(product)} className="font-black text-amber-700">Archive</ConfirmButton>
                 <ConfirmButton message="Permanently delete this product? This cannot be undone — it will also be removed from any hampers it's part of. Past orders keep their own copy of its name and price, so they're unaffected." onConfirm={() => deleteProduct(product)} className="font-black text-red-700">Delete</ConfirmButton>
               </div>
             </article>

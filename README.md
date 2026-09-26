@@ -72,7 +72,7 @@ RLS is enabled on every table: `products`/`categories`/`gallery`/`settings` have
 Sign in at `/admin/login` with a Supabase Auth user (created in the Supabase dashboard, see above). Sections:
 
 - **Dashboard** — order/product/gallery stats, recent orders.
-- **Products** — search, filter, bulk archive, feature toggle, publish/draft status. Add/edit forms support multi-image upload (with progress and type/size/dimension validation) and drag-to-reorder.
+- **Products** — search, filter, bulk delete, feature toggle, publish/draft status. Add/edit forms support multi-image upload (with progress and type/size/dimension validation) and drag-to-reorder.
 - **Orders** — status updates, customer detail drawer, WhatsApp message preview and one-click send.
 - **Gallery** — read-only view generated from active products (add/edit images on a product to update it).
 - **Homepage Settings** — hero slides (desktop + 10 fixed mobile slots, drag-to-reorder), announcement ticker text, homepage SEO meta.
