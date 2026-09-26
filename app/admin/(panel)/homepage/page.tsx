@@ -48,7 +48,12 @@ export default function AdminHomepagePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [uploadingId, setUploadingId] = useState("");
-  const storageKey = "amanat-house-homepage-draft-v2";
+  // v3: earlier versions blindly restored any saved draft on every visit,
+  // which could silently bring back a stale mobile-slide list (e.g. the old
+  // fixed-10-slots format) even after the live settings had moved on. A
+  // draft is now only restored when it actually differs from the server.
+  const storageKey = "amanat-house-homepage-draft-v3";
+  const [serverDraft, setServerDraft] = useState<SettingsPayload | null>(null);
   const sensors = useSensors(useSensor(PointerSensor));
 
   useEffect(() => {
@@ -64,9 +69,17 @@ export default function AdminHomepagePage() {
         setAnnouncementText(settings.announcementText ?? "");
         setMetaTitle(settings.metaTitle ?? "");
         setMetaDescription(settings.metaDescription ?? "");
+        const loadedDraft: SettingsPayload = {
+          heroSlides: loadedSlides,
+          mobileHeroSlides: loadedMobileSlides,
+          announcementText: settings.announcementText ?? "",
+          metaTitle: settings.metaTitle ?? "",
+          metaDescription: settings.metaDescription ?? ""
+        };
+        setServerDraft(loadedDraft);
 
         const draft = window.localStorage.getItem(storageKey);
-        if (draft) {
+        if (draft && draft !== JSON.stringify(loadedDraft)) {
           const parsed = JSON.parse(draft) as SettingsPayload;
           const parsedSlides = parsed.heroSlides?.length ? parsed.heroSlides : [blankSlide()];
           setSlides(parsedSlides.map((slide) => ({ ...slide, id: crypto.randomUUID() })));
@@ -78,6 +91,8 @@ export default function AdminHomepagePage() {
           setMetaTitle(parsed.metaTitle ?? "");
           setMetaDescription(parsed.metaDescription ?? "");
           toast("Unsaved homepage draft restored.");
+        } else {
+          window.localStorage.removeItem(storageKey);
         }
       })
       .catch((error) => toast.error(error.message))
@@ -96,8 +111,10 @@ export default function AdminHomepagePage() {
   );
 
   useEffect(() => {
-    if (!isLoading) window.localStorage.setItem(storageKey, JSON.stringify(draft));
-  }, [draft, isLoading]);
+    if (isLoading || !serverDraft) return;
+    if (JSON.stringify(draft) === JSON.stringify(serverDraft)) window.localStorage.removeItem(storageKey);
+    else window.localStorage.setItem(storageKey, JSON.stringify(draft));
+  }, [draft, isLoading, serverDraft]);
 
   const updateSlide = (id: string, key: keyof HeroSlide, value: string) => {
     setSlides((current) => current.map((slide) => (slide.id === id ? { ...slide, [key]: value } : slide)));
@@ -156,6 +173,7 @@ export default function AdminHomepagePage() {
       });
       setSlides(saved.data.settings.heroSlides.map((slide) => ({ ...slide, id: crypto.randomUUID() })));
       setMobileSlides((saved.data.settings.mobileHeroSlides ?? []).map((slide) => ({ ...slide, id: crypto.randomUUID() })));
+      setServerDraft(draft);
       window.localStorage.removeItem(storageKey);
       toast.success("Homepage settings saved");
     } catch (error) {
