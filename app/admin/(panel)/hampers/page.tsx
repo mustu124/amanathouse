@@ -65,18 +65,17 @@ export default function AdminHampersPage() {
           </p>
         ) : (
           <div className="grid gap-3">
-            <div className="hidden rounded-xl bg-amanat-cream px-4 py-3 text-xs font-black uppercase tracking-[0.14em] text-amanat-sage xl:grid xl:grid-cols-[minmax(260px,1.6fr)_minmax(160px,1fr)_90px_100px_90px_150px] xl:gap-4">
+            <div className="hidden rounded-xl bg-amanat-cream px-4 py-3 text-xs font-black uppercase tracking-[0.14em] text-amanat-sage xl:grid xl:grid-cols-[minmax(260px,1.6fr)_minmax(160px,1fr)_90px_100px_150px] xl:gap-4">
               <span>Hamper</span>
               <span>Pricing</span>
               <span>Products</span>
               <span>Status</span>
-              <span>Order</span>
               <span>Actions</span>
             </div>
             {hampers.map((hamper) => (
               <article
                 key={hamper._id}
-                className="grid gap-4 rounded-2xl border border-amanat-brown/10 bg-white p-4 shadow-sm xl:grid-cols-[minmax(260px,1.6fr)_minmax(160px,1fr)_90px_100px_90px_150px] xl:items-center xl:gap-4"
+                className="grid gap-4 rounded-2xl border border-amanat-brown/10 bg-white p-4 shadow-sm xl:grid-cols-[minmax(260px,1.6fr)_minmax(160px,1fr)_90px_100px_150px] xl:items-center xl:gap-4"
               >
                 <div className="flex min-w-0 items-center gap-3">
                   <Image src={getDisplayMediaUrl(hamper.heroImageUrl)} alt={hamper.name} width={64} height={80} className="h-20 w-16 shrink-0 rounded-xl bg-amanat-sand object-cover" />
@@ -101,16 +100,6 @@ export default function AdminHampersPage() {
                 >
                   {hamper.isActive ? "Active" : "Hidden"}
                 </button>
-                <input
-                  type="number"
-                  aria-label={`Sort order for ${hamper.name}`}
-                  defaultValue={hamper.sortOrder}
-                  onBlur={(event) => {
-                    const value = Number(event.target.value) || 0;
-                    if (value !== hamper.sortOrder) update(hamper, { sortOrder: value }, "Order updated");
-                  }}
-                  className="field-input w-20 py-2"
-                />
                 <div className="flex flex-wrap gap-2">
                   <Link href={`/admin/hampers/${hamper.slug}/edit`} className="rounded-full border border-amanat-brown px-4 py-2 text-xs font-black">
                     Edit

@@ -28,7 +28,6 @@ export function HamperForm({ hamper }: { hamper?: Hamper }) {
   const [minItems, setMinItems] = useState(String(hamper?.minItems ?? 2));
   const [maxItems, setMaxItems] = useState(hamper?.maxItems == null ? "" : String(hamper.maxItems));
   const [isActive, setIsActive] = useState(hamper?.isActive ?? true);
-  const [sortOrder, setSortOrder] = useState(String(hamper?.sortOrder ?? 0));
   const [picked, setPicked] = useState<PickedProduct[]>(
     hamper?.products.map((entry) => ({ productId: entry.product._id, isRequired: entry.isRequired })) ?? []
   );
@@ -195,7 +194,6 @@ export function HamperForm({ hamper }: { hamper?: Hamper }) {
         maxItems: maxValue,
         isActive,
         isPlaceholder: hamper?.isPlaceholder ?? false,
-        sortOrder: Number(sortOrder) || 0,
         products: picked.map((entry, index) => ({ productId: entry.productId, isRequired: entry.isRequired, sortOrder: index }))
       };
       const result = await adminFetch<{ hamper: Hamper }>(hamper ? `/api/hampers/${hamper._id}` : "/api/hampers", {
@@ -251,14 +249,9 @@ export function HamperForm({ hamper }: { hamper?: Hamper }) {
         <Field label="Long description (shown on the hamper page)">
           <textarea value={longDescription} onChange={(event) => setLongDescription(event.target.value)} className="field-input min-h-28" />
         </Field>
-        <div className="grid gap-4 md:grid-cols-2">
-          <label className="flex items-center gap-2 font-bold">
-            <input type="checkbox" checked={isActive} onChange={(event) => setIsActive(event.target.checked)} /> Active (visible in the shop)
-          </label>
-          <Field label="Sort order (lower shows first)">
-            <input type="number" value={sortOrder} onChange={(event) => setSortOrder(event.target.value)} className="field-input" />
-          </Field>
-        </div>
+        <label className="flex items-center gap-2 font-bold">
+          <input type="checkbox" checked={isActive} onChange={(event) => setIsActive(event.target.checked)} /> Active (visible in the shop)
+        </label>
       </section>
 
       <section className="rounded-2xl bg-white p-5 shadow-sm">
