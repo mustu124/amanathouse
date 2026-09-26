@@ -39,9 +39,9 @@ const blankSlide = (index = 1): HeroSlideDraft => ({
 
 export default function AdminHomepagePage() {
   const [slides, setSlides] = useState<HeroSlideDraft[]>([blankSlide()]);
-  const [mobileSlides, setMobileSlides] = useState<HeroSlideDraft[]>(
-    Array.from({ length: 10 }, (_, index) => blankSlide(index + 1))
-  );
+  // Mobile slides default to the same count as the desktop slides; the admin
+  // can then add or remove mobile slides independently, same as desktop.
+  const [mobileSlides, setMobileSlides] = useState<HeroSlideDraft[]>([blankSlide()]);
   const [announcementText, setAnnouncementText] = useState("");
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
@@ -55,13 +55,12 @@ export default function AdminHomepagePage() {
     adminFetch<{ settings: SettingsPayload }>("/api/settings")
       .then((res) => {
         const settings = res.data.settings;
-        setSlides((settings.heroSlides?.length ? settings.heroSlides : [blankSlide()]).map((slide) => ({ ...slide, id: crypto.randomUUID() })));
-        setMobileSlides(
-          Array.from({ length: 10 }, (_, index) => {
-            const slide = settings.mobileHeroSlides?.[index] ?? blankSlide(index + 1);
-            return { ...slide, id: crypto.randomUUID() };
-          })
-        );
+        const loadedSlides = settings.heroSlides?.length ? settings.heroSlides : [blankSlide()];
+        setSlides(loadedSlides.map((slide) => ({ ...slide, id: crypto.randomUUID() })));
+        const loadedMobileSlides = settings.mobileHeroSlides?.length
+          ? settings.mobileHeroSlides
+          : loadedSlides.map((_, index) => blankSlide(index + 1));
+        setMobileSlides(loadedMobileSlides.map((slide) => ({ ...slide, id: crypto.randomUUID() })));
         setAnnouncementText(settings.announcementText ?? "");
         setMetaTitle(settings.metaTitle ?? "");
         setMetaDescription(settings.metaDescription ?? "");
@@ -69,13 +68,12 @@ export default function AdminHomepagePage() {
         const draft = window.localStorage.getItem(storageKey);
         if (draft) {
           const parsed = JSON.parse(draft) as SettingsPayload;
-          setSlides((parsed.heroSlides?.length ? parsed.heroSlides : [blankSlide()]).map((slide) => ({ ...slide, id: crypto.randomUUID() })));
-          setMobileSlides(
-            Array.from({ length: 10 }, (_, index) => {
-              const slide = parsed.mobileHeroSlides?.[index] ?? blankSlide(index + 1);
-              return { ...slide, id: crypto.randomUUID() };
-            })
-          );
+          const parsedSlides = parsed.heroSlides?.length ? parsed.heroSlides : [blankSlide()];
+          setSlides(parsedSlides.map((slide) => ({ ...slide, id: crypto.randomUUID() })));
+          const parsedMobileSlides = parsed.mobileHeroSlides?.length
+            ? parsed.mobileHeroSlides
+            : parsedSlides.map((_, index) => blankSlide(index + 1));
+          setMobileSlides(parsedMobileSlides.map((slide) => ({ ...slide, id: crypto.randomUUID() })));
           setAnnouncementText(parsed.announcementText ?? "");
           setMetaTitle(parsed.metaTitle ?? "");
           setMetaDescription(parsed.metaDescription ?? "");
@@ -157,12 +155,7 @@ export default function AdminHomepagePage() {
         body: JSON.stringify({ ...existing.data.settings, ...draft })
       });
       setSlides(saved.data.settings.heroSlides.map((slide) => ({ ...slide, id: crypto.randomUUID() })));
-      setMobileSlides(
-        Array.from({ length: 10 }, (_, index) => {
-          const slide = saved.data.settings.mobileHeroSlides?.[index] ?? blankSlide(index + 1);
-          return { ...slide, id: crypto.randomUUID() };
-        })
-      );
+      setMobileSlides((saved.data.settings.mobileHeroSlides ?? []).map((slide) => ({ ...slide, id: crypto.randomUUID() })));
       window.localStorage.removeItem(storageKey);
       toast.success("Homepage settings saved");
     } catch (error) {
@@ -211,7 +204,7 @@ export default function AdminHomepagePage() {
         </button>
       </AdminSection>
 
-      <AdminSection title="Mobile Homepage Slides" description="These 10 slides are used only on mobile. Use portrait or square artwork with short headings for the cleanest result.">
+      <AdminSection title="Mobile Homepage Slides" description="Shown only on mobile. Defaults to the same number of slides as desktop — add or remove slides here independently.">
         <div className="grid gap-4">
           {mobileSlides.map((slide, index) => (
             <SortableSlide
@@ -221,14 +214,13 @@ export default function AdminHomepagePage() {
               uploading={uploadingId === slide.id}
               onChange={updateMobileSlide}
               onUpload={uploadMobileSlideImage}
-              onRemove={() =>
-                setMobileSlides((current) =>
-                  current.map((item) => (item.id === slide.id ? { ...blankSlide(index + 1), id: item.id } : item))
-                )
-              }
+              onRemove={() => setMobileSlides((current) => current.filter((item) => item.id !== slide.id))}
             />
           ))}
         </div>
+        <button type="button" onClick={() => setMobileSlides((current) => [...current, blankSlide(current.length + 1)])} className="mt-4 rounded-full border border-amanat-brown px-5 py-2 text-sm font-black text-amanat-brown">
+          Add Mobile Slide
+        </button>
       </AdminSection>
 
       <AdminSection title="Announcement">

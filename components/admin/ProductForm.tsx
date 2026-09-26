@@ -205,9 +205,6 @@ export function ProductForm({ product }: { product?: StoreProduct }) {
           <Field label="Name">
             <input value={form.name ?? ""} onChange={(e) => update("name", e.target.value)} className="field-input" />
           </Field>
-          <Field label="Slug">
-            <input value={form.slug || slug} onChange={(e) => update("slug", e.target.value)} className="field-input" />
-          </Field>
           <Field label="Category">
             <select value={form.category} onChange={(e) => updateCategory(e.target.value)} className="field-input">
               {availableCategories.map((category) => (
@@ -311,9 +308,6 @@ export function ProductForm({ product }: { product?: StoreProduct }) {
               onChange={(e) => update("weightGrams", e.target.value === "" ? undefined : Number(e.target.value))}
               className="field-input"
             />
-          </Field>
-          <Field label="Pairs Well With">
-            <input value={form.stackWithInput ?? ""} onChange={(e) => update("stackWithInput", e.target.value)} className="field-input" placeholder="product-slug-1, product-slug-2" />
           </Field>
         </div>
         <div className="flex flex-wrap gap-4">
