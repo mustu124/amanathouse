@@ -27,9 +27,7 @@ type SeedHamper = {
   name: string;
   shortDescription: string;
   longDescription: string;
-  pricingMode: "percentage" | "fixed";
-  discountPercent: number | null;
-  fixedPrice: number | null;
+  discountPercent: number;
   packagingFee: number;
   minItems: number;
   maxItems: number | null;
@@ -46,9 +44,7 @@ const HAMPERS: SeedHamper[] = [
     shortDescription: "Pick three or more favourites and take 15% off.",
     longDescription:
       "Build a set you will actually wear. Choose at least three pieces from our everyday edit - pearls, charms and chains - and 15% comes off the total automatically.",
-    pricingMode: "percentage",
     discountPercent: 15,
-    fixedPrice: null,
     packagingFee: 0,
     minItems: 3,
     maxItems: null,
@@ -59,12 +55,10 @@ const HAMPERS: SeedHamper[] = [
   {
     slug: "the-gifting-box",
     name: "The Gifting Box",
-    shortDescription: "Two to four pieces, one flat price of ₹1,499.",
+    shortDescription: "Two to four pieces, 20% off.",
     longDescription:
-      "A ready-to-gift box with a signature piece already inside. Add one to three more from the edit - the price stays ₹1,499 however you build it.",
-    pricingMode: "fixed",
-    discountPercent: null,
-    fixedPrice: 1499,
+      "A ready-to-gift box with a signature piece already inside. Add one to three more from the edit - 20% comes off the total automatically.",
+    discountPercent: 20,
     packagingFee: 0,
     minItems: 2,
     maxItems: 4,
@@ -78,9 +72,7 @@ const HAMPERS: SeedHamper[] = [
     shortDescription: "Stack your favourite rings and take 10% off.",
     longDescription:
       "Solitaires, pearls, charms and open bands - pick two to four rings from the collection and 10% comes off the total automatically. Made for stacking, made to be kept.",
-    pricingMode: "percentage",
     discountPercent: 10,
-    fixedPrice: null,
     packagingFee: 0,
     minItems: 2,
     maxItems: 4,
@@ -120,9 +112,9 @@ async function main() {
       long_description: hamper.longDescription,
       hero_image_url: heroUrl,
       gallery_image_urls: [] as string[],
-      pricing_mode: hamper.pricingMode,
+      pricing_mode: "percentage",
       discount_percent: hamper.discountPercent,
-      fixed_price: hamper.fixedPrice,
+      fixed_price: null,
       packaging_fee: hamper.packagingFee,
       min_items: hamper.minItems,
       max_items: hamper.maxItems,

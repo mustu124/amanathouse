@@ -106,7 +106,6 @@ export function priceHamperSelection(
     hamperId: hamper._id,
     hamperName: hamper.name,
     hamperSlug: hamper.slug,
-    pricingMode: hamper.pricingMode,
     items: lines,
     itemsSubtotal: result.itemsSubtotal,
     discountPercentApplied: result.discountPercentApplied,
@@ -142,9 +141,7 @@ export function friendlyHamperDbError(error: { message?: string; code?: string }
 // Create (id omitted) or update a hamper and replace its eligible-product list.
 export async function saveHamper(payload: HamperPayload, id?: string): Promise<{ hamperId: string } | { error: string; status: number }> {
   const errors = validateHamperConfig({
-    pricingMode: payload.pricingMode,
     discountPercent: payload.discountPercent,
-    fixedPrice: payload.fixedPrice,
     packagingFee: payload.packagingFee,
     minItems: payload.minItems,
     maxItems: payload.maxItems,

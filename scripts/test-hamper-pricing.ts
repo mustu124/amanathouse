@@ -29,7 +29,7 @@ const item = (productId: string, unitPrice: number, quantity = 1, extra: Partial
 });
 
 // --- (a) percentage hamper: 12%, min 2, max 5, packaging 0 -----------------
-const pct = { pricingMode: "percentage" as const, discountPercent: 12, packagingFee: 0, minItems: 2, maxItems: 5, requiredProductIds: ["p1"] };
+const pct = { discountPercent: 12, packagingFee: 0, minItems: 2, maxItems: 5, requiredProductIds: ["p1"] };
 
 check("percentage: 3 items worth 1797 -> 12% off = 215.64, pays 1581.36", () => {
   const result = calculateHamperPrice(pct, [item("p1", 599), item("p2", 599), item("p3", 599)]);
@@ -59,23 +59,6 @@ check("percentage: rounding happens once, in paise", () => {
   assert.equal(result.total, 874.99);
 });
 
-// --- (b) fixed hamper: 1499, min 2 ------------------------------------------
-const fixed = { pricingMode: "fixed" as const, fixedPrice: 1499, packagingFee: 0, minItems: 2, maxItems: null };
-
-check("fixed: price stays 1499 for the two cheapest and for the five priciest", () => {
-  const cheapest = calculateHamperPrice(fixed, [item("a", 499), item("b", 549)]);
-  const priciest = calculateHamperPrice(fixed, [item("a", 1499), item("b", 1399), item("c", 1299), item("d", 1199), item("e", 999)]);
-  assert.equal(cheapest.total, 1499);
-  assert.equal(priciest.total, 1499);
-  assert.equal(cheapest.savings, 0, "1048 of items < 1499: no saving shown");
-  assert.equal(priciest.itemsSubtotal, 6395);
-  assert.equal(priciest.savings, 4896);
-});
-
-check("fixed: savings are never negative", () => {
-  assert.equal(calculateHamperPrice(fixed, [item("a", 100), item("b", 100)]).savings, 0);
-});
-
 // --- validation ---------------------------------------------------------------
 check("validation: below min, above max, required removed, out of stock, inactive", () => {
   assert.equal(calculateHamperPrice(pct, [item("p1", 500)]).isValid, false);
@@ -91,11 +74,10 @@ check("validation: below min, above max, required removed, out of stock, inactiv
 });
 
 // --- (c) invalid configs --------------------------------------------------------
-check("config: 95% discount, fixed price 0, max < min, 1 eligible with min 3 are all rejected", () => {
-  const base = { pricingMode: "percentage" as const, discountPercent: 10, minItems: 2, maxItems: null, eligibleCount: 4 };
+check("config: 95% discount, max < min, 1 eligible with min 3 are all rejected", () => {
+  const base = { discountPercent: 10, minItems: 2, maxItems: null, eligibleCount: 4 };
   assert.deepEqual(validateHamperConfig(base), []);
   assert.match(validateHamperConfig({ ...base, discountPercent: 95 })[0], /between 0% and 90%/);
-  assert.match(validateHamperConfig({ ...base, pricingMode: "fixed", fixedPrice: 0 })[0], /greater than ₹0/);
   assert.match(validateHamperConfig({ ...base, minItems: 4, maxItems: 3 })[0], /Maximum items cannot be lower/);
   assert.match(validateHamperConfig({ ...base, minItems: 3, eligibleCount: 1 })[0], /Only 1 eligible product/);
 });
@@ -118,7 +100,6 @@ const hamperRow = {
   id: "h1",
   name: "The Everyday Edit",
   slug: "the-everyday-edit",
-  pricing_mode: "percentage",
   discount_percent: 15,
   packaging_fee: 0,
   min_items: 3,
@@ -170,8 +151,7 @@ check("whatsapp: two hampers + three products -> one valid, non-truncated wa.me 
       itemsSubtotal: priced.snapshot.itemsSubtotal,
       discountAmount: priced.snapshot.discountAmount,
       packagingFee: priced.snapshot.packagingFee,
-      total: priced.snapshot.hamperTotal,
-      pricingMode: "percentage"
+      total: priced.snapshot.hamperTotal
     };
     return {
       product: { _id: `hamper:${slug}`, name: data.name, slug, category: "Hampers", price: data.total, images: [], stockCount: 10 },

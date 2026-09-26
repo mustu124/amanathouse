@@ -1,6 +1,6 @@
 import type { StoreProduct } from "@/lib/product-data";
 import { normalizeSupabaseProduct } from "@/lib/supabase-mappers";
-import type { HamperPricingMode, HamperPricingRules, HamperSelectedItem } from "@/lib/pricing/hamper";
+import type { HamperPricingRules, HamperSelectedItem } from "@/lib/pricing/hamper";
 
 type Row = Record<string, unknown>;
 
@@ -12,6 +12,7 @@ export type HamperEligibleProduct = {
   sortOrder: number;
 };
 
+// Hampers use one pricing method: a percentage off whatever the customer picks.
 export type Hamper = {
   _id: string;
   name: string;
@@ -20,9 +21,7 @@ export type Hamper = {
   longDescription: string;
   heroImageUrl: string;
   galleryImageUrls: string[];
-  pricingMode: HamperPricingMode;
-  discountPercent: number | null;
-  fixedPrice: number | null;
+  discountPercent: number;
   packagingFee: number;
   minItems: number;
   maxItems: number | null;
@@ -49,7 +48,6 @@ export type HamperSnapshot = {
   hamperId: string;
   hamperName: string;
   hamperSlug: string;
-  pricingMode: HamperPricingMode;
   items: HamperContentLine[];
   itemsSubtotal: number;
   discountPercentApplied: number;
@@ -69,7 +67,6 @@ export type HamperCartData = {
   discountAmount: number;
   packagingFee: number;
   total: number;
-  pricingMode: HamperPricingMode;
   // Set by cart re-validation when the live hamper no longer matches what
   // the customer built. The customer must confirm or edit before checkout.
   notice?: string;
@@ -96,9 +93,7 @@ export function normalizeSupabaseHamper(row: Row, links: Row[] = [], products: R
     longDescription: (row.long_description as string) ?? "",
     heroImageUrl: (row.hero_image_url as string) ?? "",
     galleryImageUrls: (row.gallery_image_urls as string[]) ?? [],
-    pricingMode: row.pricing_mode as HamperPricingMode,
-    discountPercent: nullableNumber(row.discount_percent),
-    fixedPrice: nullableNumber(row.fixed_price),
+    discountPercent: Number(row.discount_percent ?? 0),
     packagingFee: Number(row.packaging_fee ?? 0),
     minItems: Number(row.min_items ?? 1),
     maxItems: nullableNumber(row.max_items),
@@ -118,9 +113,9 @@ export function hamperPayloadToSupabase(payload: Row) {
     long_description: payload.longDescription ?? "",
     hero_image_url: payload.heroImageUrl ?? "",
     gallery_image_urls: payload.galleryImageUrls ?? [],
-    pricing_mode: payload.pricingMode,
-    discount_percent: payload.pricingMode === "percentage" ? Number(payload.discountPercent) : null,
-    fixed_price: payload.pricingMode === "fixed" ? Number(payload.fixedPrice) : null,
+    pricing_mode: "percentage",
+    discount_percent: Number(payload.discountPercent),
+    fixed_price: null,
     packaging_fee: Number(payload.packagingFee ?? 0),
     min_items: Number(payload.minItems),
     max_items: payload.maxItems == null || payload.maxItems === "" ? null : Number(payload.maxItems),
@@ -133,9 +128,7 @@ export function hamperPayloadToSupabase(payload: Row) {
 
 export function hamperRules(hamper: Hamper): HamperPricingRules {
   return {
-    pricingMode: hamper.pricingMode,
     discountPercent: hamper.discountPercent,
-    fixedPrice: hamper.fixedPrice,
     packagingFee: hamper.packagingFee,
     minItems: hamper.minItems,
     maxItems: hamper.maxItems,
@@ -155,12 +148,8 @@ export function selectedItemFromProduct(product: StoreProduct, quantity: number)
   };
 }
 
-export function hamperOfferLabel(hamper: Pick<Hamper, "pricingMode" | "discountPercent" | "fixedPrice" | "packagingFee">) {
-  if (hamper.pricingMode === "percentage") {
-    return `Save ${hamper.discountPercent ?? 0}% when you build your own`;
-  }
-  const total = (hamper.fixedPrice ?? 0) + (hamper.packagingFee ?? 0);
-  return `Build yours for ₹${total.toLocaleString("en-IN")}`;
+export function hamperOfferLabel(hamper: Pick<Hamper, "discountPercent">) {
+  return `Save ${hamper.discountPercent ?? 0}% when you build your own`;
 }
 
 export function hamperCartProductId(slug: string, items: Array<{ productId: string; quantity: number; variant?: string | null }>) {
@@ -181,9 +170,7 @@ export function hamperToPayload(hamper: Hamper, overrides: Partial<Hamper> = {})
     longDescription: merged.longDescription,
     heroImageUrl: merged.heroImageUrl,
     galleryImageUrls: merged.galleryImageUrls,
-    pricingMode: merged.pricingMode,
     discountPercent: merged.discountPercent,
-    fixedPrice: merged.fixedPrice,
     packagingFee: merged.packagingFee,
     minItems: merged.minItems,
     maxItems: merged.maxItems,

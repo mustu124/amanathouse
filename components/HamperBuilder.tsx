@@ -65,8 +65,6 @@ export function HamperBuilder({ hamper }: { hamper: Hamper }) {
 
   const atMax = hamper.maxItems != null && price.itemCount >= hamper.maxItems;
   const availableCount = eligible.filter((entry) => entry.product.inStock && entry.product.stockCount > 0).length;
-  const isFixed = hamper.pricingMode === "fixed";
-  const showWorth = isFixed && price.itemsSubtotal > 0;
 
   const setQuantity = (productId: string, quantity: number, variant?: string | null) => {
     setPicked((current) => {
@@ -98,8 +96,7 @@ export function HamperBuilder({ hamper }: { hamper: Hamper }) {
       itemsSubtotal: price.itemsSubtotal,
       discountAmount: price.discountAmount,
       packagingFee: price.packagingFee,
-      total: price.total,
-      pricingMode: hamper.pricingMode
+      total: price.total
     };
     const selection: HamperSelection[] = lines.map((line) => ({ productId: line.productId, quantity: line.quantity, variant: line.variant }));
     addHamper(data, selection, 1, editId && cartItems.some((item) => item.product._id === editId) ? editId : undefined);
@@ -115,8 +112,6 @@ export function HamperBuilder({ hamper }: { hamper: Hamper }) {
         variant: picked[entry.product._id].variant
       }))}
       price={price}
-      isFixed={isFixed}
-      showWorth={showWorth}
       onSubmit={submit}
       onRemove={(id) => setQuantity(id, 0)}
       requiredIds={requiredIds}
@@ -159,7 +154,7 @@ export function HamperBuilder({ hamper }: { hamper: Hamper }) {
               Choose {hamper.minItems}
               {hamper.maxItems != null ? `–${hamper.maxItems}` : "+"} pieces
             </li>
-            <li>{isFixed ? `One flat price of ${formatMoney(hamper.fixedPrice ?? 0)}` : `${hamper.discountPercent}% off everything you pick`}</li>
+            <li>{hamper.discountPercent}% off everything you pick</li>
             {hamper.packagingFee > 0 && <li>Gift packaging {formatMoney(hamper.packagingFee)}</li>}
           </ul>
         </div>
@@ -299,8 +294,6 @@ function SummaryPanel({
   hamper,
   lines,
   price,
-  isFixed,
-  showWorth,
   onSubmit,
   onRemove,
   requiredIds
@@ -308,8 +301,6 @@ function SummaryPanel({
   hamper: Hamper;
   lines: Array<{ entry: Hamper["products"][number]; quantity: number; variant: string | null }>;
   price: ReturnType<typeof calculateHamperPrice>;
-  isFixed: boolean;
-  showWorth: boolean;
   onSubmit: () => void;
   onRemove: (productId: string) => void;
   requiredIds: string[];
@@ -346,19 +337,13 @@ function SummaryPanel({
 
       <dl className="mt-4 grid gap-1.5 border-t border-ink/10 pt-4 text-sm">
         <div className="flex justify-between">
-          <dt>{showWorth ? "Worth" : "Items subtotal"}</dt>
+          <dt>Items subtotal</dt>
           <dd className="font-price">{formatMoney(price.itemsSubtotal)}</dd>
         </div>
-        {!isFixed && price.discountAmount > 0 && (
+        {price.discountAmount > 0 && (
           <div className="flex justify-between text-amanat-terracotta">
             <dt>Discount ({price.discountPercentApplied}%)</dt>
             <dd className="font-price">−{formatMoney(price.discountAmount)}</dd>
-          </div>
-        )}
-        {isFixed && (
-          <div className="flex justify-between">
-            <dt>Hamper price</dt>
-            <dd className="font-price">{formatMoney(hamper.fixedPrice ?? 0)}</dd>
           </div>
         )}
         {price.packagingFee > 0 && (

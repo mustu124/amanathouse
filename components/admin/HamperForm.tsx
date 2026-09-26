@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { adminFetch, uploadWithProgress, validateImageFile } from "@/lib/admin-client";
 import { selectedItemFromProduct, type Hamper } from "@/lib/hampers";
 import { getDisplayMediaUrl } from "@/lib/media";
-import { calculateHamperPrice, formatMoney, validateHamperConfig, type HamperPricingMode } from "@/lib/pricing/hamper";
+import { calculateHamperPrice, formatMoney, validateHamperConfig } from "@/lib/pricing/hamper";
 import { slugifyProductName, type StoreProduct } from "@/lib/product-data";
 
 type PickedProduct = { productId: string; isRequired: boolean };
@@ -21,9 +21,7 @@ export function HamperForm({ hamper }: { hamper?: Hamper }) {
   const [longDescription, setLongDescription] = useState(hamper?.longDescription ?? "");
   const [heroImageUrl, setHeroImageUrl] = useState(hamper?.heroImageUrl ?? "");
   const [galleryImageUrls, setGalleryImageUrls] = useState<string[]>(hamper?.galleryImageUrls ?? []);
-  const [pricingMode, setPricingMode] = useState<HamperPricingMode>(hamper?.pricingMode ?? "percentage");
   const [discountPercent, setDiscountPercent] = useState(String(hamper?.discountPercent ?? 10));
-  const [fixedPrice, setFixedPrice] = useState(String(hamper?.fixedPrice ?? ""));
   const [packagingFee, setPackagingFee] = useState(String(hamper?.packagingFee ?? 0));
   const [minItems, setMinItems] = useState(String(hamper?.minItems ?? 2));
   const [maxItems, setMaxItems] = useState(hamper?.maxItems == null ? "" : String(hamper.maxItems));
@@ -65,7 +63,6 @@ export function HamperForm({ hamper }: { hamper?: Hamper }) {
 
   const effectiveSlug = slugTouched ? slug : slugifyProductName(name);
   const percentValue = discountPercent === "" ? null : Number(discountPercent);
-  const fixedValue = fixedPrice === "" ? null : Number(fixedPrice);
   const feeValue = packagingFee === "" ? 0 : Number(packagingFee);
   const minValue = Number(minItems);
   const maxValue = maxItems === "" ? null : Number(maxItems);
@@ -77,9 +74,7 @@ export function HamperForm({ hamper }: { hamper?: Hamper }) {
     if (existingSlugs.includes(effectiveSlug)) list.push(`The URL name "${effectiveSlug}" is already used by another hamper.`);
     list.push(
       ...validateHamperConfig({
-        pricingMode,
         discountPercent: percentValue,
-        fixedPrice: fixedValue,
         packagingFee: feeValue,
         minItems: minValue,
         maxItems: maxValue,
@@ -89,19 +84,17 @@ export function HamperForm({ hamper }: { hamper?: Hamper }) {
     const requiredCount = picked.filter((entry) => entry.isRequired).length;
     if (maxValue != null && requiredCount > maxValue) list.push("More products are marked required than the maximum item count allows.");
     return list;
-  }, [name, effectiveSlug, existingSlugs, pricingMode, percentValue, fixedValue, feeValue, minValue, maxValue, picked]);
+  }, [name, effectiveSlug, existingSlugs, percentValue, feeValue, minValue, maxValue, picked]);
 
   const rules = useMemo(
     () => ({
-      pricingMode,
-      discountPercent: percentValue,
-      fixedPrice: fixedValue,
+      discountPercent: percentValue ?? 0,
       packagingFee: feeValue,
       minItems: Number.isFinite(minValue) ? minValue : 1,
       maxItems: maxValue,
       requiredProductIds: picked.filter((entry) => entry.isRequired).map((entry) => entry.productId)
     }),
-    [pricingMode, percentValue, fixedValue, feeValue, minValue, maxValue, picked]
+    [percentValue, feeValue, minValue, maxValue, picked]
   );
 
   // Default sample basket: required items + cheapest others up to min_items.
@@ -186,9 +179,7 @@ export function HamperForm({ hamper }: { hamper?: Hamper }) {
         longDescription,
         heroImageUrl,
         galleryImageUrls,
-        pricingMode,
-        discountPercent: pricingMode === "percentage" ? percentValue : null,
-        fixedPrice: pricingMode === "fixed" ? fixedValue : null,
+        discountPercent: percentValue,
         packagingFee: feeValue,
         minItems: minValue,
         maxItems: maxValue,
@@ -302,36 +293,15 @@ export function HamperForm({ hamper }: { hamper?: Hamper }) {
 
       <section className="grid gap-4 rounded-2xl bg-white p-5 shadow-sm">
         <h2 className="font-heading text-2xl font-bold">Pricing</h2>
-        <p className="text-sm text-stone-500">Choose how the customer&apos;s total is worked out — these are two different pricing methods, not two amounts to add together.</p>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <label className={`flex cursor-pointer flex-col gap-1 rounded-xl border-2 p-3 ${pricingMode === "percentage" ? "border-amanat-terracotta bg-amanat-cream" : "border-amanat-brown/10"}`}>
-            <span className="flex items-center gap-2 font-bold">
-              <input type="radio" name="pricing" checked={pricingMode === "percentage"} onChange={() => setPricingMode("percentage")} /> Percentage off
-            </span>
-            <span className="pl-6 text-xs text-stone-500">The customer&apos;s total is the price of everything they picked, minus a percentage. Pick more, pay more (just discounted).</span>
-          </label>
-          <label className={`flex cursor-pointer flex-col gap-1 rounded-xl border-2 p-3 ${pricingMode === "fixed" ? "border-amanat-terracotta bg-amanat-cream" : "border-amanat-brown/10"}`}>
-            <span className="flex items-center gap-2 font-bold">
-              <input type="radio" name="pricing" checked={pricingMode === "fixed"} onChange={() => setPricingMode("fixed")} /> Fixed price
-            </span>
-            <span className="pl-6 text-xs text-stone-500">The customer always pays this one flat amount, no matter what they pick or how much of it is worth. Set a max item limit too, or this can be picked apart for far less than it&apos;s worth.</span>
-          </label>
-        </div>
+        <p className="text-sm text-stone-500">The customer&apos;s total is the price of everything they picked, minus this percentage — pick more, pay more (just discounted).</p>
         <div className="grid gap-4 md:grid-cols-3">
-          {pricingMode === "percentage" ? (
-            <Field label="Discount % (0–90)">
-              <input type="number" min={0} max={90} step="0.01" value={discountPercent} onChange={(event) => setDiscountPercent(event.target.value)} className="field-input" />
-              <input type="range" min={0} max={90} step={1} value={Number(discountPercent) || 0} onChange={(event) => setDiscountPercent(event.target.value)} aria-label="Discount slider" />
-              {(percentValue == null || percentValue < 0 || percentValue > 90 || Number.isNaN(percentValue)) && (
-                <span className="text-xs font-bold text-red-700">Discount must be between 0% and 90%.</span>
-              )}
-            </Field>
-          ) : (
-            <Field label="Hamper price (₹)">
-              <input type="number" min={1} step="0.01" value={fixedPrice} onChange={(event) => setFixedPrice(event.target.value)} className="field-input" />
-              {(fixedValue == null || fixedValue <= 0 || Number.isNaN(fixedValue)) && <span className="text-xs font-bold text-red-700">Fixed price must be greater than ₹0.</span>}
-            </Field>
-          )}
+          <Field label="Discount % (0–90)">
+            <input type="number" min={0} max={90} step="0.01" value={discountPercent} onChange={(event) => setDiscountPercent(event.target.value)} className="field-input" />
+            <input type="range" min={0} max={90} step={1} value={Number(discountPercent) || 0} onChange={(event) => setDiscountPercent(event.target.value)} aria-label="Discount slider" />
+            {(percentValue == null || percentValue < 0 || percentValue > 90 || Number.isNaN(percentValue)) && (
+              <span className="text-xs font-bold text-red-700">Discount must be between 0% and 90%.</span>
+            )}
+          </Field>
           <Field label="Packaging fee (₹, added after discount)">
             <input type="number" min={0} step="0.01" value={packagingFee} onChange={(event) => setPackagingFee(event.target.value)} className="field-input" />
           </Field>
@@ -343,11 +313,6 @@ export function HamperForm({ hamper }: { hamper?: Hamper }) {
           <Field label="Maximum items (blank = unlimited)">
             <input type="number" min={1} value={maxItems} onChange={(event) => setMaxItems(event.target.value)} className="field-input" />
             {maxValue != null && maxValue < minValue && <span className="text-xs font-bold text-red-700">Maximum cannot be lower than minimum.</span>}
-            {pricingMode === "fixed" && maxItems === "" && (
-              <span className="text-xs font-bold text-amber-700">
-                No maximum set — with a fixed price, a customer could add many of the same item and still pay only {formatMoney(fixedValue ?? 0)}. Consider setting a limit.
-              </span>
-            )}
           </Field>
         </div>
       </section>
@@ -445,11 +410,9 @@ export function HamperForm({ hamper }: { hamper?: Hamper }) {
         </div>
         <p className="mt-4 rounded-xl bg-white p-4 text-sm font-bold leading-7" data-testid="hamper-preview">
           Customer picks {preview.itemCount} item{preview.itemCount === 1 ? "" : "s"} worth {formatMoney(sampleWorth)} →{" "}
-          {pricingMode === "percentage"
-            ? `discount ${percentValue ?? 0}% (−${formatMoney(preview.discountAmount)})`
-            : `flat hamper price ${formatMoney(fixedValue ?? 0)}`}{" "}
+          discount {percentValue ?? 0}% (−{formatMoney(preview.discountAmount)}){" "}
           → + {formatMoney(preview.packagingFee)} packaging → pays <span className="text-amanat-terracotta">{formatMoney(preview.total)}</span>
-          {preview.savings > 0 ? `, saves ${formatMoney(preview.savings)}` : pricingMode === "fixed" ? ", no saving on this basket" : ""}
+          {preview.savings > 0 ? `, saves ${formatMoney(preview.savings)}` : ""}
         </p>
         {!preview.isValid && <p className="mt-2 text-sm font-bold text-red-700">{preview.validationErrors[0]}</p>}
       </section>

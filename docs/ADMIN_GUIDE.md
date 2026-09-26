@@ -100,10 +100,7 @@ A hamper is a gift set that the **customer builds themselves**. You decide which
 1. Go to **Hampers** in the left menu and press **Add New Hamper**.
 2. **Details** - give it a name (for example "The Everyday Edit"), a short line for the hampers page and a longer description for the hamper's own page. The web address is made from the name; you can change it.
 3. **Images** - upload one hero photo: the single showcase picture of the hamper look. Use a portrait 4:5 photo, at least 1200 x 1500 px, JPG/PNG/WebP under 10MB (an ivory or neutral background works best). Extra gallery photos are optional.
-4. **Pricing** - choose one:
-   - **Percentage off** - the customer pays the total of the pieces they pick minus your discount (0 to 90 percent). More pieces means a bigger saving.
-   - **Fixed price** - the customer pays one flat price no matter which pieces they choose (the shop shows what the pieces are "worth").
-   - **Packaging fee** - optional; added after any discount. Leave it at 0 for free packaging.
+4. **Pricing** - set a **discount percentage** (0 to 90 percent). The customer pays the total of the pieces they pick minus that percentage, so picking more always means paying more (just discounted) - there is no way to end up paying almost nothing for expensive pieces. **Packaging fee** is optional, added after the discount; leave it at 0 for free packaging.
 5. **Rules** - the minimum number of pieces, and the maximum (leave blank for no limit).
 6. **Eligible products** - search or filter, then tick the products customers may choose from. In the "Selected" list you can reorder them and tick **Required** on a piece you want locked into every hamper (it is pre-added and cannot be removed). You need at least as many eligible products as the minimum.
 7. **Live price preview** - as you change the numbers, the preview shows a worked example, for example: *customer picks 3 items worth Rs 1,797 -> discount 15% (-Rs 269.55) -> + Rs 0 packaging -> pays Rs 1,527.45, saves Rs 269.55.* Tick different pieces to test other baskets.

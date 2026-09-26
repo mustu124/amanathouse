@@ -85,7 +85,7 @@ export default function AdminHampersPage() {
                   </div>
                 </div>
                 <p className="text-sm font-bold">
-                  {hamper.pricingMode === "percentage" ? `${hamper.discountPercent}% off` : `${formatMoney(hamper.fixedPrice ?? 0)} flat`}
+                  {hamper.discountPercent}% off
                   <span className="block text-xs font-normal text-stone-500">
                     {hamper.minItems}–{hamper.maxItems ?? "∞"} items{hamper.packagingFee > 0 ? ` · +${formatMoney(hamper.packagingFee)} packaging` : ""}
                   </span>

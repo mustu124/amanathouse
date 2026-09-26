@@ -2,13 +2,14 @@
 // API and the admin preview all call calculateHamperPrice - never re-derive
 // these numbers elsewhere. Money is computed in integer paise and rounded
 // once (the discount), then converted back to rupees.
-
-export type HamperPricingMode = "percentage" | "fixed";
+//
+// Hampers use a single pricing method: a percentage off whatever the
+// customer picks. There is no "fixed price" mode - it let a customer stack
+// unlimited quantity of one item for a flat fee, which is exactly what a
+// percentage discount avoids (the total always scales with what's picked).
 
 export type HamperPricingRules = {
-  pricingMode: HamperPricingMode;
-  discountPercent?: number | null;
-  fixedPrice?: number | null;
+  discountPercent: number;
   packagingFee?: number | null;
   minItems: number;
   maxItems?: number | null;
@@ -47,28 +48,9 @@ export function calculateHamperPrice(rules: HamperPricingRules, selectedItems: H
   const subtotalPaise = items.reduce((sum, item) => sum + toPaise(item.unitPrice) * item.quantity, 0);
   const feePaise = toPaise(rules.packagingFee ?? 0);
 
-  let discountPaise = 0;
-  let totalPaise: number;
-  let discountPercentApplied = 0;
-
-  if (rules.pricingMode === "percentage") {
-    const percentBasis = Math.round((rules.discountPercent ?? 0) * 100);
-    discountPaise = Math.round((subtotalPaise * percentBasis) / 10000);
-    discountPercentApplied = percentBasis / 100;
-    totalPaise = subtotalPaise - discountPaise + feePaise;
-  } else {
-    totalPaise = toPaise(rules.fixedPrice ?? 0) + feePaise;
-  }
-
-  // Savings are only ever positive: a fixed price above the selection's
-  // value gives no saving rather than a negative one.
-  const fixedPricePaise = toPaise(rules.fixedPrice ?? 0);
-  const savingsPaise =
-    rules.pricingMode === "percentage" ? discountPaise : Math.max(subtotalPaise - fixedPricePaise, 0);
-  if (rules.pricingMode === "fixed") {
-    discountPaise = savingsPaise;
-    discountPercentApplied = subtotalPaise > 0 ? Math.round((savingsPaise / subtotalPaise) * 10000) / 100 : 0;
-  }
+  const percentBasis = Math.round((rules.discountPercent ?? 0) * 100);
+  const discountPaise = Math.round((subtotalPaise * percentBasis) / 10000);
+  const totalPaise = subtotalPaise - discountPaise + feePaise;
 
   const validationErrors: string[] = [];
   if (itemCount < rules.minItems) {
@@ -98,10 +80,10 @@ export function calculateHamperPrice(rules: HamperPricingRules, selectedItems: H
     itemCount,
     itemsSubtotal: toRupees(subtotalPaise),
     discountAmount: toRupees(discountPaise),
-    discountPercentApplied,
+    discountPercentApplied: percentBasis / 100,
     packagingFee: toRupees(feePaise),
     total: toRupees(totalPaise),
-    savings: toRupees(savingsPaise),
+    savings: toRupees(discountPaise),
     isValid: validationErrors.length === 0,
     validationErrors: Array.from(new Set(validationErrors))
   };
@@ -110,22 +92,16 @@ export function calculateHamperPrice(rules: HamperPricingRules, selectedItems: H
 // Configuration checks shared by the admin form (client) and the API (server);
 // the DB CHECK constraints are the last line of defence and mirror these.
 export function validateHamperConfig(config: {
-  pricingMode: HamperPricingMode;
   discountPercent?: number | null;
-  fixedPrice?: number | null;
   packagingFee?: number | null;
   minItems: number;
   maxItems?: number | null;
   eligibleCount: number;
 }): string[] {
   const errors: string[] = [];
-  if (config.pricingMode === "percentage") {
-    const percent = config.discountPercent;
-    if (percent == null || Number.isNaN(percent) || percent < 0 || percent > 90) {
-      errors.push("Discount must be between 0% and 90%.");
-    }
-  } else if (config.fixedPrice == null || Number.isNaN(config.fixedPrice) || config.fixedPrice <= 0) {
-    errors.push("Fixed price must be greater than ₹0.");
+  const percent = config.discountPercent;
+  if (percent == null || Number.isNaN(percent) || percent < 0 || percent > 90) {
+    errors.push("Discount must be between 0% and 90%.");
   }
   if ((config.packagingFee ?? 0) < 0) errors.push("Packaging fee cannot be negative.");
   if (!Number.isInteger(config.minItems) || config.minItems < 1) errors.push("Minimum items must be at least 1.");

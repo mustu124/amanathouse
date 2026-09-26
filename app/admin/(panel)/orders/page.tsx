@@ -140,7 +140,7 @@ export default function AdminOrdersPage() {
                       <div className="flex justify-between"><dt>Items subtotal</dt><dd>{formatMoney(item.hamperContents.itemsSubtotal)}</dd></div>
                       {item.hamperContents.discountAmount > 0 && (
                         <div className="flex justify-between">
-                          <dt>{item.hamperContents.pricingMode === "percentage" ? `Discount (${item.hamperContents.discountPercentApplied}%)` : "Hamper saving"}</dt>
+                          <dt>Discount ({item.hamperContents.discountPercentApplied}%)</dt>
                           <dd>−{formatMoney(item.hamperContents.discountAmount)}</dd>
                         </div>
                       )}
