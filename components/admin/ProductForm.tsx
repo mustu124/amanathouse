@@ -52,7 +52,6 @@ const blankProduct: ProductDraft = {
   stockCount: 0,
   material: "316L Stainless Steel",
   plating: "18K PVD Gold",
-  metalTone: "gold",
   size: "",
   weightGrams: undefined,
   isWaterproof: true,
@@ -288,8 +287,9 @@ export function ProductForm({ product }: { product?: StoreProduct }) {
           <Field label="Plating">
             <input value={form.plating ?? ""} onChange={(e) => update("plating", e.target.value)} className="field-input" placeholder="18K PVD Gold" />
           </Field>
-          <Field label="Metal Tone">
-            <select value={form.metalTone ?? "gold"} onChange={(e) => update("metalTone", e.target.value)} className="field-input">
+          <Field label="Metal Tone (optional)">
+            <select value={form.metalTone ?? ""} onChange={(e) => update("metalTone", e.target.value || undefined)} className="field-input">
+              <option value="">No metal tone</option>
               {METAL_TONES.map((tone) => (
                 <option key={tone} value={tone}>
                   {tone === "rose-gold" ? "Rose Gold" : tone[0].toUpperCase() + tone.slice(1)}

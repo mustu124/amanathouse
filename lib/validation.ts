@@ -31,7 +31,8 @@ export const productPayloadSchema = z
     variants: z.array(z.string()).optional(),
     material: z.string().optional(),
     plating: z.string().optional(),
-    metalTone: z.enum(METAL_TONES).optional().nullable(),
+    // "" comes from a cleared <select> — treat it the same as unset.
+    metalTone: z.preprocess((value) => (value === "" ? undefined : value), z.enum(METAL_TONES).optional().nullable()),
     size: z.string().optional().nullable(),
     weightGrams: z.coerce.number().nonnegative().optional().nullable(),
     isWaterproof: z.boolean().optional(),

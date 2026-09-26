@@ -67,7 +67,7 @@ export function productPayloadToSupabase(payload: AnyRecord) {
     variants: Array.isArray(payload.variants) ? payload.variants : [],
     material: payload.material ?? "316L Stainless Steel",
     plating: payload.plating ?? "18K PVD Gold",
-    metal_tone: payload.metalTone ?? "gold",
+    metal_tone: payload.metalTone || null,
     size: payload.size ?? null,
     weight_grams: payload.weightGrams !== undefined && payload.weightGrams !== null && payload.weightGrams !== "" ? Number(payload.weightGrams) : null,
     is_waterproof: payload.isWaterproof === undefined ? true : Boolean(payload.isWaterproof),
